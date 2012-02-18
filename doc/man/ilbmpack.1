@@ -1,0 +1,37 @@
+.TH "ILBMPACK" "1" "January 2012" "ilbmpack 0.1" "Command Reference"
+.SH "NAME"
+ilbmpack \- Compress or decompress ILBM images inside an IFF file
+.SH "SYNOPSIS"
+\fBiffpack\fR [\fIoptions\fR] [\fIfile.ILBM\fR]
+.SH "DESCRIPTION"
+.PP
+The command \fBilbmpack\fR compresses or decompresses all the BODY chunks of all
+ILBM forms in the given IFF file using the byte run (packbits) algorithm. If no
+IFF file is specified, it reads an IFF file from the standard input.
+.SH "OPTIONS"
+\fB\-c\fR, \fB\-\-compress\fR
+.RS 4
+Compresses all BODY chunks of ILBM forms
+.RE
+.PP
+\fB\-d\fR, \fB\-\-decompress\fR
+.RS 4
+Decompresses all BODY chunks of ILBM forms
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Shows the usage of this command to the user
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+\fBSander van der Burg\fR
+.br
+.RS 4
+Author
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2012 Sander van der Burg
+.br
