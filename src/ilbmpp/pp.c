@@ -21,7 +21,6 @@
 
 #include "pp.h"
 #include "ilbm.h"
-#include "ilbmimage.h"
 
 int ILBM_prettyPrint(const char *filename, const int options)
 {
