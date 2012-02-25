@@ -1,6 +1,6 @@
 libilbm
 =======
-`libilbm` is portable parser library built on top of `libiff`, for ILBM: IFF
+`libilbm` is a portable parser library built on top of `libiff`, for ILBM: IFF
 Interleaved BitMap format, which is used by programs such as Deluxe Paint and
 Graphicraft to read and write images. It offers the following features:
 
@@ -57,7 +57,7 @@ Reading ILBM files
 To read an ILBM file, call the `ILBM_read()` function. An IFF file may contain
 multiple ILBM images (however most IFF files represent a single ILBM file).
 The `ILBM_extractImages()` function extracts all the ILBM images from an IFF
-file and returns an array of ILBM_Image struct instances, which can be used to
+file and returns an array of `ILBM_Image` struct instances, which can be used to
 convienently access its properties. The length of the array is stored in the
 `imagesLength` variable:
 
@@ -77,7 +77,7 @@ convienently access its properties. The length of the array is stored in the
 
 Programmatically creating ILBM files
 ------------------------------------
-An ILBM file can be created by create an instance of an `ILBM_Image` struct and
+An ILBM file can be created by creating an instance of an `ILBM_Image` struct and
 by setting its sub chunks. The following example defines an ILBM image with
 a bitmap header chunk:
 
