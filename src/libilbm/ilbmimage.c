@@ -31,27 +31,7 @@
 
 ILBM_Image *ILBM_createImage(void)
 {
-    ILBM_Image *image = (ILBM_Image*)malloc(sizeof(ILBM_Image));
-    
-    image->bitMapHeader = NULL;
-    image->colorMap = NULL;
-    image->point2d = NULL;
-    image->destMerge = NULL;
-    image->sprite = NULL;
-    image->viewport = NULL;
-    
-    image->colorRangeLength = 0;
-    image->colorRange = NULL;
-    
-    image->drangeLength = 0;
-    image->drange = NULL;
-    
-    image->cycleInfoLength = 0;
-    image->cycleInfo = NULL;
-    
-    image->body = NULL;
-    
-    return image;
+    return (ILBM_Image*)calloc(1, sizeof(ILBM_Image));
 }
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)

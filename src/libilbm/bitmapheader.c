@@ -186,13 +186,13 @@ int ILBM_checkBitMapHeader(const IFF_Chunk *chunk)
 {
     ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
     
-    if(bitMapHeader->masking < 0 && bitMapHeader->masking > ILBM_MSK_LASSO)
+    if(bitMapHeader->masking < 0 || bitMapHeader->masking > ILBM_MSK_LASSO)
     {
 	IFF_error("Invalid 'BMHD'.masking value!\n");
 	return FALSE;
     }
     
-    if(bitMapHeader->compression < 0 && bitMapHeader->compression > ILBM_CMP_BYTE_RUN)
+    if(bitMapHeader->compression < 0 || bitMapHeader->compression > ILBM_CMP_BYTE_RUN)
     {
 	IFF_error("Invalid 'BMHD'.compression value!\n");
 	return FALSE;
