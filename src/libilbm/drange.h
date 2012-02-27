@@ -24,7 +24,7 @@
 
 #include <chunk.h>
 
-#define ILBM_DRANGE_MAX_ACTIVE_VALUE 16384
+#define ILBM_DRANGE_60_STEPS_PER_SECOND 16384
 
 typedef struct
 {

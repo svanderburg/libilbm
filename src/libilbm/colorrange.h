@@ -25,7 +25,7 @@
 #include <ifftypes.h>
 #include <chunk.h>
 
-#define ILBM_COLORRANGE_MAX_ACTIVE_VALUE 16384
+#define ILBM_COLORRANGE_60_STEPS_PER_SECOND 16384
 
 typedef struct
 {

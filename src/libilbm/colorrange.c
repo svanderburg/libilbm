@@ -111,12 +111,6 @@ int ILBM_checkColorRange(const IFF_Chunk *chunk)
     if(colorRange->pad1 != 0)
 	IFF_error("WARING: 'CRNG'.pad1 is not 0!\n");
 	
-    if(colorRange->rate < 0 || colorRange->rate > ILBM_COLORRANGE_MAX_ACTIVE_VALUE)
-    {
-	IFF_error("'CRNG'.rate should be between 0 and %d!\n", ILBM_COLORRANGE_MAX_ACTIVE_VALUE);
-	return FALSE;
-    }
-    
     return TRUE;
 }
 

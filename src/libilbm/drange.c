@@ -226,14 +226,6 @@ int ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk)
 
 int ILBM_checkDRange(const IFF_Chunk *chunk)
 {
-    ILBM_DRange *drange = (ILBM_DRange*)chunk;
-    
-    if(drange->rate < 0 || drange->rate > ILBM_DRANGE_MAX_ACTIVE_VALUE)
-    {
-	IFF_error("'DRNG'.rate value should be between 0 and %d!\n", ILBM_DRANGE_MAX_ACTIVE_VALUE);
-	return FALSE;
-    }
-    
     return TRUE;
 }
 
