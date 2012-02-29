@@ -60,3 +60,38 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
 	return result;
     }
 }
+
+void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
+{
+    unsigned int i;
+    unsigned int scanLineSize = image->bitMapHeader->w / 8;
+    unsigned int interleavedScanLineSize = image->bitMapHeader->nPlanes * scanLineSize;
+    
+    unsigned int count = 0; /* Offset in the non-interleaved bitplane data array */
+    unsigned int bOffset = 0; /* Base offset in the interleaved bitplane data array */
+    unsigned int chunkSize = interleavedScanLineSize * image->bitMapHeader->h;
+    
+    IFF_UByte *result = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
+    
+    for(i = 0; i < image->bitMapHeader->nPlanes; i++)
+    {
+	unsigned int j;
+	unsigned int hOffset = bOffset;
+	
+	for(j = 0; j < image->bitMapHeader->h; j++)
+	{
+	    memcpy(result + hOffset, bitplanes + count, scanLineSize);
+	    
+	    count += scanLineSize;
+	    hOffset += interleavedScanLineSize;
+	}
+	
+	bOffset += scanLineSize;
+    }
+    
+    /* Free the old body chunk data */
+    free(image->body->chunkData);
+    
+    /* Set the new body containing the interleaved chunk data */
+    IFF_setRawChunkData(image->body, result, chunkSize);
+}
