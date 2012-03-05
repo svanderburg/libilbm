@@ -22,8 +22,10 @@
 #ifndef __ILBM_CYCLEINFO_H
 #define __ILBM_CYCLEINFO_H
 
-#include <ifftypes.h>
-#include <chunk.h>
+#include <stdio.h>
+#include <libiff/ifftypes.h>
+#include <libiff/group.h>
+#include <libiff/chunk.h>
 
 typedef struct
 {

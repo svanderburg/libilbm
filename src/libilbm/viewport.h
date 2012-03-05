@@ -23,7 +23,9 @@
 #define __ILBM_CAMG_H
 
 #include <stdio.h>
-#include <chunk.h>
+#include <libiff/ifftypes.h>
+#include <libiff/group.h>
+#include <libiff/chunk.h>
 
 typedef struct
 {

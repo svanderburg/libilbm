@@ -21,10 +21,9 @@
 
 #include "cycleinfo.h"
 #include <stdlib.h>
-#include <id.h>
-#include <io.h>
-#include <util.h>
-#include <error.h>
+#include <libiff/io.h>
+#include <libiff/util.h>
+#include <libiff/error.h>
 #include "ilbm.h"
 
 #define CHUNKID "CCRT"

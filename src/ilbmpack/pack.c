@@ -22,7 +22,6 @@
 #include "pack.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <form.h>
 #include "ilbm.h"
 #include "ilbmimage.h"
 #include "byterun.h"

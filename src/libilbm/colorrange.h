@@ -22,8 +22,10 @@
 #ifndef __ILBM_COLORRANGE_H
 #define __ILBM_COLORRANGE_H
 
-#include <ifftypes.h>
-#include <chunk.h>
+#include <stdio.h>
+#include <libiff/ifftypes.h>
+#include <libiff/group.h>
+#include <libiff/chunk.h>
 
 #define ILBM_COLORRANGE_60_STEPS_PER_SECOND 16384
 

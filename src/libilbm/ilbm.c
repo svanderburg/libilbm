@@ -20,7 +20,7 @@
  */
 
 #include "ilbm.h"
-#include <iff.h>
+#include <libiff/iff.h>
 #include "bitmapheader.h"
 #include "colormap.h"
 #include "colorrange.h"

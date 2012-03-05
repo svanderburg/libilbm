@@ -22,12 +22,10 @@
 #include "ilbmimage.h"
 #include "ilbm.h"
 #include <stdlib.h>
-#include <id.h>
-#include <util.h>
-#include <list.h>
-#include <cat.h>
-#include <form.h>
-#include <error.h>
+#include <libiff/util.h>
+#include <libiff/list.h>
+#include <libiff/cat.h>
+#include <libiff/error.h>
 
 ILBM_Image *ILBM_createImage(void)
 {

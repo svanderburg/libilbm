@@ -21,7 +21,8 @@
 
 #ifndef __ILBM_INTERLEAVE_H
 #define __ILBM_INTERLEAVE_H
-#include <chunk.h>
+
+#include <libiff/ifftypes.h>
 #include "ilbmimage.h"
 
 IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);

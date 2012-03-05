@@ -22,9 +22,10 @@
 #ifndef __ILBM_BITMAPHEADER_H
 #define __ILBM_BITMAPHEADER_H
 
-#include <ifftypes.h>
 #include <stdio.h>
-#include <chunk.h>
+#include <libiff/ifftypes.h>
+#include <libiff/group.h>
+#include <libiff/chunk.h>
 
 typedef enum
 {

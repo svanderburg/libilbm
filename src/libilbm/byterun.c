@@ -22,9 +22,9 @@
 #include "byterun.h"
 #include <stdlib.h>
 #include <string.h>
-#include <rawchunk.h>
-#include <util.h>
-#include <error.h>
+#include <libiff/rawchunk.h>
+#include <libiff/util.h>
+#include <libiff/error.h>
 #include "ilbm.h"
 
 void ILBM_unpackByteRun(ILBM_Image *image)

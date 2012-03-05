@@ -22,8 +22,8 @@
 #ifndef __ILBM_IMAGE_H
 #define __ILBM_IMAGE_H
 
-#include <form.h>
-#include <rawchunk.h>
+#include <libiff/form.h>
+#include <libiff/rawchunk.h>
 #include "bitmapheader.h"
 #include "colormap.h"
 #include "colorrange.h"

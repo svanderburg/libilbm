@@ -21,10 +21,8 @@
 
 #include "colormap.h"
 #include <stdlib.h>
-#include <id.h>
-#include <io.h>
-#include <util.h>
-#include <error.h>
+#include <libiff/io.h>
+#include <libiff/util.h>
 #include "ilbm.h"
 
 #define CHUNKID "CMAP"

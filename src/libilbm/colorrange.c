@@ -21,10 +21,9 @@
 
 #include "colorrange.h"
 #include <stdlib.h>
-#include <io.h>
-#include <id.h>
-#include <util.h>
-#include <error.h>
+#include <libiff/io.h>
+#include <libiff/util.h>
+#include <libiff/error.h>
 #include "ilbm.h"
 
 #define CHUNKID "CRNG"

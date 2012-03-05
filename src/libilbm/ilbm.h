@@ -21,7 +21,9 @@
 
 #ifndef __ILBM_H
 #define __ILBM_H
-#include <chunk.h>
+
+#include <stdio.h>
+#include <libiff/chunk.h>
 
 IFF_Chunk *ILBM_readFd(FILE *file);
 
