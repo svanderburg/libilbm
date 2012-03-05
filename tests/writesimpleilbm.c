@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
-#include <chunk.h>
-#include <form.h>
+#include <libiff/chunk.h>
+#include <libiff/rawchunk.h>
+#include <libiff/form.h>
 #include "ilbm.h"
 #include "ilbmimage.h"
 
