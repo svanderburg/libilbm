@@ -9,6 +9,8 @@ Graphicraft to read and write images. It offers the following features:
 * Retrieving ILBM file contents
 * Writing ILBM files
 * ILBM conformance checking
+* Byte run compression of ILBM files
+* Interleaving ILBM files
 
 This parser library implements support for all chunks described in the ILBM
 specification and the 'DRNG' chunk, which is a Deluxe Paint extension. These
@@ -183,6 +185,51 @@ required ILBM chunks are present.
             return 0; /* IFF file including ILBM images are valid */
         else
             return 1; /* IFF file including ILBM images are not valid */
+    }
+
+Byte run compression of ILBM files
+----------------------------------
+To compress the body of an ILBM image the `ILBM_unpackByteRun()` function can be
+used. To decompress the body of an ILBM image the `ILBM_packByteRun` function can
+be used.
+
+    #include "ilbmimage.h"
+    #include "byterun.h"
+
+    int main(int argc, char *argv[])
+    {
+        ILBM_Image *image;
+        
+        /* Open an IFF file and extract an ILBM image here */
+        
+        ILBM_unpackByteRun(image); /* Now the body of the image is decompressed */
+        ILBM_packByteRun(image); /* Now the body of the image is compressed */
+        
+        return 0;
+    }
+
+Interleaving ILBM files
+-----------------------
+In body of an ILBM image, bitplanes are _interleaved_, which means that they
+have to be rendered line by line. The `ILBM_deinterleave()` function renders the
+image in an pre-allocated piece of memory. The `ILBM_interleave()` function
+interleaves given planar screen data, so that they can be stored in an ILBM file.
+
+    #include "ilbmimage.h"
+    #include "interleave.h"
+    
+    int main(int argc, char *argv[])
+    {
+        ILBM_Image *image;
+        IFF_UByte *bitplanes;
+        
+        /* Open an IFF file and extract an ILBM image here */
+        
+        bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
+        
+        ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes in the body of the image */
+        
+        return 0;
     }
 
 Command-line utilities
