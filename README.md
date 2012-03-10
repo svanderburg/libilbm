@@ -212,8 +212,12 @@ Interleaving ILBM files
 -----------------------
 In body of an ILBM image, bitplanes are _interleaved_, which means that they
 have to be rendered line by line. The `ILBM_deinterleave()` function renders the
-image in an pre-allocated piece of memory. The `ILBM_interleave()` function
-interleaves given planar screen data, so that they can be stored in an ILBM file.
+image in an pre-allocated piece of memory so that it can be displayed. On
+non-Amiga hardware you need to convert planar graphics data into chunky or true
+color graphics. `libamivideo` can be used for this purpose.
+
+The `ILBM_interleave()` function interleaves given planar screen data, so that
+they can be stored in an ILBM file.
 
     #include "ilbmimage.h"
     #include "interleave.h"
