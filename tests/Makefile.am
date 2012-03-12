@@ -1,4 +1,4 @@
-check_PROGRAMS = writesimpleilbm readsimpleilbm checkilbm interleave-simple
+check_PROGRAMS = writesimpleilbm readsimpleilbm checkilbm interleave-simple byterun-simple
 
 writesimpleilbm_SOURCES = writesimpleilbm.c
 writesimpleilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
@@ -16,4 +16,8 @@ interleave_simple_SOURCES = interleave-simple.c
 interleave_simple_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 interleave_simple_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-TESTS = writesimpleilbm readsimpleilbm check-missing-BMHD.sh interleave-simple
+byterun_simple_SOURCES = byterun-simple.c
+byterun_simple_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
+byterun_simple_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
+
+TESTS = writesimpleilbm readsimpleilbm check-missing-BMHD.sh interleave-simple byterun-simple
