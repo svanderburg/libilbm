@@ -150,8 +150,8 @@ int main(int argc, char *argv[])
     /* Create a red scanline block */
     
     scanLineSize = bitMapHeader->w / 8 * bitMapHeader->nPlanes;
-    bodyChunkSize = scanLineSize * bitMapHeader->h * sizeof(IFF_UByte);
-    bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize);
+    bodyChunkSize = scanLineSize * bitMapHeader->h;
+    bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
     body = IFF_createRawChunk("BODY");
     
     for(i = 0; i < 39; i++)
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
     IFF_setRawChunkData(body, bodyChunkData, bodyChunkSize);
     
     /* Create image */
-    image = ILBM_createImage();
+    image = ILBM_createImage(FALSE);
     
     image->bitMapHeader = bitMapHeader;
     image->colorMap = colorMap;

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <libiff/id.h>
 #include "ilbm.h"
 #include "ilbmimage.h"
 
@@ -31,6 +32,14 @@ int main(int argc, char *argv[])
 	    ILBM_Viewport *viewport = image->viewport;
 	    ILBM_Point2D *point2d = image->point2d;
 	    ILBM_Sprite *sprite = image->sprite;
+	    
+	    /* The form type of the image should be 'ILBM' */
+	    
+	    if(IFF_compareId(image->formType, "ILBM") != 0)
+	    {
+		fprintf(stderr, "The image formType should be: 'ILBM'\n");
+		status = 1;
+	    }
 	    
 	    /* Check bitmap header properties */
 	    

@@ -17,6 +17,10 @@ specification and the 'DRNG' chunk, which is a Deluxe Paint extension. These
 specifications can be found in: `doc/ILBM.asc` and `doc/ILBM.DRNG.asc`, included
 in this package.
 
+Furthermore, this parser library understands PBM files, which are created by the
+PC version of Deluxe Paint. Although I couldn't find any specification, the
+differences are relatively minor and I have documented them in `doc/PBM.asc`.
+
 Prerequisites
 =============
 In order to build and use this package the following libraries are required:
@@ -219,6 +223,9 @@ color graphics. `libamivideo` can be used for this purpose.
 The `ILBM_interleave()` function interleaves given planar screen data, so that
 they can be stored in an ILBM file.
 
+NOTE: These functions should only be used for ILBM images and not for PBM images.
+The `ILBM_imageIsPBM()` function can be used to check for this.
+
     #include "ilbmimage.h"
     #include "interleave.h"
     
@@ -229,9 +236,11 @@ they can be stored in an ILBM file.
         
         /* Open an IFF file and extract an ILBM image here */
         
-        bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
+        if(!ILBM_imageIsPBM(image)) /* It makes no sense for PBM images */
+        {
+            bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
         
-        ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes in the body of the image */
+            ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes in the body of the image */
         
         return 0;
     }

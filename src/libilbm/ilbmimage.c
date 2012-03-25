@@ -25,55 +25,81 @@
 #include <libiff/util.h>
 #include <libiff/list.h>
 #include <libiff/cat.h>
+#include <libiff/id.h>
 #include <libiff/error.h>
 
-ILBM_Image *ILBM_createImage(void)
+ILBM_Image *ILBM_createImage(const int pbm)
 {
-    return (ILBM_Image*)calloc(1, sizeof(ILBM_Image));
+    ILBM_Image *image = (ILBM_Image*)calloc(1, sizeof(ILBM_Image));
+    
+    if(pbm)
+	IFF_createId(image->formType, "PBM ");
+    else
+	IFF_createId(image->formType, "ILBM");
+    
+    return image;
+}
+
+static ILBM_Image *createImageFromForm(IFF_Form *form, char *formType)
+{
+    ILBM_Image *image = (ILBM_Image*)malloc(sizeof(ILBM_Image));
+    
+    IFF_createId(image->formType, formType);
+    image->bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(form, "BMHD");
+    image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
+    image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(form, "GRAB");
+    image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(form, "DEST");
+    image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(form, "SPRT");
+    image->viewport = (ILBM_Viewport*)IFF_getChunkFromForm(form, "CAMG");
+    image->colorRange = (ILBM_ColorRange**)IFF_getChunksFromForm(form, "CRNG", &image->colorRangeLength);
+    image->drange = (ILBM_DRange**)IFF_getChunksFromForm(form, "DRNG", &image->drangeLength);
+    image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(form, "CCRT", &image->cycleInfoLength);
+    image->body = (IFF_RawChunk*)IFF_getChunkFromForm(form, "BODY");
+    
+    return image;
 }
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 {
     unsigned int ilbmFormsLength;
     IFF_Form **ilbmForms = IFF_searchForms(chunk, "ILBM", &ilbmFormsLength);
-    *imagesLength = ilbmFormsLength;
+    unsigned int pbmFormsLength;
+    IFF_Form **pbmForms = IFF_searchForms(chunk, "PBM ", &pbmFormsLength);
     
-    if(ilbmFormsLength == 0)
+    *imagesLength = ilbmFormsLength + pbmFormsLength;
+    
+    if(*imagesLength == 0)
     {
-	IFF_error("No form with formType: 'ILBM' found!\n");
+	IFF_error("No form with formType: 'ILBM' or 'PBM ' found!\n");
 	return NULL;
     }
     else
     {
-	ILBM_Image **images = (ILBM_Image**)malloc(ilbmFormsLength * sizeof(ILBM_Image*));
+	ILBM_Image **images = (ILBM_Image**)malloc(*imagesLength * sizeof(ILBM_Image*));
 	unsigned int i;
 	
+	/* Extract all ILBM images */
 	for(i = 0; i < ilbmFormsLength; i++)
 	{
 	    IFF_Form *ilbmForm = ilbmForms[i];
-	    ILBM_Image *image = (ILBM_Image*)malloc(sizeof(ILBM_Image));
-	    
-	    image->bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(ilbmForm, "BMHD");
-	    image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(ilbmForm, "CMAP");
-	    image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(ilbmForm, "GRAB");
-	    image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(ilbmForm, "DEST");
-	    image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(ilbmForm, "SPRT");
-	    image->viewport = (ILBM_Viewport*)IFF_getChunkFromForm(ilbmForm, "CAMG");
-	    image->colorRange = (ILBM_ColorRange**)IFF_getChunksFromForm(ilbmForm, "CRNG", &image->colorRangeLength);
-	    image->drange = (ILBM_DRange**)IFF_getChunksFromForm(ilbmForm, "DRNG", &image->drangeLength);
-	    image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(ilbmForm, "CCRT", &image->cycleInfoLength);
-	    image->body = (IFF_RawChunk*)IFF_getChunkFromForm(ilbmForm, "BODY");
-	
-	    images[i] = image;
+	    images[i] = createImageFromForm(ilbmForm, "ILBM");
 	}
 	
+	/* Extract all PBM images */
+	for(i = ilbmFormsLength; i < pbmFormsLength + ilbmFormsLength; i++)
+	{
+	    IFF_Form *pbmForm = pbmForms[i];
+	    images[i] = createImageFromForm(pbmForm, "PBM ");
+	}
+	
+	free(ilbmForms);
 	return images;
     }
 }
 
 IFF_Form *ILBM_convertImageToForm(ILBM_Image *image)
 {
-    IFF_Form *form = IFF_createForm("ILBM");
+    IFF_Form *form = IFF_createForm(image->formType);
     unsigned int i;
     
     if(image->bitMapHeader != NULL)
@@ -176,4 +202,9 @@ void ILBM_addCycleInfoToImage(ILBM_Image *image, ILBM_CycleInfo *cycleInfo)
     image->cycleInfo = (ILBM_CycleInfo**)realloc(image->cycleInfo, (image->cycleInfoLength + 1) * sizeof(ILBM_CycleInfo*));
     image->cycleInfo[image->cycleInfoLength] = cycleInfo;
     image->cycleInfoLength++;
+}
+
+int ILBM_imageIsPBM(const ILBM_Image *image)
+{
+    return (IFF_compareId(image->formType, "PBM ") == 0);
 }

@@ -36,6 +36,8 @@
 
 typedef struct
 {
+    IFF_ID formType;
+    
     ILBM_BitMapHeader *bitMapHeader;
     ILBM_ColorMap *colorMap;
     ILBM_Point2D *point2d;
@@ -56,7 +58,7 @@ typedef struct
 }
 ILBM_Image;
 
-ILBM_Image *ILBM_createImage(void);
+ILBM_Image *ILBM_createImage(const int pbm);
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength);
 
@@ -75,5 +77,7 @@ void ILBM_addColorRangeToImage(ILBM_Image *image, ILBM_ColorRange *colorRange);
 void ILBM_addDRangeToImage(ILBM_Image *image, ILBM_DRange *drange);
 
 void ILBM_addCycleInfoToImage(ILBM_Image *image, ILBM_CycleInfo *cycleInfo);
+
+int ILBM_imageIsPBM(const ILBM_Image *image);
 
 #endif
