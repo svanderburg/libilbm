@@ -67,8 +67,8 @@ file and returns an array of `ILBM_Image` struct instances, which can be used to
 convienently access its properties. The length of the array is stored in the
 `imagesLength` variable:
 
-    #include "ilbm.h"
-    #include "ilbmimage.h"
+    #include <libilbm/ilbm.h>
+    #include <libilbm/ilbmimage.h>
     
     int main(int argc, char *argv[])
     {
@@ -87,11 +87,11 @@ An ILBM file can be created by creating an instance of an `ILBM_Image` struct an
 by setting its sub chunks. The following example defines an ILBM image with
 a bitmap header chunk:
 
-    #include "ilbmimage.h"
+    #include <libilbm/ilbmimage.h>
     
     int main(int argc, char *argv[])
     {
-        ILBM_Image *image = ILBM_createImage();
+        ILBM_Image *image = ILBM_createImage(FALSE); /* If argument is TRUE, we have a PBM image instead of ILBM */
         
         ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
         
@@ -122,7 +122,7 @@ possible ILBM FORMs into account, which can be retrieved through the
 retrieve the ILBM image properties by accessing members of each individual
 `ILBM_Image` struct instance.
 
-    #include "ilbmimage.h"
+    #include <libilbm/ilbmimage.h>
     
     int main(int argc, char *argv[])
     {
@@ -150,8 +150,8 @@ To write an `ILBM_Image` struct instance to a file, it must first be converted
 to an IFF FORM using the `ILBM_convertImageToForm()` function. Then the resulting
 FORM can written to disk using the `ILBM_write()` function.
 
-    #include "ilbmimage.h"
-    #include "ilbm.h"
+    #include <libilbm/ilbmimage.h>
+    #include <libilbm/ilbm.h>
     
     int main(int argc, char *argv[])
     {
@@ -175,7 +175,7 @@ whether the file is valid. This can be done by invoking the `ILBM_checkImages()`
 function, which checks whether the IFF file is valid and it checks whether are
 required ILBM chunks are present.
 
-    #include "ilbmimage.h"
+    #include <libilbm/ilbmimage.h>
     
     int main(int argc, char *argv[])
     {
@@ -197,8 +197,8 @@ To compress the body of an ILBM image the `ILBM_unpackByteRun()` function can be
 used. To decompress the body of an ILBM image the `ILBM_packByteRun` function can
 be used.
 
-    #include "ilbmimage.h"
-    #include "byterun.h"
+    #include <libilbm/ilbmimage.h>
+    #include <libilbm/byterun.h>
 
     int main(int argc, char *argv[])
     {
@@ -226,8 +226,8 @@ they can be stored in an ILBM file.
 NOTE: These functions should only be used for ILBM images and not for PBM images.
 The `ILBM_imageIsPBM()` function can be used to check for this.
 
-    #include "ilbmimage.h"
-    #include "interleave.h"
+    #include <libilbm/ilbmimage.h>
+    #include <libilbm/interleave.h>
     
     int main(int argc, char *argv[])
     {
