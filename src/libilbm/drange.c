@@ -240,16 +240,16 @@ void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
     ILBM_DRange *drange = (ILBM_DRange*)chunk;
     unsigned int i;
     
-    IFF_printIndent(stdout, indentLevel, "min = %d;\n", drange->min);
-    IFF_printIndent(stdout, indentLevel, "max = %d;\n", drange->max);
+    IFF_printIndent(stdout, indentLevel, "min = %u;\n", drange->min);
+    IFF_printIndent(stdout, indentLevel, "max = %u;\n", drange->max);
     IFF_printIndent(stdout, indentLevel, "rate = %d;\n", drange->rate);
     IFF_printIndent(stdout, indentLevel, "flags = %d;\n", drange->flags);
-    IFF_printIndent(stdout, indentLevel, "ntrue = %d;\n", drange->ntrue);
-    IFF_printIndent(stdout, indentLevel, "nregs = %d;\n", drange->nregs);
+    IFF_printIndent(stdout, indentLevel, "ntrue = %u;\n", drange->ntrue);
+    IFF_printIndent(stdout, indentLevel, "nregs = %u;\n", drange->nregs);
     
     for(i = 0; i < drange->ntrue; i++)
-	IFF_printIndent(stdout, indentLevel, "{ cell = %d, r = %d, g = %d, b = %d }\n", drange->dcolor[i].cell, drange->dcolor[i].r, drange->dcolor[i].g, drange->dcolor[i].b);
+	IFF_printIndent(stdout, indentLevel, "{ cell = %u, r = %u, g = %u, b = %u }\n", drange->dcolor[i].cell, drange->dcolor[i].r, drange->dcolor[i].g, drange->dcolor[i].b);
     
     for(i = 0; i < drange->nregs; i++)
-	IFF_printIndent(stdout, indentLevel, "{ cell = %d, index = %d }\n", drange->dindex[i].cell, drange->dindex[i].index);
+	IFF_printIndent(stdout, indentLevel, "{ cell = %u, index = %u }\n", drange->dindex[i].cell, drange->dindex[i].index);
 }

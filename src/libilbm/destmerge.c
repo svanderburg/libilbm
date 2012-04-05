@@ -121,9 +121,9 @@ void ILBM_printDestMerge(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
     ILBM_DestMerge *destMerge = (ILBM_DestMerge*)chunk;
     
-    IFF_printIndent(stdout, indentLevel, "depth = %d;\n", destMerge->depth);
-    IFF_printIndent(stdout, indentLevel, "pad1 = %d;\n", destMerge->pad1);
-    IFF_printIndent(stdout, indentLevel, "planePick = %d;\n", destMerge->planePick);
-    IFF_printIndent(stdout, indentLevel, "planeOnOff = %d;\n", destMerge->planeOnOff);
-    IFF_printIndent(stdout, indentLevel, "planeMask = %d;\n", destMerge->planeMask);
+    IFF_printIndent(stdout, indentLevel, "depth = %u;\n", destMerge->depth);
+    IFF_printIndent(stdout, indentLevel, "pad1 = %u;\n", destMerge->pad1);
+    IFF_printIndent(stdout, indentLevel, "planePick = %u;\n", destMerge->planePick);
+    IFF_printIndent(stdout, indentLevel, "planeOnOff = %u;\n", destMerge->planeOnOff);
+    IFF_printIndent(stdout, indentLevel, "planeMask = %u;\n", destMerge->planeMask);
 }

@@ -124,6 +124,6 @@ void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel
     IFF_printIndent(stdout, indentLevel, "pad1 = %d;\n", colorRange->pad1);
     IFF_printIndent(stdout, indentLevel, "rate = %d;\n", colorRange->rate);
     IFF_printIndent(stdout, indentLevel, "active = %d;\n", colorRange->active);
-    IFF_printIndent(stdout, indentLevel, "low = %d;\n", colorRange->low);
-    IFF_printIndent(stdout, indentLevel, "high = %d;\n", colorRange->high);
+    IFF_printIndent(stdout, indentLevel, "low = %u;\n", colorRange->low);
+    IFF_printIndent(stdout, indentLevel, "high = %u;\n", colorRange->high);
 }

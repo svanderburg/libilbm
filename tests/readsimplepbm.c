@@ -72,13 +72,13 @@ int main(int argc, char *argv[])
 	    
 	    if(bitMapHeader->masking != ILBM_MSK_NONE)
 	    {
-		fprintf(stderr, "bitMapHeader.masking should be: %d\n", ILBM_MSK_NONE);
+		fprintf(stderr, "bitMapHeader.masking should be: %u\n", ILBM_MSK_NONE);
 		status = 1;
 	    }
 	    
 	    if(bitMapHeader->compression != ILBM_CMP_NONE)
 	    {
-		fprintf(stderr, "bitMapHeader.compression should be: %d\n", ILBM_CMP_NONE);
+		fprintf(stderr, "bitMapHeader.compression should be: %u\n", ILBM_CMP_NONE);
 		status = 1;
 	    }
 	    

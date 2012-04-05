@@ -75,13 +75,13 @@ int main(int argc, char *argv[])
 	    
 	    if(bitMapHeader->masking != ILBM_MSK_NONE)
 	    {
-		fprintf(stderr, "bitMapHeader.masking should be: %d\n", ILBM_MSK_NONE);
+		fprintf(stderr, "bitMapHeader.masking should be: %u\n", ILBM_MSK_NONE);
 		status = 1;
 	    }
 	    
 	    if(bitMapHeader->compression != ILBM_CMP_NONE)
 	    {
-		fprintf(stderr, "bitMapHeader.compression should be: %d\n", ILBM_CMP_NONE);
+		fprintf(stderr, "bitMapHeader.compression should be: %u\n", ILBM_CMP_NONE);
 		status = 1;
 	    }
 	    
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
 		
 		if(drange->flags != ILBM_RNG_ACTIVE)
 		{
-		    fprintf(stderr, "drange flags must be: %d\n", ILBM_RNG_ACTIVE);
+		    fprintf(stderr, "drange flags must be: %u\n", ILBM_RNG_ACTIVE);
 		    status = 1;
 		}
 		

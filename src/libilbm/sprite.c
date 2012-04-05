@@ -76,5 +76,5 @@ void ILBM_printSprite(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
     ILBM_Sprite *sprite = (ILBM_Sprite*)chunk;
     
-    IFF_printIndent(stdout, indentLevel, "spritePrecedence = %d;\n", sprite->spritePrecedence);
+    IFF_printIndent(stdout, indentLevel, "spritePrecedence = %u;\n", sprite->spritePrecedence);
 }

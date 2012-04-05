@@ -211,15 +211,15 @@ void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLev
 {
     ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
     
-    IFF_printIndent(stdout, indentLevel, "w = %d;\n", bitMapHeader->w);
-    IFF_printIndent(stdout, indentLevel, "h = %d;\n", bitMapHeader->h);
+    IFF_printIndent(stdout, indentLevel, "w = %u;\n", bitMapHeader->w);
+    IFF_printIndent(stdout, indentLevel, "h = %u;\n", bitMapHeader->h);
     IFF_printIndent(stdout, indentLevel, "x = %d;\n", bitMapHeader->x);
     IFF_printIndent(stdout, indentLevel, "y = %d;\n", bitMapHeader->y);
-    IFF_printIndent(stdout, indentLevel, "nPlanes = %d;\n", bitMapHeader->nPlanes);
-    IFF_printIndent(stdout, indentLevel, "masking = %d;\n", bitMapHeader->masking);
-    IFF_printIndent(stdout, indentLevel, "compression = %d;\n", bitMapHeader->compression);
-    IFF_printIndent(stdout, indentLevel, "xAspect = %d;\n", bitMapHeader->xAspect);
-    IFF_printIndent(stdout, indentLevel, "yAspect = %d;\n", bitMapHeader->yAspect);
+    IFF_printIndent(stdout, indentLevel, "nPlanes = %u;\n", bitMapHeader->nPlanes);
+    IFF_printIndent(stdout, indentLevel, "masking = %u;\n", bitMapHeader->masking);
+    IFF_printIndent(stdout, indentLevel, "compression = %u;\n", bitMapHeader->compression);
+    IFF_printIndent(stdout, indentLevel, "xAspect = %u;\n", bitMapHeader->xAspect);
+    IFF_printIndent(stdout, indentLevel, "yAspect = %u;\n", bitMapHeader->yAspect);
     IFF_printIndent(stdout, indentLevel, "pageWidth = %d;\n", bitMapHeader->pageWidth);
     IFF_printIndent(stdout, indentLevel, "pageHeight = %d;\n", bitMapHeader->pageHeight);
 }

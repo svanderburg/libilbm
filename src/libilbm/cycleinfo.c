@@ -137,8 +137,8 @@ void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel)
     ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)chunk;
     
     IFF_printIndent(stdout, indentLevel, "direction = %d;\n", cycleInfo->direction);
-    IFF_printIndent(stdout, indentLevel, "start = %d;\n", cycleInfo->start);
-    IFF_printIndent(stdout, indentLevel, "end = %d;\n", cycleInfo->end);
+    IFF_printIndent(stdout, indentLevel, "start = %u;\n", cycleInfo->start);
+    IFF_printIndent(stdout, indentLevel, "end = %u;\n", cycleInfo->end);
     IFF_printIndent(stdout, indentLevel, "seconds = %d;\n", cycleInfo->seconds);
     IFF_printIndent(stdout, indentLevel, "microSeconds = %d;\n", cycleInfo->microSeconds);
     IFF_printIndent(stdout, indentLevel, "pad = %d;\n", cycleInfo->pad);
