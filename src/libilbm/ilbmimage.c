@@ -22,7 +22,6 @@
 #include "ilbmimage.h"
 #include "ilbm.h"
 #include <stdlib.h>
-#include <libiff/util.h>
 #include <libiff/list.h>
 #include <libiff/cat.h>
 #include <libiff/id.h>
