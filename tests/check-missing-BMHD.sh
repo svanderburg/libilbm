@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ./checkilbm missing-BMHD.ILBM
 
 if test $? = 0

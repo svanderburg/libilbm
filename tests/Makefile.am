@@ -29,3 +29,5 @@ byterun_simple_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 byterun_simple_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
 TESTS = writesimpleilbm readsimpleilbm check-missing-BMHD.sh writesimplepbm readsimplepbm interleave-simple byterun-simple
+
+EXTRA_DIST = check-missing-BMHD.sh missing-BMHD.ILBM

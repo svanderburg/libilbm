@@ -50,7 +50,7 @@ void ILBM_unpackByteRun(ILBM_Image *image)
 	    char byte = body->chunkData[readBytes];
 	    readBytes++;
 	
-	    if(byte >=0 && byte <= 127)
+	    if(byte >= 0 && byte <= 127)
 	    {
 		int i;
 	    
