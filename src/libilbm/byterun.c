@@ -40,20 +40,20 @@ void ILBM_unpackByteRun(ILBM_Image *image)
     
 	/* Allocate decompressed chunk attributes */
 	
-	IFF_Long chunkSize = image->bitMapHeader->w / 8 * image->bitMapHeader->h * image->bitMapHeader->nPlanes * sizeof(IFF_UByte);
-	IFF_UByte *decompressedChunkData = (IFF_UByte*)malloc(chunkSize);
+	IFF_Long chunkSize = image->bitMapHeader->w / 8 * image->bitMapHeader->h * image->bitMapHeader->nPlanes;
+	IFF_UByte *decompressedChunkData = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
 	
 	/* Perform RLE decompression */
     
 	while(readBytes < body->chunkSize)
 	{
-	    char byte = body->chunkData[readBytes];
+	    int byte = body->chunkData[readBytes];
 	    readBytes++;
 	
-	    if(byte >= 0 && byte <= 127)
+	    if(byte >= 0 && byte <= 127) /* Take the next byte bytes + 1 literally */
 	    {
 		int i;
-	    
+		
 		for(i = 0; i < byte + 1; i++)
 		{
 		    decompressedChunkData[count] = body->chunkData[readBytes];
@@ -61,7 +61,7 @@ void ILBM_unpackByteRun(ILBM_Image *image)
 		    count++;
 		}
 	    }
-	    else if(byte >= -127 && byte <= -1)
+	    else if(byte >= -127 && byte <= -1) /* Replicate the next byte, -byte + 1 times */
 	    {
 		IFF_UByte ubyte;
 		int i;
