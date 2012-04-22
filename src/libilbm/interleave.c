@@ -76,51 +76,12 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
     return result;
 }
 
-IFF_UByte *ILBM_adeinterleave(const ILBM_Image *image)
-{
-    if(image->body == NULL)
-	return NULL;
-    else
-    {
-        unsigned int bitplaneSize, scanLineSize;
-	IFF_UByte *result;
-	unsigned int i;
-	int count = 0; /* Offset in the interleaved source */
-	int vOffset = 0; /* Vertical offset in the result */
-    
-	scanLineSize = image->bitMapHeader->w / 8;
-	bitplaneSize = scanLineSize * image->bitMapHeader->h;
-	
-	result = (IFF_UByte*)malloc(bitplaneSize * image->bitMapHeader->nPlanes * sizeof(IFF_UByte));
-    
-	for(i = 0; i < image->bitMapHeader->h; i++)
-	{
-	    unsigned int j;
-	    int hOffset = vOffset; /* Horizontal offset in the result */
-	
-	    for(j = 0; j < image->bitMapHeader->nPlanes; j++)
-	    {
-		memcpy(result + hOffset, image->body->chunkData + count, scanLineSize);
-		
-		count += scanLineSize;
-	    
-		hOffset += bitplaneSize;
-	    }
-	
-	    vOffset += scanLineSize;
-	}
-    
-	return result;
-    }
-}
-
-void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
+void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanes)
 {
     unsigned int i;
     unsigned int scanLineSize = image->bitMapHeader->w / 8;
     unsigned int interleavedScanLineSize = image->bitMapHeader->nPlanes * scanLineSize;
     
-    unsigned int count = 0; /* Offset in the non-interleaved bitplane data array */
     unsigned int bOffset = 0; /* Base offset in the interleaved bitplane data array */
     unsigned int chunkSize = interleavedScanLineSize * image->bitMapHeader->h;
     
@@ -130,10 +91,11 @@ void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
     {
 	unsigned int j;
 	unsigned int hOffset = bOffset;
+	unsigned int count = 0; /* Offset in the non-interleaved bitplane data array */
 	
 	for(j = 0; j < image->bitMapHeader->h; j++)
 	{
-	    memcpy(result + hOffset, bitplanes + count, scanLineSize);
+	    memcpy(result + hOffset, bitplanes[i] + count, scanLineSize);
 	    
 	    count += scanLineSize;
 	    hOffset += interleavedScanLineSize;
@@ -147,4 +109,23 @@ void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
     
     /* Set the new body containing the interleaved chunk data */
     IFF_setRawChunkData(image->body, result, chunkSize);
+}
+
+void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplaneMemory)
+{
+    unsigned int bitplaneSize = image->bitMapHeader->w / 8 * image->bitMapHeader->h;
+    unsigned int i;
+    unsigned int offset = 0;
+    
+    IFF_UByte *bitplanes[MAX_NUM_OF_BITPLANES];
+    
+    /* Set bitplane pointers */
+    for(i = 0; i < image->bitMapHeader->nPlanes; i++)
+    {
+	bitplanes[i] = bitplaneMemory + offset;
+	offset += bitplaneSize;
+    }
+    
+    /* Deinterleave the bitplanes */
+    ILBM_interleaveFromBitplaneMemory(image, bitplanes);
 }
