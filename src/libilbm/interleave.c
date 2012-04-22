@@ -23,7 +23,60 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_NUM_OF_BITPLANES 8
+
+void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanes)
+{
+    if(image->body != NULL)
+    {
+        unsigned int scanLineSize;
+	unsigned int i;
+	int count = 0; /* Offset in the interleaved source */
+	int hOffset = 0; /* Horizontal offset in resulting bitplanes */
+	
+	scanLineSize = image->bitMapHeader->w / 8;
+	
+	for(i = 0; i < image->bitMapHeader->h; i++)
+	{
+	    unsigned int j;
+	    
+	    for(j = 0; j < image->bitMapHeader->nPlanes; j++)
+	    {
+		memcpy(bitplanes[j] + hOffset, image->body->chunkData + count, scanLineSize);
+		count += scanLineSize;
+	    }
+	    
+	    hOffset += scanLineSize;
+	}
+    }
+}
+
 IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
+{
+    IFF_UByte nPlanes = image->bitMapHeader->nPlanes;
+    unsigned int bitplaneSize = image->bitMapHeader->w / 8 * image->bitMapHeader->h;
+    unsigned int i;
+    unsigned int offset = 0;
+    
+    IFF_UByte *result = (IFF_UByte*)malloc(bitplaneSize * nPlanes * sizeof(IFF_UByte));
+    IFF_UByte *bitplanes[MAX_NUM_OF_BITPLANES];
+    
+    /* Set bitplane pointers */
+    
+    for(i = 0; i < nPlanes; i++)
+    {
+	bitplanes[i] = result + offset;
+	offset += bitplaneSize;
+    }
+    
+    /* Deinterleave and write results to the bitplane addresses */
+    ILBM_deinterleaveToBitplaneMemory(image, bitplanes);
+    
+    /* Return result */
+    return result;
+}
+
+IFF_UByte *ILBM_adeinterleave(const ILBM_Image *image)
 {
     if(image->body == NULL)
 	return NULL;

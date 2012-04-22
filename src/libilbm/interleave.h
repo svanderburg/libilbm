@@ -25,6 +25,8 @@
 #include <libiff/ifftypes.h>
 #include "ilbmimage.h"
 
+void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanes);
+
 IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
 
 void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes);
