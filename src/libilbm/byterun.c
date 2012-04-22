@@ -47,9 +47,9 @@ void ILBM_unpackByteRun(ILBM_Image *image)
     
 	while(readBytes < body->chunkSize)
 	{
-	    int byte = body->chunkData[readBytes];
+	    int byte = (IFF_Byte)body->chunkData[readBytes];
 	    readBytes++;
-	
+	    
 	    if(byte >= 0 && byte <= 127) /* Take the next byte bytes + 1 literally */
 	    {
 		int i;
