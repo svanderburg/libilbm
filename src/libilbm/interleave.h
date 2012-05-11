@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -25,12 +25,12 @@
 #include <libiff/ifftypes.h>
 #include "ilbmimage.h"
 
-void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanes);
+void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
 
 IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
 
-void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanes);
+void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers);
 
-void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplaneMemory);
+void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes);
 
 #endif

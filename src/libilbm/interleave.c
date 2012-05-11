@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -25,7 +25,7 @@
 
 #define MAX_NUM_OF_BITPLANES 8
 
-void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanes)
+void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers)
 {
     if(image->body != NULL)
     {
@@ -42,7 +42,7 @@ void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitp
 	    
 	    for(j = 0; j < image->bitMapHeader->nPlanes; j++)
 	    {
-		memcpy(bitplanes[j] + hOffset, image->body->chunkData + count, scanLineSize);
+		memcpy(bitplanePointers[j] + hOffset, image->body->chunkData + count, scanLineSize);
 		count += scanLineSize;
 	    }
 	    
@@ -76,7 +76,7 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
     return result;
 }
 
-void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanes)
+void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers)
 {
     unsigned int i;
     unsigned int scanLineSize = image->bitMapHeader->w / 8;
@@ -95,7 +95,7 @@ void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanes)
 	
 	for(j = 0; j < image->bitMapHeader->h; j++)
 	{
-	    memcpy(result + hOffset, bitplanes[i] + count, scanLineSize);
+	    memcpy(result + hOffset, bitplanePointers[i] + count, scanLineSize);
 	    
 	    count += scanLineSize;
 	    hOffset += interleavedScanLineSize;
@@ -111,21 +111,21 @@ void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanes)
     IFF_setRawChunkData(image->body, result, chunkSize);
 }
 
-void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplaneMemory)
+void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
 {
     unsigned int bitplaneSize = image->bitMapHeader->w / 8 * image->bitMapHeader->h;
     unsigned int i;
     unsigned int offset = 0;
     
-    IFF_UByte *bitplanes[MAX_NUM_OF_BITPLANES];
+    IFF_UByte *bitplanePointers[MAX_NUM_OF_BITPLANES];
     
     /* Set bitplane pointers */
     for(i = 0; i < image->bitMapHeader->nPlanes; i++)
     {
-	bitplanes[i] = bitplaneMemory + offset;
+	bitplanePointers[i] = bitplanes + offset;
 	offset += bitplaneSize;
     }
     
     /* Deinterleave the bitplanes */
-    ILBM_interleaveFromBitplaneMemory(image, bitplanes);
+    ILBM_interleaveFromBitplaneMemory(image, bitplanePointers);
 }
