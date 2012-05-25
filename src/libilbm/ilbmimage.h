@@ -80,4 +80,6 @@ void ILBM_addCycleInfoToImage(ILBM_Image *image, ILBM_CycleInfo *cycleInfo);
 
 int ILBM_imageIsPBM(const ILBM_Image *image);
 
+unsigned int ILBM_calculateRowSize(const ILBM_Image *image);
+
 #endif

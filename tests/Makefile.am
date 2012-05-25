@@ -1,8 +1,12 @@
-check_PROGRAMS = writesimpleilbm readsimpleilbm checkilbm writesimplepbm readsimplepbm interleave-simple byterun-simple
+check_PROGRAMS = writesimpleilbm writesimpleilbm-padded readsimpleilbm checkilbm writesimplepbm readsimplepbm interleave byterun
 
 writesimpleilbm_SOURCES = writesimpleilbm.c
 writesimpleilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 writesimpleilbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
+
+writesimpleilbm_padded_SOURCES = writesimpleilbm-padded.c
+writesimpleilbm_padded_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
+writesimpleilbm_padded_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
 readsimpleilbm_SOURCES = readsimpleilbm.c
 readsimpleilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
@@ -20,14 +24,14 @@ readsimplepbm_SOURCES = readsimplepbm.c
 readsimplepbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 readsimplepbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-interleave_simple_SOURCES = interleave-simple.c
-interleave_simple_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
-interleave_simple_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
+interleave_SOURCES = interleave.c
+interleave_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
+interleave_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-byterun_simple_SOURCES = byterun-simple.c
-byterun_simple_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
-byterun_simple_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
+byterun_SOURCES = byterun.c
+byterun_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
+byterun_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-TESTS = writesimpleilbm readsimpleilbm check-missing-BMHD.sh writesimplepbm readsimplepbm interleave-simple byterun-simple
+TESTS = writesimpleilbm writesimpleilbm-padded readsimpleilbm check-missing-BMHD.sh writesimplepbm readsimplepbm interleave-simple.sh interleave-simple-padded.sh byterun-simple.sh byterun-simple-padded.sh
 
-EXTRA_DIST = check-missing-BMHD.sh missing-BMHD.ILBM
+EXTRA_DIST = check-missing-BMHD.sh missing-BMHD.ILBM interleave-simple.sh interleave-simple-padded.sh byterun-simple.sh byterun-simple-padded.sh

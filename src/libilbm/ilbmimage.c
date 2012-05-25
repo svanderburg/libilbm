@@ -207,3 +207,13 @@ int ILBM_imageIsPBM(const ILBM_Image *image)
 {
     return (IFF_compareId(image->formType, "PBM ") == 0);
 }
+
+unsigned int ILBM_calculateRowSize(const ILBM_Image *image)
+{
+    unsigned int rowSizeInWords = image->bitMapHeader->w / 16;
+    
+    if(image->bitMapHeader->w % 16 != 0)
+	rowSizeInWords++;
+    
+    return (rowSizeInWords * 2);
+}
