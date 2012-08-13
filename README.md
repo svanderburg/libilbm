@@ -126,10 +126,13 @@ retrieve the ILBM image properties by accessing members of each individual
     
     int main(int argc, char *argv[])
     {
+	IFF_Chunk *chunk;
         ILBM_Image **images;
         unsigned int i, imagesLength;
         
-        /* Open and extract ILBM images here */
+        /* Open or create ILBM forms here */
+        
+        images = ILBM_extractImages(chunk, &imagesLength);
         
         for(i = 0; i < imagesLength; i++)
         {
@@ -241,6 +244,7 @@ The `ILBM_imageIsPBM()` function can be used to check for this.
             bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
         
             ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes in the body of the image */
+        }
         
         return 0;
     }
