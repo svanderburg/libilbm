@@ -126,7 +126,7 @@ retrieve the ILBM image properties by accessing members of each individual
     
     int main(int argc, char *argv[])
     {
-	IFF_Chunk *chunk;
+        IFF_Chunk *chunk;
         ILBM_Image **images;
         unsigned int i, imagesLength;
         
