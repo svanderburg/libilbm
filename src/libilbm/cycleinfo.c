@@ -89,7 +89,7 @@ IFF_Chunk *ILBM_readCycleInfo(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)chunk;
+    const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
     
     if(!IFF_writeWord(file, cycleInfo->direction, CHUNKID, "direction"))
 	return FALSE;
@@ -114,7 +114,7 @@ int ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk)
 
 int ILBM_checkCycleInfo(const IFF_Chunk *chunk)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)chunk;
+    const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
     
     if(cycleInfo->direction < -1 || cycleInfo->direction > 1)
     {
@@ -134,7 +134,7 @@ void ILBM_freeCycleInfo(IFF_Chunk *chunk)
 
 void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)chunk;
+    const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
     
     IFF_printIndent(stdout, indentLevel, "direction = %d;\n", cycleInfo->direction);
     IFF_printIndent(stdout, indentLevel, "start = %u;\n", cycleInfo->start);
@@ -142,4 +142,30 @@ void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel)
     IFF_printIndent(stdout, indentLevel, "seconds = %d;\n", cycleInfo->seconds);
     IFF_printIndent(stdout, indentLevel, "microSeconds = %d;\n", cycleInfo->microSeconds);
     IFF_printIndent(stdout, indentLevel, "pad = %d;\n", cycleInfo->pad);
+}
+
+int ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_CycleInfo *cycleInfo1 = (const ILBM_CycleInfo*)chunk1;
+    const ILBM_CycleInfo *cycleInfo2 = (const ILBM_CycleInfo*)chunk2;
+    
+    if(cycleInfo1->direction != cycleInfo2->direction)
+	return FALSE;
+    
+    if(cycleInfo1->start != cycleInfo2->start)
+	return FALSE;
+    
+    if(cycleInfo1->end != cycleInfo2->end)
+	return FALSE;
+
+    if(cycleInfo1->seconds != cycleInfo2->seconds)
+	return FALSE;
+    
+    if(cycleInfo1->microSeconds != cycleInfo2->microSeconds)
+	return FALSE;
+    
+    if(cycleInfo1->pad != cycleInfo2->pad)
+	return FALSE;
+    
+    return TRUE;
 }

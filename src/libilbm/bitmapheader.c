@@ -137,7 +137,7 @@ IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
+    const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
     
     if(!IFF_writeUWord(file, bitMapHeader->w, CHUNKID, "w"))
 	return FALSE;
@@ -183,7 +183,7 @@ int ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk)
 
 int ILBM_checkBitMapHeader(const IFF_Chunk *chunk)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
+    const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
     
     if(bitMapHeader->masking < 0 || bitMapHeader->masking > ILBM_MSK_LASSO)
     {
@@ -209,7 +209,7 @@ void ILBM_freeBitMapHeader(IFF_Chunk *chunk)
 
 void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
+    const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
     
     IFF_printIndent(stdout, indentLevel, "w = %u;\n", bitMapHeader->w);
     IFF_printIndent(stdout, indentLevel, "h = %u;\n", bitMapHeader->h);
@@ -222,4 +222,45 @@ void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLev
     IFF_printIndent(stdout, indentLevel, "yAspect = %u;\n", bitMapHeader->yAspect);
     IFF_printIndent(stdout, indentLevel, "pageWidth = %d;\n", bitMapHeader->pageWidth);
     IFF_printIndent(stdout, indentLevel, "pageHeight = %d;\n", bitMapHeader->pageHeight);
+}
+
+int ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_BitMapHeader *bitMapHeader1 = (const ILBM_BitMapHeader*)chunk1;
+    const ILBM_BitMapHeader *bitMapHeader2 = (const ILBM_BitMapHeader*)chunk2;
+    
+    if(bitMapHeader1->w != bitMapHeader2->w)
+	return FALSE;
+
+    if(bitMapHeader1->h != bitMapHeader2->h)
+	return FALSE;
+    
+    if(bitMapHeader1->x != bitMapHeader2->x)
+	return FALSE;
+    
+    if(bitMapHeader1->y != bitMapHeader2->y)
+	return FALSE;
+    
+    if(bitMapHeader1->nPlanes != bitMapHeader2->nPlanes)
+	return FALSE;
+    
+    if(bitMapHeader1->masking != bitMapHeader2->masking)
+	return FALSE;
+    
+    if(bitMapHeader1->compression != bitMapHeader2->compression)
+	return FALSE;
+    
+    if(bitMapHeader1->xAspect != bitMapHeader2->xAspect)
+	return FALSE;
+    
+    if(bitMapHeader1->yAspect != bitMapHeader2->yAspect)
+	return FALSE;
+    
+    if(bitMapHeader1->pageWidth != bitMapHeader2->pageWidth)
+	return FALSE;
+    
+    if(bitMapHeader1->pageHeight != bitMapHeader2->pageHeight)
+	return FALSE;
+    
+    return TRUE;
 }

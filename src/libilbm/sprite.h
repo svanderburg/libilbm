@@ -50,4 +50,6 @@ void ILBM_freeSprite(IFF_Chunk *chunk);
 
 void ILBM_printSprite(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
+int ILBM_compareSprite(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+
 #endif

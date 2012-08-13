@@ -170,7 +170,7 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_DRange *drange = (ILBM_DRange*)chunk;
+    const ILBM_DRange *drange = (const ILBM_DRange*)chunk;
     unsigned int i;
     
     if(!IFF_writeUByte(file, drange->min, CHUNKID, "min"))
@@ -252,4 +252,61 @@ void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
     
     for(i = 0; i < drange->nregs; i++)
 	IFF_printIndent(stdout, indentLevel, "{ cell = %u, index = %u }\n", drange->dindex[i].cell, drange->dindex[i].index);
+}
+
+int ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_DRange *drange1 = (const ILBM_DRange*)chunk1;
+    const ILBM_DRange *drange2 = (const ILBM_DRange*)chunk2;
+    unsigned int i;
+    
+    if(drange1->min != drange2->min)
+	return FALSE;
+
+    if(drange1->max != drange2->max)
+	return FALSE;
+
+    if(drange1->rate != drange2->rate)
+	return FALSE;
+
+    if(drange1->flags != drange2->flags)
+	return FALSE;
+
+    if(drange1->ntrue != drange2->ntrue)
+	return FALSE;
+
+    if(drange1->nregs != drange2->nregs)
+	return FALSE;
+
+    for(i = 0; i < drange1->ntrue; i++)
+    {
+	ILBM_DColor *dcolor1 = &drange1->dcolor[i];
+	ILBM_DColor *dcolor2 = &drange2->dcolor[i];
+	
+	if(dcolor1->cell != dcolor2->cell)
+	    return FALSE;
+	
+	if(dcolor1->r != dcolor2->r)
+	    return FALSE;
+	
+	if(dcolor1->g != dcolor2->g)
+	    return FALSE;
+	
+	if(dcolor1->b != dcolor2->b)
+	    return FALSE;
+    }
+    
+    for(i = 0; i < drange1->nregs; i++)
+    {
+	ILBM_DIndex *dindex1 = &drange1->dindex[i];
+	ILBM_DIndex *dindex2 = &drange2->dindex[i];
+	
+	if(dindex1->cell != dindex2->cell)
+	    return FALSE;
+	
+	if(dindex1->index != dindex2->index)
+	    return FALSE;
+    }
+
+    return TRUE;
 }

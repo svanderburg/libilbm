@@ -83,7 +83,7 @@ IFF_Chunk *ILBM_readColorRange(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)chunk;
+    const ILBM_ColorRange *colorRange = (const ILBM_ColorRange*)chunk;
     
     if(!IFF_writeWord(file, colorRange->pad1, CHUNKID, "pad1"))
 	return FALSE;
@@ -105,7 +105,7 @@ int ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk)
 
 int ILBM_checkColorRange(const IFF_Chunk *chunk)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)chunk;
+    const ILBM_ColorRange *colorRange = (const ILBM_ColorRange*)chunk;
 
     if(colorRange->pad1 != 0)
 	IFF_error("WARING: 'CRNG'.pad1 is not 0!\n");
@@ -126,4 +126,27 @@ void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel
     IFF_printIndent(stdout, indentLevel, "active = %d;\n", colorRange->active);
     IFF_printIndent(stdout, indentLevel, "low = %u;\n", colorRange->low);
     IFF_printIndent(stdout, indentLevel, "high = %u;\n", colorRange->high);
+}
+
+int ILBM_compareColorRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_ColorRange *colorRange1 = (const ILBM_ColorRange*)chunk1;
+    const ILBM_ColorRange *colorRange2 = (const ILBM_ColorRange*)chunk2;
+    
+    if(colorRange1->pad1 != colorRange2->pad1)
+	return FALSE;
+    
+    if(colorRange1->rate != colorRange2->rate)
+	return FALSE;
+    
+    if(colorRange1->active != colorRange2->active)
+	return FALSE;
+
+    if(colorRange1->low != colorRange2->low)
+	return FALSE;
+
+    if(colorRange1->high != colorRange2->high)
+	return FALSE;
+    
+    return TRUE;
 }

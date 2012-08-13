@@ -85,4 +85,6 @@ void ILBM_freeDRange(IFF_Chunk *chunk);
 
 void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
+int ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+
 #endif

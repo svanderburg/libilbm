@@ -83,7 +83,7 @@ IFF_Chunk *ILBM_readDestMerge(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)chunk;
+    const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
     
     if(!IFF_writeUByte(file, destMerge->depth, CHUNKID, "depth"))
 	return FALSE;
@@ -105,7 +105,7 @@ int ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk)
 
 int ILBM_checkDestMerge(const IFF_Chunk *chunk)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)chunk;
+    const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
     
     if(destMerge->pad1 != 0)
 	IFF_error("WARNING: 'DEST'.pad1 is not 0!\n");
@@ -119,11 +119,34 @@ void ILBM_freeDestMerge(IFF_Chunk *chunk)
 
 void ILBM_printDestMerge(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)chunk;
+    const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
     
     IFF_printIndent(stdout, indentLevel, "depth = %u;\n", destMerge->depth);
     IFF_printIndent(stdout, indentLevel, "pad1 = %u;\n", destMerge->pad1);
     IFF_printIndent(stdout, indentLevel, "planePick = %u;\n", destMerge->planePick);
     IFF_printIndent(stdout, indentLevel, "planeOnOff = %u;\n", destMerge->planeOnOff);
     IFF_printIndent(stdout, indentLevel, "planeMask = %u;\n", destMerge->planeMask);
+}
+
+int ILBM_compareDestMerge(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_DestMerge *destMerge1 = (const ILBM_DestMerge*)chunk1;
+    const ILBM_DestMerge *destMerge2 = (const ILBM_DestMerge*)chunk2;
+    
+    if(destMerge1->depth != destMerge2->depth)
+	return FALSE;
+    
+    if(destMerge1->pad1 != destMerge2->pad1)
+	return FALSE;
+    
+    if(destMerge1->planePick != destMerge2->planePick)
+	return FALSE;
+    
+    if(destMerge1->planeOnOff != destMerge2->planeOnOff)
+	return FALSE;
+    
+    if(destMerge1->planeMask != destMerge2->planeMask)
+	return FALSE;
+    
+    return TRUE;
 }

@@ -55,7 +55,7 @@ IFF_Chunk *ILBM_readViewport(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)chunk;
+    const ILBM_Viewport *viewport = (const ILBM_Viewport*)chunk;
     
     if(!IFF_writeLong(file, viewport->viewportMode, CHUNKID, "viewportMode"))
 	return FALSE;
@@ -74,7 +74,18 @@ void ILBM_freeViewport(IFF_Chunk *chunk)
 
 void ILBM_printViewport(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)chunk;
+    const ILBM_Viewport *viewport = (const ILBM_Viewport*)chunk;
     
     IFF_printIndent(stdout, indentLevel, "viewportMode = %x;\n", viewport->viewportMode);
+}
+
+int ILBM_compareViewport(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_Viewport *viewport1 = (const ILBM_Viewport*)chunk1;
+    const ILBM_Viewport *viewport2 = (const ILBM_Viewport*)chunk2;
+    
+    if(viewport1->viewportMode != viewport2->viewportMode)
+	return FALSE;
+    
+    return TRUE;
 }

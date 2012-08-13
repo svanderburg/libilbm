@@ -55,7 +55,7 @@ IFF_Chunk *ILBM_readSprite(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)chunk;
+    const ILBM_Sprite *sprite = (const ILBM_Sprite*)chunk;
     
     if(!IFF_writeUWord(file, sprite->spritePrecedence, CHUNKID, "spritePrecedence"))
 	return FALSE;
@@ -74,7 +74,18 @@ void ILBM_freeSprite(IFF_Chunk *chunk)
 
 void ILBM_printSprite(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)chunk;
+    const ILBM_Sprite *sprite = (const ILBM_Sprite*)chunk;
     
     IFF_printIndent(stdout, indentLevel, "spritePrecedence = %u;\n", sprite->spritePrecedence);
+}
+
+int ILBM_compareSprite(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_Sprite *sprite1 = (const ILBM_Sprite*)chunk1;
+    const ILBM_Sprite *sprite2 = (const ILBM_Sprite*)chunk2;
+    
+    if(sprite1->spritePrecedence != sprite2->spritePrecedence)
+	return FALSE;
+	
+    return TRUE;
 }

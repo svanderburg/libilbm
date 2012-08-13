@@ -39,4 +39,6 @@ int ILBM_check(const IFF_Chunk *chunk);
 
 void ILBM_print(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
+int ILBM_compare(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+
 #endif

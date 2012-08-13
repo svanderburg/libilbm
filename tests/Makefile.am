@@ -1,6 +1,6 @@
 check_PROGRAMS = writesimpleilbm writesimpleilbm-padded readsimpleilbm checkilbm writesimplepbm readsimplepbm interleave byterun
 
-writesimpleilbm_SOURCES = writesimpleilbm.c
+writesimpleilbm_SOURCES = simpleilbmdata.c writesimpleilbm.c
 writesimpleilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 writesimpleilbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
@@ -8,7 +8,7 @@ writesimpleilbm_padded_SOURCES = writesimpleilbm-padded.c
 writesimpleilbm_padded_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 writesimpleilbm_padded_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-readsimpleilbm_SOURCES = readsimpleilbm.c
+readsimpleilbm_SOURCES = simpleilbmdata.c readsimpleilbm.c
 readsimpleilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 readsimpleilbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
@@ -16,11 +16,11 @@ checkilbm_SOURCES = checkilbm.c
 checkilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 checkilbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-writesimplepbm_SOURCES = writesimplepbm.c
+writesimplepbm_SOURCES = simplepbmdata.c writesimplepbm.c
 writesimplepbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 writesimplepbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-readsimplepbm_SOURCES = readsimplepbm.c
+readsimplepbm_SOURCES = simplepbmdata.c readsimplepbm.c
 readsimplepbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 readsimplepbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 

@@ -74,4 +74,6 @@ void ILBM_freeBitMapHeader(IFF_Chunk *chunk);
 
 void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
+int ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+
 #endif

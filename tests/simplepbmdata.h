@@ -19,42 +19,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __ILBM_COLORRANGE_H
-#define __ILBM_COLORRANGE_H
+#ifndef __SIMPLEILBMDATA_H
+#define __SIMPLEILBMDATA_H
+#include <libiff/form.h>
 
-#include <stdio.h>
-#include <libiff/ifftypes.h>
-#include <libiff/group.h>
-#include <libiff/chunk.h>
-
-#define ILBM_COLORRANGE_60_STEPS_PER_SECOND 16384
-
-typedef struct
-{
-    IFF_Group *parent;
-    
-    IFF_ID chunkId;
-    IFF_Long chunkSize;
-
-    IFF_Word pad1;
-    IFF_Word rate;
-    IFF_Word active;
-    IFF_UByte low, high;
-}
-ILBM_ColorRange;
-
-ILBM_ColorRange *ILBM_createColorRange(void);
-
-IFF_Chunk *ILBM_readColorRange(FILE *file, const IFF_Long chunkSize);
-
-int ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk);
-
-int ILBM_checkColorRange(const IFF_Chunk *chunk);
-
-void ILBM_freeColorRange(IFF_Chunk *chunk);
-
-void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel);
-
-int ILBM_compareColorRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Form *ILBM_createTestForm(void);
 
 #endif

@@ -96,7 +96,7 @@ IFF_Chunk *ILBM_readColorMap(FILE *file, const IFF_Long chunkSize)
 
 int ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)chunk;
+    const ILBM_ColorMap *colorMap = (const ILBM_ColorMap*)chunk;
     unsigned int i;
     
     for(i = 0; i < colorMap->colorRegisterLength; i++)
@@ -132,7 +132,7 @@ void ILBM_freeColorMap(IFF_Chunk *chunk)
 
 void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)chunk;
+    const ILBM_ColorMap *colorMap = (const ILBM_ColorMap*)chunk;
     unsigned int i;
     
     for(i = 0; i < colorMap->colorRegisterLength; i++)
@@ -140,4 +140,30 @@ void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
 	IFF_printIndent(stdout, indentLevel, "{ red = %x, green = %x, blue = %x };\n",
 	    colorMap->colorRegister[i].red, colorMap->colorRegister[i].green, colorMap->colorRegister[i].blue);
     }
+}
+
+int ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+{
+    const ILBM_ColorMap *colorMap1 = (const ILBM_ColorMap*)chunk1;
+    const ILBM_ColorMap *colorMap2 = (const ILBM_ColorMap*)chunk2;
+    unsigned int i;
+    
+    if(colorMap1->colorRegisterLength == colorMap2->colorRegisterLength)
+    {
+	for(i = 0; i < colorMap1->colorRegisterLength; i++)
+	{
+	    if(colorMap1->colorRegister[i].red != colorMap2->colorRegister[i].red)
+		return FALSE;
+	
+	    if(colorMap1->colorRegister[i].green != colorMap2->colorRegister[i].green)
+		return FALSE;
+	
+	    if(colorMap1->colorRegister[i].blue != colorMap2->colorRegister[i].blue)
+		return FALSE;
+	}
+    }
+    else
+	return FALSE;
+	
+    return TRUE;
 }
