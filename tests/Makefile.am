@@ -1,5 +1,7 @@
 check_PROGRAMS = writesimpleilbm writesimpleilbm-padded readsimpleilbm checkilbm writesimplepbm readsimplepbm interleave byterun
 
+noinst_HEADERS = simpleilbmdata.h simplepbmdata.h
+
 writesimpleilbm_SOURCES = simpleilbmdata.c writesimpleilbm.c
 writesimpleilbm_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 writesimpleilbm_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
