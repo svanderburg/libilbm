@@ -26,12 +26,7 @@
 
 int main(int argc, char *argv[])
 {
-    int status = 0;
-    IFF_Chunk *chunk;
-    unsigned int imagesLength;
-    ILBM_Image **images; 
-    
-    chunk = ILBM_read("lines.LBM");
+    IFF_Chunk *chunk = ILBM_read("lines.LBM");
     
     if(chunk == NULL)
     {
@@ -40,8 +35,10 @@ int main(int argc, char *argv[])
     }
     else
     {
-	images = ILBM_extractImages(chunk, &imagesLength);
-    
+	unsigned int imagesLength;
+	ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
+	int status = 0;
+	
 	if(ILBM_checkImages(chunk, images, imagesLength))
 	{
 	    IFF_Form *form = ILBM_createTestForm();

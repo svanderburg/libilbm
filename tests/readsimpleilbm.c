@@ -35,10 +35,9 @@ int main(int argc, char *argv[])
     }
     else
     {
-	int status = 0;
 	unsigned int imagesLength;
-	ILBM_Image **images;
-	images = ILBM_extractImages(chunk, &imagesLength);
+	ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
+	int status = 0;
     
 	if(ILBM_checkImages(chunk, images, imagesLength))
 	{
