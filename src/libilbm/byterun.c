@@ -104,7 +104,7 @@ PackMode;
 
 static int addRun(unsigned int equalCount, IFF_UByte *compressedChunkData, unsigned int count, IFF_UByte previousByte)
 {
-    char byte = -equalCount + 1;
+    char byte = 1 - equalCount;
 
     compressedChunkData[count] = byte;
     count++;
