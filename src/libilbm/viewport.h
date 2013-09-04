@@ -27,6 +27,10 @@
 #include <libiff/group.h>
 #include <libiff/chunk.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     IFF_Group *parent;
@@ -51,5 +55,9 @@ void ILBM_freeViewport(IFF_Chunk *chunk);
 void ILBM_printViewport(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
 int ILBM_compareViewport(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -25,6 +25,10 @@
 #include <libiff/ifftypes.h>
 #include "ilbmimage.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
 
 IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
@@ -32,5 +36,9 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
 void ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers);
 
 void ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
