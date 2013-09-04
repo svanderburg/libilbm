@@ -23,8 +23,16 @@
 #define __ILBM_BYTERUN_H
 #include "ilbmimage.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void ILBM_unpackByteRun(ILBM_Image *image);
 
 void ILBM_packByteRun(ILBM_Image *image);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
