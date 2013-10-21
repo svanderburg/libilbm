@@ -91,6 +91,7 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 	    images[i] = createImageFromForm(pbmForm, "PBM ");
 	}
 	
+	free(pbmForms);
 	free(ilbmForms);
 	return images;
     }
