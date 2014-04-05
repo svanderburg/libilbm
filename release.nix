@@ -2,6 +2,9 @@
 , systems ? [ "i686-linux" "x86_64-linux" ]
 , buildForAmiga ? false
 , amigaosenvPath ? <amigaosenv>
+, libiffJobset ? import ../libiff/release.nix { inherit nixpkgs systems officialRelease buildForAmiga; }
+, libilbm ? {outPath = ./.; rev = 1234;}
+, officialRelease ? false
 }:
 
 let
@@ -11,13 +14,11 @@ let
   
   jobs = rec {
     tarball =
-      { libilbm ? {outPath = ./.; rev = 1234;}
-      , officialRelease ? false
-      , libiff ? builtins.getAttr (builtins.currentSystem) ((import ../libiff/release.nix {}).build {})
-      }:
-
       with pkgs;
 
+      let
+        libiff = builtins.getAttr (builtins.currentSystem) (libiffJobset.build);
+      in
       releaseTools.sourceTarball {
         name = "libilbm-tarball";
         src = libilbm;
@@ -27,13 +28,12 @@ let
       };
       
     build =
-      { tarball ? jobs.tarball {} }:
-      
       (pkgs.lib.genAttrs systems (system:
-        { libiff ? builtins.getAttr system ((import ../libiff/release.nix {}).build {}) }:
-        
         with import nixpkgs { inherit system; };
         
+        let
+          libiff = builtins.getAttr system (libiffJobset.build);
+        in
         releaseTools.nixBuild {
           name = "libilbm";
           inherit version;
@@ -49,8 +49,9 @@ let
           };
         in
         {
-          m68k-amigaos.lib = { libiff ? ((import ../libiff/release.nix { buildForAmiga = true; }).build {}).m68k-amigaos.lib }:
-          
+          m68k-amigaos.lib = let
+            libiff = libiffJobset.build.m68k-amigaos.lib;
+          in
           amigaosenv.mkDerivation {
             name = "libilbm-${version}";
             src = "${tarball}/tarballs/libilbm-${version}pre1234.tar.gz";
@@ -67,8 +68,9 @@ let
             buildInputs = [ libiff ];
           };
         
-          m68k-amigaos.tools = { libiff ? ((import ../libiff/release.nix { buildForAmiga = true; }).build {}).m68k-amigaos.lib }:
-          
+          m68k-amigaos.tools = let
+            libiff = libiffJobset.build.m68k-amigaos.lib;
+          in
           amigaosenv.mkDerivation {
             name = "libilbm-${version}";
             src = "${tarball}/tarballs/libilbm-${version}pre1234.tar.gz";
