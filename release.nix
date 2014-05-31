@@ -41,6 +41,24 @@ let
           buildInputs = [ pkgconfig libiff ];
         }
       )) //
+      ({ i686-windows =
+           let
+             libiff = libiffJobset.build.i686-windows;
+           in
+           pkgs.dotnetenv.buildSolution {
+             name = "libilbm";
+             src = ./.;
+             baseDir = "src";
+             slnFile = "libilbm.sln";
+             preBuild = ''
+               export msBuildOpts="/p:libiffIncludePath=\"$(cygpath --windows ${libiff}/include)\" /p:libiffLibPath=\"$(cygpath --windows ${libiff})\""
+             '';
+             postInstall = ''
+               mkdir -p $out/include/libilbm
+               cp -v libilbm/*.h $out/include/libilbm
+             '';
+           };
+        }) //
       (pkgs.lib.optionalAttrs (buildForAmiga)
         (let
           amigaosenv = import amigaosenvPath {
