@@ -40,25 +40,26 @@ let
           inherit version;
           src = tarball;
           buildInputs = [ pkgconfig libiff ];
+          CFLAGS = "-ansi -pedantic -Wall";
         }
       )) //
       (pkgs.lib.optionalAttrs (buildForWindows) { i686-windows =
-           let
-             libiff = libiffJobset.build.i686-windows;
-           in
-           pkgs.dotnetenv.buildSolution {
-             name = "libilbm";
-             src = ./.;
-             baseDir = "src";
-             slnFile = "libilbm.sln";
-             preBuild = ''
-               export msBuildOpts="/p:libiffIncludePath=\"$(cygpath --windows ${libiff}/include)\" /p:libiffLibPath=\"$(cygpath --windows ${libiff})\""
-             '';
-             postInstall = ''
-               mkdir -p $out/include/libilbm
-               cp -v libilbm/*.h $out/include/libilbm
-             '';
-           };
+         let
+           libiff = libiffJobset.build.i686-windows;
+         in
+         pkgs.dotnetenv.buildSolution {
+           name = "libilbm";
+           src = ./.;
+           baseDir = "src";
+           slnFile = "libilbm.sln";
+           preBuild = ''
+             export msBuildOpts="/p:libiffIncludePath=\"$(cygpath --windows ${libiff}/include)\" /p:libiffLibPath=\"$(cygpath --windows ${libiff})\""
+           '';
+           postInstall = ''
+             mkdir -p $out/include/libilbm
+             cp -v libilbm/*.h $out/include/libilbm
+           '';
+          };
         }) //
       (pkgs.lib.optionalAttrs (buildForAmiga)
         (let
