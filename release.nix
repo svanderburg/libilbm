@@ -1,8 +1,9 @@
 { nixpkgs ? <nixpkgs>
 , systems ? [ "i686-linux" "x86_64-linux" ]
 , buildForAmiga ? false
+, buildForWindows ? false
 , amigaosenvPath ? <amigaosenv>
-, libiffJobset ? import ../libiff/release.nix { inherit nixpkgs systems officialRelease buildForAmiga; }
+, libiffJobset ? import ../libiff/release.nix { inherit nixpkgs systems officialRelease buildForAmiga buildForWindows; }
 , libilbm ? {outPath = ./.; rev = 1234;}
 , officialRelease ? false
 }:
@@ -41,7 +42,7 @@ let
           buildInputs = [ pkgconfig libiff ];
         }
       )) //
-      ({ i686-windows =
+      (pkgs.lib.optionalAttrs (buildForWindows) { i686-windows =
            let
              libiff = libiffJobset.build.i686-windows;
            in
