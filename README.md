@@ -27,10 +27,10 @@ In order to build and use this package the following libraries are required:
 
 * `libiff`, in order to parse IFF files
 
-Installation
-============
-Compilation and installation of this library is straight forward, by using the
-standard GNU autotools build instructions:
+Installation on Unix-like systems
+=================================
+Compilation and installation of this library on Unix-like systems is straight
+forward, by using the standard GNU autotools build instructions:
 
     $ ./configure
     $ make
@@ -39,6 +39,23 @@ standard GNU autotools build instructions:
 More details about the installation process can be found in the `INSTALL` file
 included in this package.
 
+Building with Visual C++
+========================
+This package can also be built with Visual C++ for Windows platforms. The
+solution file resides in `src/libilbm.sln` that can be opened in Visual Studio
+to edit or build it. Alternatively, you can also use `MSBuild` to compile it:
+
+    $ MSBuild libilbm.sln
+
+To make any builds work you must have built `libiff` first. By default, the
+project file looks for the `libiff` folder that resides in the parent directory
+of the current solution.
+
+You can also specify the location of the `libiff` includes and `libiff` libraries
+through property parameters:
+
+    $ MSBuild /p:libiffIncludePath:..\..\..\libiff\src /p:libiffLibPath:..\..\..\libiff\src\Debug libilbm.sln
+
 Portability
 ===========
 Because this package is implemented in ANSI C (with the small exception that the
@@ -46,7 +63,9 @@ command line utilities use `getopt()` ), it should be fairly easy to port this
 package to new platforms. So far it has been tested on the following platforms:
 
 * Linux (`i686-linux`, `x86_64-linux`) using GCC
+* Cygwin (`i686-cygwin`, 'x86_64-cygwin') using GCC
 * AmigaOS (`m68k-amigaos`) using EGCS through Geek Gadgets
+* Windows (`i686-windows`) using Visual C++ 2013
 
 License
 =======
