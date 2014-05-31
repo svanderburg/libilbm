@@ -56,6 +56,8 @@ through property parameters:
 
     $ MSBuild /p:libiffIncludePath:..\..\..\libiff\src /p:libiffLibPath:..\..\..\libiff\src\Debug libilbm.sln
 
+The output is produced in the `Debug/` directory.
+
 Portability
 ===========
 Because this package is implemented in ANSI C (with the small exception that the
