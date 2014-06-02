@@ -65,7 +65,7 @@ command line utilities use `getopt()` ), it should be fairly easy to port this
 package to new platforms. So far it has been tested on the following platforms:
 
 * Linux (`i686-linux`, `x86_64-linux`) using GCC
-* Cygwin (`i686-cygwin`, 'x86_64-cygwin') using GCC
+* Cygwin (`i686-cygwin`, `x86_64-cygwin`) using GCC
 * AmigaOS (`m68k-amigaos`) using EGCS through Geek Gadgets
 * Windows (`i686-windows`) using Visual C++ 2013
 
