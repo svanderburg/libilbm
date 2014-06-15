@@ -22,6 +22,8 @@
 #include "interleave.h"
 #include <stdlib.h>
 #include <string.h>
+#include <libiff/id.h>
+#include "ilbm.h"
 
 #define MAX_NUM_OF_BITPLANES 8
 
@@ -79,6 +81,37 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
         /* Return result */
         return result;
     }
+}
+
+int ILBM_convertILBMToACBM(ILBM_Image *image)
+{
+    if(IFF_compareId(image->formType, "ILBM") == 0 && image->bitMapHeader->compression == ILBM_CMP_NONE)
+    {
+        if(image->body != NULL)
+        {
+            IFF_RawChunk *bitplaneChunk;
+            IFF_UByte *bitplaneData;
+            
+            bitplaneChunk = IFF_createRawChunk("ABIT");
+            if(bitplaneChunk == NULL)
+                return FALSE;
+        
+            bitplaneData = ILBM_deinterleave(image);
+            if(bitplaneData == NULL)
+                return FALSE;
+            
+            IFF_setRawChunkData(bitplaneChunk, bitplaneData, image->body->chunkSize);
+            
+            ILBM_free((IFF_Chunk*)image->body);
+            image->body = NULL;
+            
+            IFF_createId(image->formType, "ACBM");
+        }
+        
+        return TRUE;
+    }
+    else
+        return FALSE;
 }
 
 int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers)
@@ -139,4 +172,23 @@ int ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
     
     /* Deinterleave the bitplanes */
     return ILBM_interleaveFromBitplaneMemory(image, bitplanePointers);
+}
+
+int ILBM_convertACBMToILBM(ILBM_Image *image)
+{
+    if(IFF_compareId(image->formType, "ACBM") == 0 && image->bitMapHeader->compression == ILBM_CMP_NONE)
+    {
+        if(image->bitplanes != NULL)
+        {
+            if(!ILBM_interleave(image, image->bitplanes->chunkData))
+                return FALSE;
+            
+            ILBM_free((IFF_Chunk*)image->bitplanes);
+            image->bitplanes = NULL;
+        }
+        
+        return TRUE;
+    }
+    else
+        return FALSE;
 }
