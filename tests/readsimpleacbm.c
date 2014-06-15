@@ -19,26 +19,47 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __ILBM_INTERLEAVE_H
-#define __ILBM_INTERLEAVE_H
+#include <stdio.h>
+#include <ilbm.h>
+#include <ilbmimage.h>
+#include "simpleacbmdata.h"
 
-#include <libiff/ifftypes.h>
-#include "ilbmimage.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
-
-int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-int ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes);
-
-#ifdef __cplusplus
+int main(int argc, char *argv[])
+{
+    IFF_Chunk *chunk = ILBM_read("pixels.ACBM");
+    
+    if(chunk == NULL)
+    {
+        fprintf(stderr, "Cannot open ACBM file!\n");
+        return 1;
+    }
+    else
+    {
+        unsigned int imagesLength;
+        ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
+        int status = 0;
+        
+        if(ILBM_checkImages(chunk, images, imagesLength))
+        {
+            IFF_Form *form = ILBM_createTestForm();
+            
+            if(!ILBM_compare(chunk, (const IFF_Chunk*)form))
+            {
+                fprintf(stderr, "The IFF file is not identical to the original!\n");
+                status = 1;
+            }
+        
+            ILBM_free((IFF_Chunk*)form);
+        }
+        else
+        {
+            fprintf(stderr, "The IFF file containing ACBM images is not valid!\n");
+            status = 1;
+        }
+    
+        ILBM_freeImages(images, imagesLength);
+        ILBM_free(chunk);
+        
+        return status;
+    }
 }
-#endif
-
-#endif

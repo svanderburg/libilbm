@@ -27,15 +27,10 @@
 #include <libiff/id.h>
 #include <libiff/error.h>
 
-ILBM_Image *ILBM_createImage(const int pbm)
+ILBM_Image *ILBM_createImage(char *formType)
 {
     ILBM_Image *image = (ILBM_Image*)calloc(1, sizeof(ILBM_Image));
-    
-    if(pbm)
-	IFF_createId(image->formType, "PBM ");
-    else
-	IFF_createId(image->formType, "ILBM");
-    
+    IFF_createId(image->formType, formType);
     return image;
 }
 
@@ -54,6 +49,7 @@ static ILBM_Image *createImageFromForm(IFF_Form *form, char *formType)
     image->drange = (ILBM_DRange**)IFF_getChunksFromForm(form, "DRNG", &image->drangeLength);
     image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(form, "CCRT", &image->cycleInfoLength);
     image->body = (IFF_RawChunk*)IFF_getChunkFromForm(form, "BODY");
+    image->bitplanes = (IFF_RawChunk*)IFF_getChunkFromForm(form, "ABIT");
     
     return image;
 }
@@ -64,36 +60,53 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
     IFF_Form **ilbmForms = IFF_searchForms(chunk, "ILBM", &ilbmFormsLength);
     unsigned int pbmFormsLength;
     IFF_Form **pbmForms = IFF_searchForms(chunk, "PBM ", &pbmFormsLength);
+    unsigned int acbmFormsLength;
+    IFF_Form **acbmForms = IFF_searchForms(chunk, "ACBM", &acbmFormsLength);
     
-    *imagesLength = ilbmFormsLength + pbmFormsLength;
+    *imagesLength = ilbmFormsLength + pbmFormsLength + acbmFormsLength;
     
     if(*imagesLength == 0)
     {
-	IFF_error("No form with formType: 'ILBM' or 'PBM ' found!\n");
-	return NULL;
+        IFF_error("No form with formType: 'ILBM', 'PBM ' or 'ACBM' found!\n");
+        return NULL;
     }
     else
     {
-	ILBM_Image **images = (ILBM_Image**)malloc(*imagesLength * sizeof(ILBM_Image*));
-	unsigned int i;
-	
-	/* Extract all ILBM images */
-	for(i = 0; i < ilbmFormsLength; i++)
-	{
-	    IFF_Form *ilbmForm = ilbmForms[i];
-	    images[i] = createImageFromForm(ilbmForm, "ILBM");
-	}
-	
-	/* Extract all PBM images */
-	for(i = ilbmFormsLength; i < pbmFormsLength + ilbmFormsLength; i++)
-	{
-	    IFF_Form *pbmForm = pbmForms[i];
-	    images[i] = createImageFromForm(pbmForm, "PBM ");
-	}
-	
-	free(pbmForms);
-	free(ilbmForms);
-	return images;
+        ILBM_Image **images = (ILBM_Image**)malloc(*imagesLength * sizeof(ILBM_Image*));
+        unsigned int offset, i;
+        
+        /* Extract all ILBM images */
+        for(i = 0; i < ilbmFormsLength; i++)
+        {
+            IFF_Form *ilbmForm = ilbmForms[i];
+            images[i] = createImageFromForm(ilbmForm, "ILBM");
+        }
+        
+        offset = ilbmFormsLength;
+        
+        /* Extract all PBM images */
+        for(i = 0; i < pbmFormsLength; i++)
+        {
+            IFF_Form *pbmForm = pbmForms[i];
+            images[offset + i] = createImageFromForm(pbmForm, "PBM ");
+        }
+        
+        offset += pbmFormsLength;
+        
+        /* Extract all ACBM images */
+        for(i = 0; i < acbmFormsLength; i++)
+        {
+            IFF_Form *acbmForm = acbmForms[i];
+            images[offset + i] = createImageFromForm(acbmForm, "ACBM");
+        }
+        
+        /* Clean up stuff */
+        free(ilbmForms);
+        free(pbmForms);
+        free(acbmForms);
+        
+        /* Return generated images array */
+        return images;
     }
 }
 
@@ -103,35 +116,38 @@ IFF_Form *ILBM_convertImageToForm(ILBM_Image *image)
     unsigned int i;
     
     if(image->bitMapHeader != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->bitMapHeader);
+        IFF_addToForm(form, (IFF_Chunk*)image->bitMapHeader);
     
     if(image->colorMap != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->colorMap);
+        IFF_addToForm(form, (IFF_Chunk*)image->colorMap);
     
     if(image->point2d != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->point2d);
+        IFF_addToForm(form, (IFF_Chunk*)image->point2d);
 
     if(image->destMerge != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->destMerge);
+        IFF_addToForm(form, (IFF_Chunk*)image->destMerge);
     
     if(image->sprite != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->sprite);
+        IFF_addToForm(form, (IFF_Chunk*)image->sprite);
     
     if(image->viewport != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->viewport);
+        IFF_addToForm(form, (IFF_Chunk*)image->viewport);
     
     for(i = 0; i < image->colorRangeLength; i++)
-	IFF_addToForm(form, (IFF_Chunk*)image->colorRange[i]);
+        IFF_addToForm(form, (IFF_Chunk*)image->colorRange[i]);
     
     for(i = 0; i < image->drangeLength; i++)
-	IFF_addToForm(form, (IFF_Chunk*)image->drange[i]);
+        IFF_addToForm(form, (IFF_Chunk*)image->drange[i]);
     
     for(i = 0; i < image->cycleInfoLength; i++)
-	IFF_addToForm(form, (IFF_Chunk*)image->cycleInfo[i]);
+        IFF_addToForm(form, (IFF_Chunk*)image->cycleInfo[i]);
     
     if(image->body != NULL)
-	IFF_addToForm(form, (IFF_Chunk*)image->body);
+        IFF_addToForm(form, (IFF_Chunk*)image->body);
     
+    if(image->bitplanes != NULL)
+        IFF_addToForm(form, (IFF_Chunk*)image->bitplanes);
+        
     return form;
 }
 
@@ -148,7 +164,7 @@ void ILBM_freeImages(ILBM_Image **images, const unsigned int imagesLength)
     unsigned int i;
     
     for(i = 0; i < imagesLength; i++)
-	ILBM_freeImage(images[i]);
+        ILBM_freeImage(images[i]);
 
     free(images);
 }
@@ -157,8 +173,8 @@ int ILBM_checkImage(const ILBM_Image *image)
 {
     if(image->bitMapHeader == NULL)
     {
-	IFF_error("Error: no bitmap header defined!\n");
-	return FALSE;
+        IFF_error("Error: no bitmap header defined!\n");
+        return FALSE;
     }
     
     return TRUE;
@@ -170,13 +186,13 @@ int ILBM_checkImages(const IFF_Chunk *chunk, ILBM_Image **images, const unsigned
     
     /* First, check the ILBM file for corectness */
     if(!ILBM_check(chunk))
-	return FALSE;
+        return FALSE;
     
     /* Check the individual images inside the IFF file */
     for(i = 0; i < imagesLength; i++)
     {
-	if(!ILBM_checkImage(images[i]))
-	    return FALSE;
+        if(!ILBM_checkImage(images[i]))
+            return FALSE;
     }
     
     /* Everything seems to be correct */
@@ -204,6 +220,16 @@ void ILBM_addCycleInfoToImage(ILBM_Image *image, ILBM_CycleInfo *cycleInfo)
     image->cycleInfoLength++;
 }
 
+int ILBM_imageIsILBM(const ILBM_Image *image)
+{
+    return (IFF_compareId(image->formType, "ILBM") == 0);
+}
+
+int ILBM_imageIsACBM(const ILBM_Image *image)
+{
+    return (IFF_compareId(image->formType, "ACBM") == 0);
+}
+
 int ILBM_imageIsPBM(const ILBM_Image *image)
 {
     return (IFF_compareId(image->formType, "PBM ") == 0);
@@ -214,7 +240,7 @@ unsigned int ILBM_calculateRowSize(const ILBM_Image *image)
     unsigned int rowSizeInWords = image->bitMapHeader->w / 16;
     
     if(image->bitMapHeader->w % 16 != 0)
-	rowSizeInWords++;
+        rowSizeInWords++;
     
     return (rowSizeInWords * 2);
 }

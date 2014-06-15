@@ -19,26 +19,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __ILBM_INTERLEAVE_H
-#define __ILBM_INTERLEAVE_H
+#include <stdio.h>
+#include <ilbm.h>
+#include "simpleacbmdata.h"
 
-#include <libiff/ifftypes.h>
-#include "ilbmimage.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
-
-int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-int ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes);
-
-#ifdef __cplusplus
+int main(int argc, char *argv[])
+{
+    IFF_Form *form = ILBM_createTestForm();
+    int status = 0;
+    
+    /* Write the form */
+    
+    if(!ILBM_write("pixels.ACBM", (IFF_Chunk*)form))
+    {
+        fprintf(stderr, "Error writing ACBM file!\n");
+        status = 1;
+    }
+    
+    /* Free stuff */
+    ILBM_free((IFF_Chunk*)form);
+    
+    return status;
 }
-#endif
-
-#endif

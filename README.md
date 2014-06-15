@@ -10,16 +10,15 @@ Graphicraft to read and write images. It offers the following features:
 * Writing ILBM files
 * ILBM conformance checking
 * Byte run compression of ILBM files
-* Interleaving ILBM files
+* Deinterleaving ILBM files
 
 This parser library implements support for all chunks described in the ILBM
-specification and the 'DRNG' chunk, which is a Deluxe Paint extension. These
-specifications can be found in: `doc/ILBM.asc` and `doc/ILBM.DRNG.asc`, included
-in this package.
+specification that can be found in `doc/ILBM.asc`. Besides the chunk types
+described in the standard, it supports the following extensions:
 
-Furthermore, this parser library understands PBM files, which are created by the
-PC version of Deluxe Paint. Although I couldn't find any specification, the
-differences are relatively minor and I have documented them in `doc/PBM.asc`.
+* The 'DRNG' dynamic color range chunk, which is a Deluxe Paint extension. The specification can be found in: `doc/ILBM.DRNG.asc`
+* Forms of type 'ACBM', which store planar graphics data non-interleaved. The specification can be found in: `doc/ACBM.asc`
+* Forms of type 'PBM ', which are created by the PC version of Deluxe Paint. Although I couldn't find any specification, the differences are relatively minor and I have documented them in `doc/PBM.asc`.
 
 Prerequisites
 =============
@@ -236,8 +235,8 @@ be used.
         return 0;
     }
 
-Interleaving ILBM files
------------------------
+Deinterleaving ILBM files
+-------------------------
 In body of an ILBM image, bitplanes are _interleaved_, which means that they
 have to be rendered line by line. The `ILBM_deinterleave()` function renders the
 image in an pre-allocated piece of memory so that it can be displayed. On
@@ -247,8 +246,8 @@ color graphics. `libamivideo` can be used for this purpose.
 The `ILBM_interleave()` function interleaves given planar screen data, so that
 they can be stored in an ILBM file.
 
-NOTE: These functions should only be used for ILBM images and not for PBM images.
-The `ILBM_imageIsPBM()` function can be used to check for this.
+NOTE: These functions should only be used for ILBM images and not for PBM or ACBM
+images. The `ILBM_imageIsILBM()` function can be used to check for this.
 
     #include <libilbm/ilbmimage.h>
     #include <libilbm/interleave.h>
@@ -256,14 +255,12 @@ The `ILBM_imageIsPBM()` function can be used to check for this.
     int main(int argc, char *argv[])
     {
         ILBM_Image *image;
-        IFF_UByte *bitplanes;
         
         /* Open an IFF file and extract an ILBM image here */
         
-        if(!ILBM_imageIsPBM(image)) /* It makes no sense for PBM images */
+        if(ILBM_imageIsILBM(image)) /* It makes no sense for PBM or ACBM images */
         {
-            bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
-        
+            IFF_UByte *bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
             ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes in the body of the image */
         }
         

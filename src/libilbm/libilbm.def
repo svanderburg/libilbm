@@ -72,23 +72,25 @@ EXPORTS
 	ILBM_addColorRangeToImage         @70
 	ILBM_addDRangeToImage             @71
 	ILBM_addCycleInfoToImage          @72
-	ILBM_imageIsPBM                   @73
-	ILBM_calculateRowSize             @74
-	ILBM_deinterleaveToBitplaneMemory @75
-	ILBM_deinterleave                 @76
-	ILBM_interleaveFromBitplaneMemory @77
-	ILBM_interleave                   @78
-	ILBM_createSprite                 @79
-	ILBM_readSprite                   @80
-	ILBM_writeSprite                  @81
-	ILBM_checkSprite                  @82
-	ILBM_freeSprite                   @83
-	ILBM_printSprite                  @84
-	ILBM_compareSprite                @85
-	ILBM_createViewport               @86
-	ILBM_readViewport                 @87
-	ILBM_writeViewport                @88
-	ILBM_checkViewport                @89
-	ILBM_freeViewport                 @90
-	ILBM_printViewport                @91
-	ILBM_compareViewport              @92
+	ILBM_imageIsILBM                  @73
+	ILBM_imageIsACBM                  @74
+	ILBM_imageIsPBM                   @75
+	ILBM_calculateRowSize             @76
+	ILBM_deinterleaveToBitplaneMemory @77
+	ILBM_deinterleave                 @78
+	ILBM_interleaveFromBitplaneMemory @79
+	ILBM_interleave                   @80
+	ILBM_createSprite                 @81
+	ILBM_readSprite                   @82
+	ILBM_writeSprite                  @83
+	ILBM_checkSprite                  @84
+	ILBM_freeSprite                   @85
+	ILBM_printSprite                  @86
+	ILBM_compareSprite                @87
+	ILBM_createViewport               @88
+	ILBM_readViewport                 @89
+	ILBM_writeViewport                @90
+	ILBM_checkViewport                @91
+	ILBM_freeViewport                 @92
+	ILBM_printViewport                @93
+	ILBM_compareViewport              @94

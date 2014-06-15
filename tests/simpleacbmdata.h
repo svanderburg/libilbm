@@ -19,26 +19,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __ILBM_INTERLEAVE_H
-#define __ILBM_INTERLEAVE_H
+#ifndef __SIMPLEACBMDATA_H
+#define __SIMPLEACBMDATA_H
+#include <libiff/form.h>
 
-#include <libiff/ifftypes.h>
-#include "ilbmimage.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
-
-int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-int ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes);
-
-#ifdef __cplusplus
-}
-#endif
+IFF_Form *ILBM_createTestForm(void);
 
 #endif

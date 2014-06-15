@@ -31,7 +31,7 @@
 #include "destmerge.h"
 #include "drange.h"
 
-#define ILBM_NUM_OF_FORM_TYPES 2
+#define ILBM_NUM_OF_FORM_TYPES 3
 #define ILBM_NUM_OF_EXTENSION_CHUNKS 9
 
 static IFF_FormExtension ilbmFormExtension[] = {
@@ -47,6 +47,7 @@ static IFF_FormExtension ilbmFormExtension[] = {
 };
 
 static IFF_Extension extension[] = {
+    {"ACBM", ILBM_NUM_OF_EXTENSION_CHUNKS, ilbmFormExtension},
     {"ILBM", ILBM_NUM_OF_EXTENSION_CHUNKS, ilbmFormExtension},
     {"PBM ", ILBM_NUM_OF_EXTENSION_CHUNKS, ilbmFormExtension}
 };

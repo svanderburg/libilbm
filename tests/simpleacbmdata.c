@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "simplepbmdata.h"
+#include "simpleilbmdata.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ilbmimage.h>
@@ -27,103 +27,93 @@
 IFF_Form *ILBM_createTestForm()
 {
     ILBM_BitMapHeader *bitMapHeader;
+    ILBM_ColorRegister *colorRegister;
     ILBM_ColorMap *colorMap;
-    
-    IFF_Long bodyChunkSize;
-    IFF_UByte *bodyChunkData;
-    IFF_RawChunk *body;
+    ILBM_Viewport *viewport;
+
+    unsigned int bitplaneSize, offset;
+    IFF_Long bitplanesChunkSize;
+    IFF_UByte *bitplanesChunkData;
+    IFF_RawChunk *bitplanes;
     ILBM_Image *image;
     IFF_Form *form;
-    
-    unsigned int i;
-    unsigned int count = 0;
-    unsigned int rowSize;
 
     /* Define bitmap header */
     bitMapHeader = ILBM_createBitMapHeader();
     
     bitMapHeader->w = 320;
-    bitMapHeader->h = 240;
+    bitMapHeader->h = 200;
     bitMapHeader->x = 0;
     bitMapHeader->y = 0;
-    bitMapHeader->nPlanes = 8;
+    bitMapHeader->nPlanes = 2;
     bitMapHeader->masking = ILBM_MSK_NONE;
     bitMapHeader->compression = ILBM_CMP_NONE;
     bitMapHeader->xAspect = 20;
     bitMapHeader->yAspect = 22;
     bitMapHeader->pageWidth = 320;
-    bitMapHeader->pageHeight = 240;
+    bitMapHeader->pageHeight = 200;
     
     /* Add some colors */
     colorMap = ILBM_createColorMap();
     
-    for(i = 0; i < 64; i++)
-    {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i * 4;
-	colorRegister->green = i * 2;
-	colorRegister->blue = i * 2;
-    }
+    colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+    colorRegister->red = 0xf0;
+    colorRegister->green = 0;
+    colorRegister->blue = 0;
     
-    for(i = 64; i < 128; i++)
-    {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i;
-	colorRegister->green = i * 2;
-	colorRegister->blue = i / 2;
-    }
+    colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+    colorRegister->red = 0;
+    colorRegister->green = 0;
+    colorRegister->blue = 0xf0;
     
-    for(i = 128; i < 192; i++)
-    {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i / 4;
-	colorRegister->green = i / 2;
-	colorRegister->blue = i;
-    }
+    colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+    colorRegister->red = 0x50;
+    colorRegister->green = 0;
+    colorRegister->blue = 0;
     
-    for(i = 192; i < 256; i++)
-    {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i;
-	colorRegister->green = i;
-	colorRegister->blue = i;
-    }
+    colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+    colorRegister->red = 0;
+    colorRegister->green = 0;
+    colorRegister->blue = 0x50;
+    
+    /* Set viewport */
+    viewport = ILBM_createViewport();
+    viewport->viewportMode = 0x4;
     
     /* Create image */
+    image = ILBM_createImage("ACBM");
     
-    image = ILBM_createImage("PBM ");
     image->bitMapHeader = bitMapHeader;
     image->colorMap = colorMap;
+    image->viewport = viewport;
     
     /* Set pixel data */
+    bitplaneSize = ILBM_calculateRowSize(image) * bitMapHeader->h;
+    bitplanesChunkSize = bitplaneSize * bitMapHeader->nPlanes;
+    bitplanesChunkData = (IFF_UByte*)malloc(bitplanesChunkSize * sizeof(IFF_UByte));
+    bitplanes = IFF_createRawChunk("ABIT");
     
-    rowSize = ILBM_calculateRowSize(image);
-    bodyChunkSize = bitMapHeader->w * bitMapHeader->h; 
-    bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
-    body = IFF_createRawChunk("BODY");
+    /* Compose first bitplane that uses 0 for odd pixels and 1 for even pixels */
+    memset(bitplanesChunkData, 0x5, bitplaneSize);
+    offset = bitplaneSize;
     
-    /* Each scanline has a new color from the palette */
-    for(i = 0; i < bitMapHeader->h; i++)
-    {
-	memset(bodyChunkData + count, i, bitMapHeader->w);
-	count += rowSize;
-    }
+    /* The second plane has an upperhalf that consists of 0s and a lowerhalf that consists of 1s */
+    memset(bitplanesChunkData + offset, 0, bitplaneSize / 2);
+    offset += bitplaneSize / 2;
+    memset(bitplanesChunkData + offset, 0xff, bitplaneSize / 2);
     
     /* Attach data to the body chunk */
-    IFF_setRawChunkData(body, bodyChunkData, bodyChunkSize);
+    IFF_setRawChunkData(bitplanes, bitplanesChunkData, bitplanesChunkSize);
     
-    /* Attach body the image */
-    image->body = body;
+    /* Attach bitplanes to the image */
+    image->bitplanes = bitplanes;
     
     /* Convert image to form */
     form = ILBM_convertImageToForm(image);
-
+    
     /* Free stuff */
     ILBM_freeImage(image);
-
+    
+    /* Return generated form */
     return form;
 }

@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
     cycleInfo->microSeconds = 100;
     
     /* Create image */
-    image = ILBM_createImage(FALSE);
+    image = ILBM_createImage("ILBM");
     
     image->bitMapHeader = bitMapHeader;
     image->colorMap = colorMap;

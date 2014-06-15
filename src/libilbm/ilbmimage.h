@@ -59,10 +59,11 @@ typedef struct
     ILBM_CycleInfo **cycleInfo;
     
     IFF_RawChunk *body;
+    IFF_RawChunk *bitplanes;
 }
 ILBM_Image;
 
-ILBM_Image *ILBM_createImage(const int pbm);
+ILBM_Image *ILBM_createImage(char *formType);
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength);
 
@@ -81,6 +82,10 @@ void ILBM_addColorRangeToImage(ILBM_Image *image, ILBM_ColorRange *colorRange);
 void ILBM_addDRangeToImage(ILBM_Image *image, ILBM_DRange *drange);
 
 void ILBM_addCycleInfoToImage(ILBM_Image *image, ILBM_CycleInfo *cycleInfo);
+
+int ILBM_imageIsILBM(const ILBM_Image *image);
+
+int ILBM_imageIsACBM(const ILBM_Image *image);
 
 int ILBM_imageIsPBM(const ILBM_Image *image);
 
