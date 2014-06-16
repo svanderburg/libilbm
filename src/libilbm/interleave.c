@@ -89,24 +89,24 @@ int ILBM_convertILBMToACBM(ILBM_Image *image)
     {
         if(image->body != NULL)
         {
-            IFF_RawChunk *bitplaneChunk;
-            IFF_UByte *bitplaneData;
-            
-            bitplaneChunk = IFF_createRawChunk("ABIT");
-            if(bitplaneChunk == NULL)
-                return FALSE;
-        
-            bitplaneData = ILBM_deinterleave(image);
+            /* Deinterleave the body */
+            IFF_UByte *bitplaneData = ILBM_deinterleave(image);
             if(bitplaneData == NULL)
                 return FALSE;
             
-            IFF_setRawChunkData(bitplaneChunk, bitplaneData, image->body->chunkSize);
+            /* The body chunk becomes a bitplanes chunk */
+            IFF_createId(image->body->chunkId, "ABIT");
+            free(image->body->chunkData);
+            image->body->chunkData = bitplaneData;
             
-            ILBM_free((IFF_Chunk*)image->body);
+            /* The reference in the image to bitplanes is updated as well */
+            image->bitplanes = image->body;
             image->body = NULL;
-            
-            IFF_createId(image->formType, "ACBM");
         }
+        
+        /* Update form type to ACBM */
+        IFF_createId(image->formType, "ACBM");
+        IFF_createId(image->bitMapHeader->parent->groupType, "ACBM");
         
         return TRUE;
     }
@@ -182,10 +182,11 @@ int ILBM_convertACBMToILBM(ILBM_Image *image)
         {
             if(!ILBM_interleave(image, image->bitplanes->chunkData))
                 return FALSE;
-            
-            ILBM_free((IFF_Chunk*)image->bitplanes);
-            image->bitplanes = NULL;
         }
+        
+        /* Update form type to ILBM */
+        IFF_createId(image->formType, "ILBM");
+        IFF_createId(image->bitMapHeader->parent->groupType, "ACBM");
         
         return TRUE;
     }

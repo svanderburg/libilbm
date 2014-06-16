@@ -30,6 +30,7 @@ src/Makefile
 src/libilbm/Makefile
 src/ilbmpack/Makefile
 src/ilbmpp/Makefile
+src/ilbm2acbm/Makefile
 tests/Makefile
 ])
 AC_OUTPUT
