@@ -30,6 +30,7 @@ src/Makefile
 src/libilbm/Makefile
 src/ilbmpack/Makefile
 src/ilbmpp/Makefile
+src/acbm2ilbm/Makefile
 src/ilbm2acbm/Makefile
 tests/Makefile
 ])

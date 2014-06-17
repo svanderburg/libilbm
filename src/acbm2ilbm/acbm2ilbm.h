@@ -19,30 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __ILBM_INTERLEAVE_H
-#define __ILBM_INTERLEAVE_H
+#ifndef __ILBM_ACBM2ILBM_H
+#define __ILBM_ACBM2ILBM_H
 
-#include <libiff/ifftypes.h>
-#include "ilbmimage.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
-
-int ILBM_convertILBMToACBM(ILBM_Image *image);
-
-IFF_UByte *ILBM_interleaveFromBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
-
-IFF_UByte *ILBM_interleave(const ILBM_Image *image, IFF_UByte *bitplanes);
-
-int ILBM_convertACBMToILBM(ILBM_Image *image);
-
-#ifdef __cplusplus
-}
-#endif
+int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename);
 
 #endif

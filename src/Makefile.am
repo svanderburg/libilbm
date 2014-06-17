@@ -1,4 +1,4 @@
-SUBDIRS = libilbm ilbmpack ilbmpp ilbm2acbm
+SUBDIRS = libilbm ilbmpack ilbmpp acbm2ilbm ilbm2acbm
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libilbm.pc

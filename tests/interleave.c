@@ -57,14 +57,22 @@ int main(int argc, char *argv[])
             unsigned int chunkSize = image->body->chunkSize;
             IFF_UByte *interleavedBitplanes = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
             
-            /* Deinterleave image */
-            IFF_UByte *bitplanes = ILBM_deinterleave(image);
-            
             /* Make a copy of the original interleaved bitmap */
             memcpy(interleavedBitplanes, image->body->chunkData, chunkSize);
             
+            /* Deinterleave image */
+            if(!ILBM_convertILBMToACBM(image))
+            {
+                fprintf(stderr, "Error while converting image to ACBM!\n");
+                status = 1;
+            }
+            
             /* Interleave image */
-            ILBM_interleave(image, bitplanes);
+            if(!ILBM_convertACBMToILBM(image))
+            {
+                fprintf(stderr, "Error while converting image to ILBM!\n");
+                status = 1;
+            }
             
             /* Check whether original interleaved bitmap and the new one are identical */
         
@@ -88,7 +96,6 @@ int main(int argc, char *argv[])
             
             /* Cleanup */
             free(interleavedBitplanes);
-            free(bitplanes);
         }
         else
         {

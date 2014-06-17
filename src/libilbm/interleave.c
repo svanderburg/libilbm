@@ -31,12 +31,10 @@ void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitp
 {
     if(image->body != NULL)
     {
-        unsigned int rowSize;
         unsigned int i;
         int count = 0; /* Offset in the interleaved source */
         int hOffset = 0; /* Horizontal offset in resulting bitplanes */
-        
-        rowSize = ILBM_calculateRowSize(image);
+        unsigned int rowSize = ILBM_calculateRowSize(image);
         
         for(i = 0; i < image->bitMapHeader->h; i++)
         {
@@ -114,7 +112,7 @@ int ILBM_convertILBMToACBM(ILBM_Image *image)
         return FALSE;
 }
 
-int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePointers)
+IFF_UByte *ILBM_interleaveFromBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers)
 {
     unsigned int rowSize = ILBM_calculateRowSize(image);
     unsigned int interleavedScanLineSize = image->bitMapHeader->nPlanes * rowSize;
@@ -122,7 +120,7 @@ int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePoi
     IFF_UByte *result = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
     
     if(result == NULL)
-        return FALSE;
+        return NULL;
     else
     {
         unsigned int i;
@@ -145,17 +143,12 @@ int ILBM_interleaveFromBitplaneMemory(ILBM_Image *image, IFF_UByte **bitplanePoi
             bOffset += rowSize;
         }
     
-        /* Free the old body chunk data */
-        free(image->body->chunkData);
-    
-        /* Set the new body containing the interleaved chunk data */
-        IFF_setRawChunkData(image->body, result, chunkSize);
-        
-        return TRUE;
+        /* Return the interleaved bitplane surface */
+        return result;
     }
 }
 
-int ILBM_interleave(ILBM_Image *image, IFF_UByte *bitplanes)
+IFF_UByte *ILBM_interleave(const ILBM_Image *image, IFF_UByte *bitplanes)
 {
     unsigned int bitplaneSize = ILBM_calculateRowSize(image) * image->bitMapHeader->h;
     unsigned int i;
@@ -180,13 +173,24 @@ int ILBM_convertACBMToILBM(ILBM_Image *image)
     {
         if(image->bitplanes != NULL)
         {
-            if(!ILBM_interleave(image, image->bitplanes->chunkData))
+            /* Deinterleave the body */
+            IFF_UByte *bitplaneData = ILBM_interleave(image, image->bitplanes->chunkData);
+            if(bitplaneData == NULL)
                 return FALSE;
+            
+            /* The bitplanes chunk becomes a body chunk */
+            IFF_createId(image->bitplanes->chunkId, "BODY");
+            free(image->bitplanes->chunkData);
+            image->bitplanes->chunkData = bitplaneData;
+            
+            /* The reference in the image to bitplanes is updated as well */
+            image->body = image->bitplanes;
+            image->bitplanes = NULL;
         }
         
         /* Update form type to ILBM */
         IFF_createId(image->formType, "ILBM");
-        IFF_createId(image->bitMapHeader->parent->groupType, "ACBM");
+        IFF_createId(image->bitMapHeader->parent->groupType, "ILBM");
         
         return TRUE;
     }
