@@ -272,8 +272,9 @@ done directly from and to bitplane surfaces in memory on a real Amiga through
 `ILBM_deinterleaveFromBitplaneMemory()` and `ILBM_interleaveToBitplaneMemory()`.
 
 Conversion from an ILBM image (that contains interleaved bitplane surfaces in its
-body) to an ACBM image (that contains a non-interleaved bitplane chunk) can be
-done through `ILBM_convertILBMToACBM()` and `ILBM_convertACBMToILBM()`.
+body) to an ACBM image (that contains a non-interleaved bitplane chunk) and the
+opposite process can be done through `ILBM_convertILBMToACBM()` and
+`ILBM_convertACBMToILBM()`.
 
 Command-line utilities
 ======================
