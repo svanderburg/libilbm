@@ -30,6 +30,9 @@
 #include <stdio.h>
 #include "ilbm2acbm.h"
 
+#define TRUE 1
+#define FALSE 0
+
 static void printUsage(const char *command)
 {
     fprintf(stderr, "Usage:\n");
