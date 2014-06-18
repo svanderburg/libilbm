@@ -261,18 +261,28 @@ images. The `ILBM_imageIsILBM()` function can be used to check for this.
         if(ILBM_imageIsILBM(image)) /* It makes no sense for PBM or ACBM images */
         {
             IFF_UByte *bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
-            ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes in the body of the image */
+            IFF_UByte *interleavedBitplanes = ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes and returns the resulting interleaved bitplane surface */
         }
         
         return 0;
     }
+
+Besides the interaving functions that return arrays, interleaving can also be
+done directly from and to bitplane surfaces in memory on a real Amiga through
+`ILBM_deinterleaveFromBitplaneMemory()` and `ILBM_interleaveToBitplaneMemory()`.
+
+Conversion from an ILBM image (that contains interleaved bitplane surfaces in its
+body) to an ACBM image (that contains a non-interleaved bitplane chunk) can be
+done through `ILBM_convertILBMToACBM()` and `ILBM_convertACBMToILBM()`.
 
 Command-line utilities
 ======================
 Apart from an API to handle ILBM files, this package also includes a number of
 command-line utilities to make usage of ILBM files more convenient:
 
-* `ilbmpp` can be used to pretty print an ILBM file into a textual representation, so that it can be manually inspected
+* `ilbmpp` can be used to pretty print an ILBM file into a textual representation, so that it can be manually inspected.
 * `ilbmpack` can be used to compress or decompress all ILBM images in an IFF file.
+* `ilbm2acbm` can be used to convert ILBM files to ACBM files.
+* `acbm2ilbm` can be used to convert ACBM files to ILBM files.
 
 Consult the manual pages of these tools for more information.

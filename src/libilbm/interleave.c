@@ -63,18 +63,18 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
     {
         unsigned int i;
         unsigned int offset = 0;
-        IFF_UByte *bitplanes[MAX_NUM_OF_BITPLANES];
+        IFF_UByte *bitplanePointers[MAX_NUM_OF_BITPLANES];
     
         /* Set bitplane pointers */
     
         for(i = 0; i < nPlanes; i++)
         {
-            bitplanes[i] = result + offset;
+            bitplanePointers[i] = result + offset;
             offset += bitplaneSize;
         }
     
         /* Deinterleave and write results to the bitplane addresses */
-        ILBM_deinterleaveToBitplaneMemory(image, bitplanes);
+        ILBM_deinterleaveToBitplaneMemory(image, bitplanePointers);
     
         /* Return result */
         return result;

@@ -1,0 +1,45 @@
+.TH "ILBM2ACBM" "1" "January 2012" "ilbm2acbm 0.1" "Command Reference"
+.SH "NAME"
+ilbm2acbm \- Converts all ILBM images inside an IFF file to ACBM images
+.SH "SYNOPSIS"
+\fBilbm2acbm\fR [\fI -i | -o\fR] [\fIoptions\fR]
+.SH "DESCRIPTION"
+.PP
+The command \fBilbm2acbm\fR converts all ILBM images inside an IFF file to ACBM
+images.
+.PP
+This command only converts uncompressed ILBM forms. Compressed forms are
+automatically skipped.
+.PP
+If needed, these forms can be uncompressed by running the \fBilbmpack\fR command
+first, redirecting its output to the standard output and let \fBilbm2acbm\fR read
+from the standard input.
+.SH "OPTIONS"
+\fB\-i\fR, \fB\-\-input\-file\fR
+.RS 4
+Specifies the input IFF file. If no input file is given, then data will be read
+from the standard input.
+.RE
+.PP
+\fB\-o\fR, \fB\-\-output\-file\fR
+.RS 4
+Specifies the output IFF file. If no output file is given, then data will be
+written to the standard output.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Shows the usage of this command to the user
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+\fBSander van der Burg\fR
+.br
+.RS 4
+Author
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2012 Sander van der Burg
+.br
