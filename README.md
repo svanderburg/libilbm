@@ -111,7 +111,11 @@ a bitmap header chunk:
     
     int main(int argc, char *argv[])
     {
-        ILBM_Image *image = ILBM_createImage(FALSE); /* If argument is TRUE, we have a PBM image instead of ILBM */
+        /*
+         * Specifies that we want to create an ILBM file. Also, the ACBM and PBM
+         * types can be used to create these corresponding images.
+         */
+        ILBM_Image *image = ILBM_createImage("ILBM");
         
         ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
         
