@@ -91,6 +91,8 @@ int ILBM_imageIsPBM(const ILBM_Image *image);
 
 unsigned int ILBM_calculateRowSize(const ILBM_Image *image);
 
+ILBM_ColorMap *ILBM_generateGrayscaleColorMap(const ILBM_Image *image);
+
 #ifdef __cplusplus
 }
 #endif

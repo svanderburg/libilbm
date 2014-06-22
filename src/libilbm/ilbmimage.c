@@ -244,3 +244,26 @@ unsigned int ILBM_calculateRowSize(const ILBM_Image *image)
     
     return (rowSizeInWords * 2);
 }
+
+ILBM_ColorMap *ILBM_generateGrayscaleColorMap(const ILBM_Image *image)
+{
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
+    
+    if(colorMap != NULL)
+    {
+        unsigned int numOfColors = ILBM_calculateNumOfColors(image->bitMapHeader);
+        unsigned int i;
+    
+        for(i = 0; i < numOfColors; i++)
+        {
+            ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+            unsigned int value = i * 0xff / (numOfColors - 1);
+            
+            colorRegister->red = value;
+            colorRegister->green = value;
+            colorRegister->blue = value;
+        }
+    }
+    
+    return colorMap;
+}

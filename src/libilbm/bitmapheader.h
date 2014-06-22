@@ -80,6 +80,8 @@ void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLev
 
 int ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
+unsigned int ILBM_calculateNumOfColors(const ILBM_BitMapHeader *bitMapHeader);
+
 #ifdef __cplusplus
 }
 #endif

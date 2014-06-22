@@ -34,8 +34,8 @@ ILBM_BitMapHeader *ILBM_createBitMapHeader(void)
     
     if(bitMapHeader != NULL)
     {
-	bitMapHeader->chunkSize = 2 * sizeof(IFF_UWord) + 2 * sizeof(IFF_Word) + 4 * sizeof(IFF_UByte) + sizeof(IFF_UWord) + 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Word);
-	bitMapHeader->pad1 = '\0';
+        bitMapHeader->chunkSize = 2 * sizeof(IFF_UWord) + 2 * sizeof(IFF_Word) + 4 * sizeof(IFF_UByte) + sizeof(IFF_UWord) + 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Word);
+        bitMapHeader->pad1 = '\0';
     }
     
     return bitMapHeader;
@@ -47,89 +47,89 @@ IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize)
     
     if(bitMapHeader != NULL)
     {
-	IFF_UByte byte;
+        IFF_UByte byte;
     
-	if(!IFF_readUWord(file, &bitMapHeader->w, CHUNKID, "w"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUWord(file, &bitMapHeader->w, CHUNKID, "w"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readUWord(file, &bitMapHeader->h, CHUNKID, "h"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUWord(file, &bitMapHeader->h, CHUNKID, "h"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readWord(file, &bitMapHeader->x, CHUNKID, "x"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readWord(file, &bitMapHeader->x, CHUNKID, "x"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readWord(file, &bitMapHeader->y, CHUNKID, "y"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readWord(file, &bitMapHeader->y, CHUNKID, "y"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readUByte(file, &bitMapHeader->nPlanes, CHUNKID, "nPlanes"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUByte(file, &bitMapHeader->nPlanes, CHUNKID, "nPlanes"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readUByte(file, &byte, CHUNKID, "masking"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUByte(file, &byte, CHUNKID, "masking"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	bitMapHeader->masking = byte;
+        bitMapHeader->masking = byte;
     
-	if(!IFF_readUByte(file, &byte, CHUNKID, "compression"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUByte(file, &byte, CHUNKID, "compression"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	bitMapHeader->compression = byte;
+        bitMapHeader->compression = byte;
     
-	if(!IFF_readUByte(file, &bitMapHeader->pad1, CHUNKID, "pad1"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUByte(file, &bitMapHeader->pad1, CHUNKID, "pad1"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readUWord(file, &bitMapHeader->transparentColor, CHUNKID, "transparentColor"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUWord(file, &bitMapHeader->transparentColor, CHUNKID, "transparentColor"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readUByte(file, &bitMapHeader->xAspect, CHUNKID, "xAspect"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUByte(file, &bitMapHeader->xAspect, CHUNKID, "xAspect"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readUByte(file, &bitMapHeader->yAspect, CHUNKID, "yAspect"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readUByte(file, &bitMapHeader->yAspect, CHUNKID, "yAspect"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readWord(file, &bitMapHeader->pageWidth, CHUNKID, "pageWidth"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readWord(file, &bitMapHeader->pageWidth, CHUNKID, "pageWidth"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     
-	if(!IFF_readWord(file, &bitMapHeader->pageHeight, CHUNKID, "pageHeight"))
-	{
-	    ILBM_free((IFF_Chunk*)bitMapHeader);
-	    return NULL;
-	}
+        if(!IFF_readWord(file, &bitMapHeader->pageHeight, CHUNKID, "pageHeight"))
+        {
+            ILBM_free((IFF_Chunk*)bitMapHeader);
+            return NULL;
+        }
     }
     
     return (IFF_Chunk*)bitMapHeader;
@@ -140,44 +140,44 @@ int ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk)
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
     
     if(!IFF_writeUWord(file, bitMapHeader->w, CHUNKID, "w"))
-	return FALSE;
+        return FALSE;
 
     if(!IFF_writeUWord(file, bitMapHeader->h, CHUNKID, "h"))
-	return FALSE;
+        return FALSE;
     
     if(!IFF_writeWord(file, bitMapHeader->x, CHUNKID, "x"))
-	return FALSE;
-	
+        return FALSE;
+        
     if(!IFF_writeWord(file, bitMapHeader->y, CHUNKID, "y"))
-	return FALSE;
+        return FALSE;
 
     if(!IFF_writeUByte(file, bitMapHeader->nPlanes, CHUNKID, "nPlanes"))
-	return FALSE;
+        return FALSE;
 
     if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->masking, CHUNKID, "masking"))
-	return FALSE;
+        return FALSE;
     
     if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->compression, CHUNKID, "compression"))
-	return FALSE;
+        return FALSE;
     
     if(!IFF_writeUByte(file, bitMapHeader->pad1, CHUNKID, "pad1"))
-	return FALSE;
+        return FALSE;
     
     if(!IFF_writeUWord(file, bitMapHeader->transparentColor, CHUNKID, "transparentColor"))
-	return FALSE;
+        return FALSE;
     
     if(!IFF_writeUByte(file, bitMapHeader->xAspect, CHUNKID, "xAspect"))
-	return FALSE;
+        return FALSE;
 
     if(!IFF_writeUByte(file, bitMapHeader->yAspect, CHUNKID, "yAspect"))
-	return FALSE;
+        return FALSE;
 
     if(!IFF_writeWord(file, bitMapHeader->pageWidth, CHUNKID, "pageWidth"))
-	return FALSE;
-	
+        return FALSE;
+        
     if(!IFF_writeWord(file, bitMapHeader->pageHeight, CHUNKID, "pageHeight"))
-	return FALSE;
-	
+        return FALSE;
+        
     return TRUE;
 }
 
@@ -185,20 +185,26 @@ int ILBM_checkBitMapHeader(const IFF_Chunk *chunk)
 {
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
     
+    if(bitMapHeader->nPlanes > 8 && bitMapHeader->nPlanes != 24 && bitMapHeader->nPlanes != 32)
+    {
+        IFF_error("Unsupported 'BMHD'.nPlanes value: %s\n", bitMapHeader->nPlanes);
+        return FALSE;
+    }
+    
     if(bitMapHeader->masking < 0 || bitMapHeader->masking > ILBM_MSK_LASSO)
     {
-	IFF_error("Invalid 'BMHD'.masking value!\n");
-	return FALSE;
+        IFF_error("Invalid 'BMHD'.masking value!\n");
+        return FALSE;
     }
     
     if(bitMapHeader->compression < 0 || bitMapHeader->compression > ILBM_CMP_BYTE_RUN)
     {
-	IFF_error("Invalid 'BMHD'.compression value!\n");
-	return FALSE;
+        IFF_error("Invalid 'BMHD'.compression value!\n");
+        return FALSE;
     }
     
     if(bitMapHeader->pad1 != 0)
-	IFF_error("WARNING: 'BMHD'.pad1 is not 0!\n");
+        IFF_error("WARNING: 'BMHD'.pad1 is not 0!\n");
     
     return TRUE;
 }
@@ -230,37 +236,62 @@ int ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
     const ILBM_BitMapHeader *bitMapHeader2 = (const ILBM_BitMapHeader*)chunk2;
     
     if(bitMapHeader1->w != bitMapHeader2->w)
-	return FALSE;
+        return FALSE;
 
     if(bitMapHeader1->h != bitMapHeader2->h)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->x != bitMapHeader2->x)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->y != bitMapHeader2->y)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->nPlanes != bitMapHeader2->nPlanes)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->masking != bitMapHeader2->masking)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->compression != bitMapHeader2->compression)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->xAspect != bitMapHeader2->xAspect)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->yAspect != bitMapHeader2->yAspect)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->pageWidth != bitMapHeader2->pageWidth)
-	return FALSE;
+        return FALSE;
     
     if(bitMapHeader1->pageHeight != bitMapHeader2->pageHeight)
-	return FALSE;
+        return FALSE;
     
     return TRUE;
+}
+
+unsigned int ILBM_calculateNumOfColors(const ILBM_BitMapHeader *bitMapHeader)
+{
+    switch(bitMapHeader->nPlanes)
+    {
+        case 1:
+            return 2;
+        case 2:
+            return 4;
+        case 3:
+            return 8;
+        case 4:
+            return 16;
+        case 5:
+            return 32;
+        case 6:
+            return 64;
+        case 7:
+            return 128;
+        case 8:
+            return 256;
+        default:
+            return 0;
+    }
 }
