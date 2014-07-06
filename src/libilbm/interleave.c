@@ -25,7 +25,7 @@
 #include <libiff/id.h>
 #include "ilbm.h"
 
-#define MAX_NUM_OF_BITPLANES 8
+#define MAX_NUM_OF_BITPLANES 32
 
 void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers)
 {
