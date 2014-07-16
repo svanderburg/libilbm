@@ -130,7 +130,7 @@ IFF_Form *ILBM_createTestForm()
     
     /* Define a dynamic range */
     
-    drange = ILBM_createDRange();
+    drange = ILBM_createDRange(0);
     drange->min = 0;
     drange->max = 3;
     drange->rate = 8192;

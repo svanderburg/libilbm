@@ -33,6 +33,10 @@ extern "C" {
 
 #define ILBM_DRANGE_60_STEPS_PER_SECOND 16384
 
+#define ILBM_RNG_ACTIVE 1
+#define ILBM_RNG_DP_RESERVED 4
+#define ILBM_RNG_FADE 8
+
 typedef struct
 {
     IFF_UByte cell;
@@ -47,12 +51,12 @@ typedef struct
 }
 ILBM_DIndex;
 
-typedef enum
+typedef struct
 {
-    ILBM_RNG_ACTIVE = 1,
-    ILBM_RNG_DP_RESERVED = 4
+    IFF_UByte cell;
+    IFF_UByte fade;
 }
-ILBM_DRangeFlags;
+ILBM_DFade;
 
 typedef struct
 {
@@ -64,20 +68,26 @@ typedef struct
     IFF_UByte min;
     IFF_UByte max;
     IFF_Word rate;
-    ILBM_DRangeFlags flags;
+    IFF_Word flags;
     IFF_UByte ntrue;
     IFF_UByte nregs;
     
     ILBM_DColor *dcolor;
     ILBM_DIndex *dindex;
+    
+    IFF_UByte nfades;
+    IFF_UByte pad;
+    ILBM_DFade *dfade;
 }
 ILBM_DRange;
 
-ILBM_DRange *ILBM_createDRange(void);
+ILBM_DRange *ILBM_createDRange(IFF_Word flags);
 
 ILBM_DColor *ILBM_addDColorToDRange(ILBM_DRange *drange);
 
 ILBM_DIndex *ILBM_addDIndexToDRange(ILBM_DRange *drange);
+
+ILBM_DFade *ILBM_addDFadeToDRange(ILBM_DRange *drange);
 
 IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize);
 

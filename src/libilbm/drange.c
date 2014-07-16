@@ -27,18 +27,30 @@
 
 #define CHUNKID "DRNG"
 
-ILBM_DRange *ILBM_createDRange(void)
+static void increaseChunkSizeWithFades(ILBM_DRange *drange)
+{
+    drange->chunkSize += 2 * sizeof(IFF_UByte);
+}
+
+ILBM_DRange *ILBM_createDRange(IFF_Word flags)
 {
     ILBM_DRange *drange = (ILBM_DRange*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_DRange));
     
     if(drange != NULL)
     {
 	drange->chunkSize = 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Word) + 2 * sizeof(IFF_UByte);
-    
+
+	drange->flags = flags;
 	drange->ntrue = 0;
 	drange->nregs = 0;
 	drange->dcolor = NULL;
 	drange->dindex = NULL;
+	drange->nfades = 0;
+	drange->pad = '\0';
+	drange->dfade = NULL;
+	
+	if((flags & ILBM_RNG_FADE) == ILBM_RNG_FADE)
+	    increaseChunkSizeWithFades(drange);
     }
     
     return drange;
@@ -70,14 +82,26 @@ ILBM_DIndex *ILBM_addDIndexToDRange(ILBM_DRange *drange)
     return dindex;
 }
 
+ILBM_DFade *ILBM_addDFadeToDRange(ILBM_DRange *drange)
+{
+    ILBM_DFade *dfade;
+    
+    drange->dfade = (ILBM_DFade*)realloc(drange->dfade, (drange->nfades + 1) * sizeof(ILBM_DFade));
+    dfade = &drange->dfade[drange->nfades];
+    drange->nfades++;
+    
+    drange->chunkSize += sizeof(ILBM_DFade);
+    
+    return dfade;
+}
+
 IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
 {
-    ILBM_DRange *drange = ILBM_createDRange();
+    ILBM_DRange *drange = ILBM_createDRange(0);
     
     if(drange != NULL)
     {
 	IFF_UByte nregs, ntrue;
-	IFF_Word word;
 	unsigned int i;
     
 	if(!IFF_readUByte(file, &drange->min, CHUNKID, "min"))
@@ -98,14 +122,12 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
 	    return NULL;
 	}
     
-	if(!IFF_readWord(file, &word, CHUNKID, "flags"))
+	if(!IFF_readWord(file, &drange->flags, CHUNKID, "flags"))
 	{
 	    ILBM_free((IFF_Chunk*)drange);
 	    return NULL;
 	}
-    
-	drange->flags = word;
-    
+	
 	if(!IFF_readUByte(file, &ntrue, CHUNKID, "ntrue"))
 	{
 	    ILBM_free((IFF_Chunk*)drange);
@@ -161,6 +183,42 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
 	    {
 		ILBM_free((IFF_Chunk*)drange);
 		return NULL;
+	    }
+	}
+	
+	if((drange->flags & ILBM_RNG_FADE) == ILBM_RNG_FADE)
+	{
+	    IFF_UByte nfades;
+	    
+	    increaseChunkSizeWithFades(drange);
+	    
+	    if(!IFF_readUByte(file, &nfades, CHUNKID, "nfades"))
+	    {
+	        ILBM_free((IFF_Chunk*)drange);
+	        return NULL;
+	    }
+	    
+	    if(!IFF_readUByte(file, &drange->pad, CHUNKID, "pad"))
+	    {
+	        ILBM_free((IFF_Chunk*)drange);
+	        return NULL;
+	    }
+	    
+	    for(i = 0; i < nfades; i++)
+	    {
+		ILBM_DFade *dfade = ILBM_addDFadeToDRange(drange);
+		
+		if(!IFF_readUByte(file, &dfade->cell, CHUNKID, "dfade.cell"))
+		{
+		    ILBM_free((IFF_Chunk*)drange);
+		    return NULL;
+		}
+		
+		if(!IFF_readUByte(file, &dfade->fade, CHUNKID, "dfade.fade"))
+		{
+		    ILBM_free((IFF_Chunk*)drange);
+		    return NULL;
+		}
 	    }
 	}
     }
@@ -219,6 +277,26 @@ int ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk)
 	    return FALSE;
     }
     
+    if((drange->flags & ILBM_RNG_FADE) == ILBM_RNG_FADE)
+    {
+	if(!IFF_writeUByte(file, drange->nfades, CHUNKID, "nfades"))
+	    return FALSE;
+        
+	if(!IFF_writeUByte(file, drange->pad, CHUNKID, "pad"))
+	    return FALSE;
+	
+	for(i = 0; i < drange->nfades; i++)
+	{
+	    ILBM_DFade *dfade = &drange->dfade[i];
+	
+	    if(!IFF_writeUByte(file, dfade->cell, CHUNKID, "dfade.cell"))
+		return FALSE;
+	
+	    if(!IFF_writeUByte(file, dfade->fade, CHUNKID, "dfade.fade"))
+		return FALSE;
+	}
+    }
+    
     return TRUE;
 }
 
@@ -233,6 +311,7 @@ void ILBM_freeDRange(IFF_Chunk *chunk)
     
     free(drange->dcolor);
     free(drange->dindex);
+    free(drange->dfade);
 }
 
 void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
@@ -252,6 +331,15 @@ void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
     
     for(i = 0; i < drange->nregs; i++)
 	IFF_printIndent(stdout, indentLevel, "{ cell = %u, index = %u }\n", drange->dindex[i].cell, drange->dindex[i].index);
+
+    if((drange->flags & ILBM_RNG_FADE) == ILBM_RNG_FADE)
+    {
+	IFF_printIndent(stdout, indentLevel, "nfades = %u;\n", drange->nfades);
+	IFF_printIndent(stdout, indentLevel, "pad = %u;\n", drange->pad);
+	
+	for(i = 0; i < drange->nfades; i++)
+	    IFF_printIndent(stdout, indentLevel, "{ cell = %u, fade = %u }\n", drange->dfade[i].cell, drange->dfade[i].fade);
+    }
 }
 
 int ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
@@ -306,6 +394,24 @@ int ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
 	
 	if(dindex1->index != dindex2->index)
 	    return FALSE;
+    }
+
+    if((drange1->flags & ILBM_RNG_FADE) == ILBM_RNG_FADE)
+    {
+	if(drange1->nfades != drange2->nfades)
+	    return FALSE;
+	
+	for(i = 0; i < drange1->nfades; i++)
+	{
+	    ILBM_DFade *dfade1 = &drange1->dfade[i];
+	    ILBM_DFade *dfade2 = &drange2->dfade[i];
+	    
+	    if(dfade1->cell != dfade2->cell)
+		return FALSE;
+	
+	    if(dfade1->fade != dfade2->fade)
+		return FALSE;
+	}
     }
 
     return TRUE;
