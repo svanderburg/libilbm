@@ -24,8 +24,9 @@ let
         name = "libilbm-tarball";
         src = libilbm;
         inherit version officialRelease;
+        dontBuild = false;
 
-        buildInputs = [ pkgconfig libiff ];
+        buildInputs = [ pkgconfig help2man libiff ];
       };
       
     build =

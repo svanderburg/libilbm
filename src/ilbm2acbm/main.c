@@ -35,14 +35,43 @@
 
 static void printUsage(const char *command)
 {
-    fprintf(stderr, "Usage:\n");
+    printf("The command `ilbm2acbm' converts all ILBM images inside an IFF file to ACBM\n");
+    printf("images.\n\n");
+    printf("This command only converts uncompressed ILBM forms. Compressed forms are\n");
+    printf("automatically skipped.\n\n");
+    printf("If needed, these forms can be uncompressed by running the `ilbmpack' command\n");
+    printf("first, redirecting its output to the standard output and let `ilbm2acbm' read\n");
+    printf("from the standard input.\n\n");
+    
 #if _MSC_VER
-    fprintf(stderr, "%s [/i file.IFF] [/o file.IFF] file.ILBM\n\n", command);
-    fprintf(stderr, "/?    Shows the usage of this command to the user\n");
+    printf("Usage: %s [OPTION] [/i file.IFF] [/o file.IFF] file.ILBM\n\n", command);
 #else
-    fprintf(stderr, "%s [-i file.IFF] [-o file.IFF] file.ILBM\n\n", command);
-    fprintf(stderr, "-h, --help    Shows the usage of this command to the user\n");
+    printf("Usage: %s [OPTION] [-i file.IFF] [-o file.IFF] file.ILBM\n\n", command);
 #endif
+
+    printf("Options:\n\n");
+
+#if _MSC_VER
+    printf("  /i    Specifies the input IFF file. If no input file is given,\n");
+    printf("        then data will be read from the standard input\n");
+    printf("  /o    Specifies the output IFF file. If no output file is given,\n");
+    printf("        then data will be written to the standard output.\n");
+    printf("  /?    Shows the usage of this command to the user\n");
+    printf("  /v    Shows the version of this command to the user\n");
+#else
+    printf("  -i, --input-file     Specifies the input IFF file. If no input file is given,\n");
+    printf("                       then data will be read from the standard input\n");
+    printf("  -o, --output-file    Specifies the output IFF file. If no output file is given,\n");
+    printf("                       then data will be written to the standard output.\n");
+    printf("  -h, --help           Shows the usage of this command to the user\n");
+    printf("  -v, --version        Shows the version of this command to the user\n");
+#endif
+}
+
+static void printVersion(const char *command)
+{
+    printf("%s (" PACKAGE_NAME ") " PACKAGE_VERSION "\n\n", command);
+    printf("Copyright (C) 2012-2015 Sander van der Burg\n");
 }
 
 int main(int argc, char *argv[])
@@ -84,6 +113,11 @@ int main(int argc, char *argv[])
             printUsage(argv[0]);
             return 0;
         }
+        else if (strcmp(argv[i], "/v") == 0)
+        {
+            printVersion(argv[0]);
+            return 0;
+        }
     }
 #else
     int c;
@@ -91,9 +125,10 @@ int main(int argc, char *argv[])
     int option_index = 0;
     struct option long_options[] =
     {
-        {"help", no_argument, 0, 'h'},
         {"input-file", required_argument, 0, 'i'},
         {"output-file", required_argument, 0, 'o'},
+        {"help", no_argument, 0, 'h'},
+        {"version", no_argument, 0, 'v'},
         {0, 0, 0, 0}
     };
 #endif
@@ -101,9 +136,9 @@ int main(int argc, char *argv[])
     /* Parse command-line options */
     
 #if HAVE_GETOPT_H == 1
-    while((c = getopt_long(argc, argv, "i:o:h", long_options, &option_index)) != -1)
+    while((c = getopt_long(argc, argv, "i:o:hv", long_options, &option_index)) != -1)
 #else
-    while((c = getopt(argc, argv, "i:o:h")) != -1)
+    while((c = getopt(argc, argv, "i:o:hv")) != -1)
 #endif
     {
         switch(c)
@@ -117,6 +152,9 @@ int main(int argc, char *argv[])
             case 'h':
             case '?':
                 printUsage(argv[0]);
+                return 0;
+            case 'v':
+                printVersion(argv[0]);
                 return 0;
         }
     }

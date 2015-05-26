@@ -9,6 +9,7 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AM_PROG_CC_C_O
 PKG_PROG_PKG_CONFIG
+AC_PATH_PROG(HELP2MAN, help2man, false)
 
 # Checks for headers
 AC_CHECK_HEADER([getopt.h], [HAVE_GETOPT_H=1], [HAVE_GETOPT_H=0])
@@ -24,7 +25,6 @@ AC_SUBST(LIBIFF_LIBS)
 AC_CONFIG_FILES([
 Makefile
 doc/Makefile
-doc/man/Makefile
 src/libilbm.pc
 src/Makefile
 src/libilbm/Makefile
