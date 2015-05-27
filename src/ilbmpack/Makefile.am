@@ -1,4 +1,4 @@
-ilbmpack.1:
+ilbmpack.1: main.c
 	$(HELP2MAN) --output=$@ --no-info --name 'Compress or decompress ILBM images inside an IFF file' --libtool ./ilbmpack
 
 AM_CPPFLAGS = -DHAVE_GETOPT_H=$(HAVE_GETOPT_H)

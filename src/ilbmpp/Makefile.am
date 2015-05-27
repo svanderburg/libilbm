@@ -1,4 +1,4 @@
-ilbmpp.1:
+ilbmpp.1: main.c
 	$(HELP2MAN) --output=$@ --no-info --name ' Displays a textual representation of an IFF/ILBM file on the standard output' --libtool ./ilbmpp
 
 AM_CPPFLAGS = -DHAVE_GETOPT_H=$(HAVE_GETOPT_H)

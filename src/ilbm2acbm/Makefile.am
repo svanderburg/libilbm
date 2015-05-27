@@ -1,4 +1,4 @@
-ilbm2acbm.1:
+ilbm2acbm.1: main.c
 	$(HELP2MAN) --output=$@ --no-info --name 'Convert all ILBM images inside an IFF file to ACBM images' --libtool ./ilbm2acbm
 
 AM_CPPFLAGS = -DHAVE_GETOPT_H=$(HAVE_GETOPT_H)

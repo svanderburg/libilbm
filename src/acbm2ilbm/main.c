@@ -35,7 +35,7 @@
 
 static void printUsage(const char *command)
 {
-    printf("The command Bacbm2ilbm converts all ACBM images inside an IFF file to ILBM\n");
+    printf("The command `acbm2ilbm' converts all ACBM images inside an IFF file to ILBM\n");
     printf("images.\n\n");
     printf("This command only converts uncompressed ACBM forms. Compressed forms are\n");
     printf("automatically skipped.\n\n");
