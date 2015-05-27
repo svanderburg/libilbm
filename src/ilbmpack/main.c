@@ -35,10 +35,6 @@
 
 static void printUsage(const char *command)
 {
-    printf("The command `ilbmpack' compresses or decompresses all the BODY chunks of all\n");
-    printf("ILBM forms in the given IFF file using the byte run (packbits) algorithm. If no\n");
-    printf("IFF file is specified, it reads an IFF file from the standard input.\n\n");
-    
 #if _MSC_VER
     printf("Usage: %s /c [OPTION] [/i file.IFF] [/o file.IFF]\n", command);
     printf("  or: %s /d [OPTION] [/i file.IFF] [/o file.IFF]\n\n", command);
@@ -47,26 +43,30 @@ static void printUsage(const char *command)
     printf("  or: %s -d [OPTION] [-i file.IFF] [-o file.IFF]\n\n", command);
 #endif
 
+    printf("The command `ilbmpack' compresses or decompresses all the BODY chunks of all\n");
+    printf("ILBM forms in the given IFF file using the byte run (packbits) algorithm. If no\n");
+    printf("IFF file is specified, it reads an IFF file from the standard input.\n\n");
+    
     printf("Options:\n\n");
-
 #if _MSC_VER
-    printf("  /c    Compress the ILBM images\n");
-    printf("  /d    Decompress the ILBM images\n");
-    printf("  /i    Specifies the input IFF file. If no input file is given,\n");
-    printf("        then data will be read from the standard input\n");
-    printf("  /o    Specifies the output IFF file. If no output file is\n");
-    printf("        given, then data will be written to the standard output\n");
-    printf("  /?    Shows the usage of this command to the user\n");
-    printf("  /v    Shows the version of this command to the user\n");
+    printf("  /c       Compress the ILBM images\n");
+    printf("  /d       Decompress the ILBM images\n");
+    printf("  /i FILE  Specifies the input IFF file. If no input file is given,\n");
+    printf("           then data will be read from the standard input\n");
+    printf("  /o FILE  Specifies the output IFF file. If no output file is\n");
+    printf("           given, then data will be written to the standard output\n");
+    printf("  /?       Shows the usage of this command to the user\n");
+    printf("  /v       Shows the version of this command to the user\n");
 #else
-    printf("  -c, --compress       Compress the ILBM images\n");
-    printf("  -d, --decompress     Decompress the ILBM images\n");
-    printf("  -i, --input-file     Specifies the input IFF file. If no input file is given,\n");
-    printf("                       then data will be read from the standard input\n");
-    printf("  -o, --output-file    Specifies the output IFF file. If no output file is\n");
-    printf("                       given, then data will be written to the standard output\n");
-    printf("  -h, --help           Shows the usage of this command to the user\n");
-    printf("  -v, --version        Shows the version of this command to the user\n");
+    printf("  -c, --compress          Compress the ILBM images\n");
+    printf("  -d, --decompress        Decompress the ILBM images\n");
+    printf("  -i, --input-file=FILE   Specifies the input IFF file. If no input file is\n");
+    printf("                          given, then data will be read from the standard input\n");
+    printf("  -o, --output-file=FILE  Specifies the output IFF file. If no output file is\n");
+    printf("                          given, then data will be written to the standard\n");
+    printf("                          output\n");
+    printf("  -h, --help              Shows the usage of this command to the user\n");
+    printf("  -v, --version           Shows the version of this command to the user\n");
 #endif
 }
 
