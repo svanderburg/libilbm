@@ -5,10 +5,10 @@ AM_CPPFLAGS = -DHAVE_GETOPT_H=$(HAVE_GETOPT_H)
 
 bin_PROGRAMS = ilbmpack
 noinst_HEADERS = pack.h
+man1_MANS = ilbmpack.1
 
 ilbmpack_SOURCES = main.c pack.c
 ilbmpack_LDADD = ../libilbm/libilbm.la
 ilbmpack_CFLAGS = -I../libilbm $(LIBIFF_CFLAGS)
 
-man1_MANS = ilbmpack.1
 EXTRA_DIST = ilbmpack.1
