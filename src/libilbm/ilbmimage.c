@@ -30,7 +30,10 @@
 ILBM_Image *ILBM_createImage(char *formType)
 {
     ILBM_Image *image = (ILBM_Image*)calloc(1, sizeof(ILBM_Image));
-    IFF_createId(image->formType, formType);
+    
+    if(image != NULL)
+        IFF_createId(image->formType, formType);
+    
     return image;
 }
 
@@ -38,18 +41,22 @@ static ILBM_Image *createImageFromForm(IFF_Form *form, char *formType)
 {
     ILBM_Image *image = (ILBM_Image*)malloc(sizeof(ILBM_Image));
     
-    IFF_createId(image->formType, formType);
-    image->bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(form, "BMHD");
-    image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
-    image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(form, "GRAB");
-    image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(form, "DEST");
-    image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(form, "SPRT");
-    image->viewport = (ILBM_Viewport*)IFF_getChunkFromForm(form, "CAMG");
-    image->colorRange = (ILBM_ColorRange**)IFF_getChunksFromForm(form, "CRNG", &image->colorRangeLength);
-    image->drange = (ILBM_DRange**)IFF_getChunksFromForm(form, "DRNG", &image->drangeLength);
-    image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(form, "CCRT", &image->cycleInfoLength);
-    image->body = (IFF_RawChunk*)IFF_getChunkFromForm(form, "BODY");
-    image->bitplanes = (IFF_RawChunk*)IFF_getChunkFromForm(form, "ABIT");
+    if(image != NULL)
+    {
+        IFF_createId(image->formType, formType);
+        image->bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(form, "BMHD");
+        image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
+        image->cmykMap = (ILBM_CMYKMap*)IFF_getChunkFromForm(form, "CMYK");
+        image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(form, "GRAB");
+        image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(form, "DEST");
+        image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(form, "SPRT");
+        image->viewport = (ILBM_Viewport*)IFF_getChunkFromForm(form, "CAMG");
+        image->colorRange = (ILBM_ColorRange**)IFF_getChunksFromForm(form, "CRNG", &image->colorRangeLength);
+        image->drange = (ILBM_DRange**)IFF_getChunksFromForm(form, "DRNG", &image->drangeLength);
+        image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(form, "CCRT", &image->cycleInfoLength);
+        image->body = (IFF_RawChunk*)IFF_getChunkFromForm(form, "BODY");
+        image->bitplanes = (IFF_RawChunk*)IFF_getChunkFromForm(form, "ABIT");
+    }
     
     return image;
 }
@@ -73,37 +80,41 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
     else
     {
         ILBM_Image **images = (ILBM_Image**)malloc(*imagesLength * sizeof(ILBM_Image*));
-        unsigned int offset, i;
         
-        /* Extract all ILBM images */
-        for(i = 0; i < ilbmFormsLength; i++)
+        if(images != NULL)
         {
-            IFF_Form *ilbmForm = ilbmForms[i];
-            images[i] = createImageFromForm(ilbmForm, "ILBM");
+            unsigned int offset, i;
+            
+            /* Extract all ILBM images */
+            for(i = 0; i < ilbmFormsLength; i++)
+            {
+                IFF_Form *ilbmForm = ilbmForms[i];
+                images[i] = createImageFromForm(ilbmForm, "ILBM");
+            }
+            
+            offset = ilbmFormsLength;
+            
+            /* Extract all PBM images */
+            for(i = 0; i < pbmFormsLength; i++)
+            {
+                IFF_Form *pbmForm = pbmForms[i];
+                images[offset + i] = createImageFromForm(pbmForm, "PBM ");
+            }
+            
+            offset += pbmFormsLength;
+            
+            /* Extract all ACBM images */
+            for(i = 0; i < acbmFormsLength; i++)
+            {
+                IFF_Form *acbmForm = acbmForms[i];
+                images[offset + i] = createImageFromForm(acbmForm, "ACBM");
+            }
+            
+            /* Clean up stuff */
+            free(ilbmForms);
+            free(pbmForms);
+            free(acbmForms);
         }
-        
-        offset = ilbmFormsLength;
-        
-        /* Extract all PBM images */
-        for(i = 0; i < pbmFormsLength; i++)
-        {
-            IFF_Form *pbmForm = pbmForms[i];
-            images[offset + i] = createImageFromForm(pbmForm, "PBM ");
-        }
-        
-        offset += pbmFormsLength;
-        
-        /* Extract all ACBM images */
-        for(i = 0; i < acbmFormsLength; i++)
-        {
-            IFF_Form *acbmForm = acbmForms[i];
-            images[offset + i] = createImageFromForm(acbmForm, "ACBM");
-        }
-        
-        /* Clean up stuff */
-        free(ilbmForms);
-        free(pbmForms);
-        free(acbmForms);
         
         /* Return generated images array */
         return images;
@@ -113,41 +124,48 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 IFF_Form *ILBM_convertImageToForm(ILBM_Image *image)
 {
     IFF_Form *form = IFF_createForm(image->formType);
-    unsigned int i;
     
-    if(image->bitMapHeader != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->bitMapHeader);
-    
-    if(image->colorMap != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->colorMap);
-    
-    if(image->point2d != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->point2d);
-
-    if(image->destMerge != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->destMerge);
-    
-    if(image->sprite != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->sprite);
-    
-    if(image->viewport != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->viewport);
-    
-    for(i = 0; i < image->colorRangeLength; i++)
-        IFF_addToForm(form, (IFF_Chunk*)image->colorRange[i]);
-    
-    for(i = 0; i < image->drangeLength; i++)
-        IFF_addToForm(form, (IFF_Chunk*)image->drange[i]);
-    
-    for(i = 0; i < image->cycleInfoLength; i++)
-        IFF_addToForm(form, (IFF_Chunk*)image->cycleInfo[i]);
-    
-    if(image->body != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->body);
-    
-    if(image->bitplanes != NULL)
-        IFF_addToForm(form, (IFF_Chunk*)image->bitplanes);
+    if(form != NULL)
+    {
+        unsigned int i;
         
+        if(image->bitMapHeader != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->bitMapHeader);
+        
+        if(image->colorMap != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->colorMap);
+        
+        if(image->cmykMap != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->cmykMap);
+        
+        if(image->point2d != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->point2d);
+
+        if(image->destMerge != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->destMerge);
+        
+        if(image->sprite != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->sprite);
+        
+        if(image->viewport != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->viewport);
+        
+        for(i = 0; i < image->colorRangeLength; i++)
+            IFF_addToForm(form, (IFF_Chunk*)image->colorRange[i]);
+        
+        for(i = 0; i < image->drangeLength; i++)
+            IFF_addToForm(form, (IFF_Chunk*)image->drange[i]);
+        
+        for(i = 0; i < image->cycleInfoLength; i++)
+            IFF_addToForm(form, (IFF_Chunk*)image->cycleInfo[i]);
+        
+        if(image->body != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->body);
+        
+        if(image->bitplanes != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->bitplanes);
+    }
+    
     return form;
 }
 

@@ -26,6 +26,7 @@
 #include <libiff/rawchunk.h>
 #include "bitmapheader.h"
 #include "colormap.h"
+#include "cmykmap.h"
 #include "colorrange.h"
 #include "cycleinfo.h"
 #include "destmerge.h"
@@ -44,6 +45,7 @@ typedef struct
     
     ILBM_BitMapHeader *bitMapHeader;
     ILBM_ColorMap *colorMap;
+    ILBM_CMYKMap *cmykMap;
     ILBM_Point2D *point2d;
     ILBM_DestMerge *destMerge;
     ILBM_Sprite *sprite;

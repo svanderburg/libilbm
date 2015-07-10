@@ -96,3 +96,11 @@ EXPORTS
 	ILBM_freeViewport                 @94
 	ILBM_printViewport                @95
 	ILBM_compareViewport              @96
+	ILBM_createCMYKMap                @97
+	ILBM_addCMYKRegisterInCMYKMap     @98
+	ILBM_readCMYKMap                  @99
+	ILBM_writeCMYKMap                 @100
+	ILBM_checkCMYKMap                 @101
+	ILBM_freeCMYKMap                  @102
+	ILBM_printCMYKMap                 @103
+	ILBM_compareCMYKMap               @104

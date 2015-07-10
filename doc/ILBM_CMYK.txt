@@ -1,0 +1,21 @@
+Cyan, Magenta, Yellow, & Black color map (Soft-Logik)
+
+CMYK Chunk for FORM ILBM and FORM DR2D
+======================================
+
+Submitted by Dan Weiss, Deron Kazmaier, and Gary Knight (8/29/91)
+
+New IFF Chunk ID: "CMYK"
+Description:  This chunk would allow color specification in terms of Cyan,
+Magenta, Yellow, and Black as opposed to the current CMAP which uses RGB.
+The format would be the same as the CMAP chunk with the exception that this
+chunk uses four color components as opposed to three. The number of colors
+contained within would be chunk length/4.  This chunk would be used in addition
+to the CMAP chunk.
+
+Example:  CMYK                  - Chunk ID
+          000010                - Chunk Length (16 bytes, #colors = 16/4 = 4)
+          00 00 00 00           - Color #1 (c=00, m=00, y=00, b=00)
+          FF FF 00 00           - Color #2 (c=ff, m=ff, y=00, b=00)
+          80 80 FF 10           - Color #3 (c=80, m=80, y=ff, b=10)
+          27 C6 AF 0B           - Color #4 (c=27, m=c6, y=af, b=0b)

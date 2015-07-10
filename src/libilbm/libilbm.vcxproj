@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="bitmapheader.c" />
     <ClCompile Include="byterun.c" />
+    <ClCompile Include="cmykmap.c" />
     <ClCompile Include="colormap.c" />
     <ClCompile Include="colorrange.c" />
     <ClCompile Include="cycleinfo.c" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <ClInclude Include="bitmapheader.h" />
     <ClInclude Include="byterun.h" />
+    <ClInclude Include="cmykmap.h" />
     <ClInclude Include="colormap.h" />
     <ClInclude Include="colorrange.h" />
     <ClInclude Include="cycleinfo.h" />

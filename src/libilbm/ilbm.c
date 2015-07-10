@@ -23,6 +23,7 @@
 #include <libiff/iff.h>
 #include "bitmapheader.h"
 #include "colormap.h"
+#include "cmykmap.h"
 #include "colorrange.h"
 #include "cycleinfo.h"
 #include "viewport.h"
@@ -32,13 +33,14 @@
 #include "drange.h"
 
 #define ILBM_NUM_OF_FORM_TYPES 3
-#define ILBM_NUM_OF_EXTENSION_CHUNKS 9
+#define ILBM_NUM_OF_EXTENSION_CHUNKS 10
 
 static IFF_FormExtension ilbmFormExtension[] = {
     {"BMHD", &ILBM_readBitMapHeader, &ILBM_writeBitMapHeader, &ILBM_checkBitMapHeader, &ILBM_freeBitMapHeader, &ILBM_printBitMapHeader, &ILBM_compareBitMapHeader},
     {"CAMG", &ILBM_readViewport, &ILBM_writeViewport, &ILBM_checkViewport, &ILBM_freeViewport, &ILBM_printViewport, &ILBM_compareViewport},
     {"CCRT", &ILBM_readCycleInfo, &ILBM_writeCycleInfo, &ILBM_checkCycleInfo, &ILBM_freeCycleInfo, &ILBM_printCycleInfo, &ILBM_compareCycleInfo},
     {"CMAP", &ILBM_readColorMap, &ILBM_writeColorMap, &ILBM_checkColorMap, &ILBM_freeColorMap, &ILBM_printColorMap, &ILBM_compareColorMap},
+    {"CMYK", &ILBM_readCMYKMap, &ILBM_writeCMYKMap, &ILBM_checkCMYKMap, &ILBM_freeCMYKMap, &ILBM_printCMYKMap, &ILBM_compareCMYKMap},
     {"CRNG", &ILBM_readColorRange, &ILBM_writeColorRange, &ILBM_checkColorRange, &ILBM_freeColorRange, &ILBM_printColorRange, &ILBM_compareColorRange},
     {"DEST", &ILBM_readDestMerge, &ILBM_writeDestMerge, &ILBM_checkDestMerge, &ILBM_freeDestMerge, &ILBM_printDestMerge, &ILBM_compareDestMerge},
     {"DRNG", &ILBM_readDRange, &ILBM_writeDRange, &ILBM_checkDRange, &ILBM_freeDRange, &ILBM_printDRange, &ILBM_compareDRange},
