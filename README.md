@@ -87,19 +87,21 @@ file and returns an array of `ILBM_Image` struct instances, which can be used to
 convienently access its properties. The length of the array is stored in the
 `imagesLength` variable:
 
-    #include <libilbm/ilbm.h>
-    #include <libilbm/ilbmimage.h>
+```C
+#include <libilbm/ilbm.h>
+#include <libilbm/ilbmimage.h>
+
+int main(int argc, char *argv[])
+{
+    unsigned int imagesLength;
+    IFF_Chunk *chunk = ILBM_read("input.ILBM");
+    ILBM_Image **image = ILBM_extractImages(chunk, &imagesLength);
     
-    int main(int argc, char *argv[])
-    {
-        unsigned int imagesLength;
-        IFF_Chunk *chunk = ILBM_read("input.ILBM");
-        ILBM_Image **image = ILBM_extractImages(chunk, &imagesLength);
-        
-        /* Retrieve an image from the array and access its properties here */
-        
-        return 0;
-    }
+    /* Retrieve an image from the array and access its properties here */
+    
+    return 0;
+}
+```
 
 Programmatically creating ILBM files
 ------------------------------------
@@ -107,36 +109,38 @@ An ILBM file can be created by creating an instance of an `ILBM_Image` struct an
 by setting its sub chunks. The following example defines an ILBM image with
 a bitmap header chunk:
 
-    #include <libilbm/ilbmimage.h>
+```C
+#include <libilbm/ilbmimage.h>
+
+int main(int argc, char *argv[])
+{
+    /*
+     * Specifies that we want to create an ILBM file. Also, the ACBM and PBM
+     * types can be used to create these corresponding images.
+     */
+    ILBM_Image *image = ILBM_createImage("ILBM");
     
-    int main(int argc, char *argv[])
-    {
-        /*
-         * Specifies that we want to create an ILBM file. Also, the ACBM and PBM
-         * types can be used to create these corresponding images.
-         */
-        ILBM_Image *image = ILBM_createImage("ILBM");
-        
-        ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
-        
-        /* Create bitmap header properties */
-        bitMapHeader->w = 320;
-        bitMapHeader->h = 200;
-        bitMapHeader->x = 0;
-        bitMapHeader->y = 0;
-        bitMapHeader->nPlanes = 4;
-        bitMapHeader->compression = ILBM_CMP_NONE;
-        bitMapHeader->transparentColor = 0;
-        bitMapHeader->xAspect = 11;
-        bitMapHeader->yAspect = 10;
-        bitMapHeader->pageWidth = 320;
-        bitMapHeader->pageHeight = 200;
-        
-        /* Attach bitmap header to the image */
-        image->bitMapHeader = bitMapHeader;
-        
-        return 0;
-    }
+    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
+    
+    /* Create bitmap header properties */
+    bitMapHeader->w = 320;
+    bitMapHeader->h = 200;
+    bitMapHeader->x = 0;
+    bitMapHeader->y = 0;
+    bitMapHeader->nPlanes = 4;
+    bitMapHeader->compression = ILBM_CMP_NONE;
+    bitMapHeader->transparentColor = 0;
+    bitMapHeader->xAspect = 11;
+    bitMapHeader->yAspect = 10;
+    bitMapHeader->pageWidth = 320;
+    bitMapHeader->pageHeight = 200;
+    
+    /* Attach bitmap header to the image */
+    image->bitMapHeader = bitMapHeader;
+    
+    return 0;
+}
+```
 
 Retrieving ILBM file contents
 -----------------------------
@@ -146,30 +150,32 @@ possible ILBM FORMs into account, which can be retrieved through the
 retrieve the ILBM image properties by accessing members of each individual
 `ILBM_Image` struct instance.
 
-    #include <libilbm/ilbmimage.h>
+```C
+#include <libilbm/ilbmimage.h>
+
+int main(int argc, char *argv[])
+{
+    IFF_Chunk *chunk;
+    ILBM_Image **images;
+    unsigned int i, imagesLength;
     
-    int main(int argc, char *argv[])
+    /* Open or create ILBM forms here */
+    
+    images = ILBM_extractImages(chunk, &imagesLength);
+    
+    for(i = 0; i < imagesLength; i++)
     {
-        IFF_Chunk *chunk;
-        ILBM_Image **images;
-        unsigned int i, imagesLength;
+        ILBM_Image *image = images[i];
+        ILBM_BitMapHeader *bitMapHeader = image->bitMapHeader; /* Struct representing bitmap header properties */
+        ILBM_ColorMap *colorMap = image->colorMap; /* Struct containing the color palette */
+        IFF_RawChunk *body = image->body; /* Body chunk containing compressed or uncompressed planar graphics data */
         
-        /* Open or create ILBM forms here */
-        
-        images = ILBM_extractImages(chunk, &imagesLength);
-        
-        for(i = 0; i < imagesLength; i++)
-        {
-            ILBM_Image *image = images[i];
-            ILBM_BitMapHeader *bitMapHeader = image->bitMapHeader; /* Struct representing bitmap header properties */
-            ILBM_ColorMap *colorMap = image->colorMap; /* Struct containing the color palette */
-            IFF_RawChunk *body = image->body; /* Body chunk containing compressed or uncompressed planar graphics data */
-            
-            /* Retrieve more properties here */
-        }
-        
-        return 0;
+        /* Retrieve more properties here */
     }
+    
+    return 0;
+}
+```
 
 Writing ILBM files
 ------------------
@@ -177,23 +183,25 @@ To write an `ILBM_Image` struct instance to a file, it must first be converted
 to an IFF FORM using the `ILBM_convertImageToForm()` function. Then the resulting
 FORM can written to disk using the `ILBM_write()` function.
 
-    #include <libilbm/ilbmimage.h>
-    #include <libilbm/ilbm.h>
+```C
+#include <libilbm/ilbmimage.h>
+#include <libilbm/ilbm.h>
+
+int main(int argc, char *argv[])
+{
+    ILBM_Image *image;
+    IFF_Form *form;
     
-    int main(int argc, char *argv[])
-    {
-        ILBM_Image *image;
-        IFF_Form *form;
-        
-        /* Create an ILBM image here */
-        
-        form = ILBM_convertImageToForm(image);
-        
-        if(ILBM_write("output.ILBM", (IFF_Chunk*)form))
-            return 0; /* File has been successfully written */
-        else
-            return 1; /* Writing failed */
-    }
+    /* Create an ILBM image here */
+    
+    form = ILBM_convertImageToForm(image);
+    
+    if(ILBM_write("output.ILBM", (IFF_Chunk*)form))
+        return 0; /* File has been successfully written */
+    else
+        return 1; /* Writing failed */
+}
+```
 
 ILBM conformance checking
 -------------------------
@@ -202,21 +210,22 @@ whether the file is valid. This can be done by invoking the `ILBM_checkImages()`
 function, which checks whether the IFF file is valid and it checks whether are
 required ILBM chunks are present.
 
-    #include <libilbm/ilbmimage.h>
-    
-    int main(int argc, char *argv[])
-    {
-        IFF_Chunk *chunk;
-        ILBM_Image **images;
-        unsigned int imagesLength;
+```C
+#include <libilbm/ilbmimage.h>
 
-        /* Open an IFF file and extract ILBM images here */
+int main(int argc, char *argv[])
+{
+    IFF_Chunk *chunk;
+    ILBM_Image **images;
+    unsigned int imagesLength;
 
-        if(ILBM_checkImages(chunks, images, imagesLength))
-            return 0; /* IFF file including ILBM images are valid */
-        else
-            return 1; /* IFF file including ILBM images are not valid */
-    }
+    /* Open an IFF file and extract ILBM images here */
+    if(ILBM_checkImages(chunks, images, imagesLength))
+        return 0; /* IFF file including ILBM images are valid */
+    else
+        return 1; /* IFF file including ILBM images are not valid */
+}
+```
 
 Byte run compression of ILBM files
 ----------------------------------
@@ -224,20 +233,22 @@ To compress the body of an ILBM image the `ILBM_unpackByteRun()` function can be
 used. To decompress the body of an ILBM image the `ILBM_packByteRun` function can
 be used.
 
-    #include <libilbm/ilbmimage.h>
-    #include <libilbm/byterun.h>
+```C
+#include <libilbm/ilbmimage.h>
+#include <libilbm/byterun.h>
 
-    int main(int argc, char *argv[])
-    {
-        ILBM_Image *image;
-        
-        /* Open an IFF file and extract an ILBM image here */
-        
-        ILBM_unpackByteRun(image); /* Now the body of the image is decompressed */
-        ILBM_packByteRun(image); /* Now the body of the image is compressed */
-        
-        return 0;
-    }
+int main(int argc, char *argv[])
+{
+    ILBM_Image *image;
+    
+    /* Open an IFF file and extract an ILBM image here */
+    
+    ILBM_unpackByteRun(image); /* Now the body of the image is decompressed */
+    ILBM_packByteRun(image); /* Now the body of the image is compressed */
+    
+    return 0;
+}
+```
 
 Deinterleaving ILBM files
 -------------------------
@@ -253,23 +264,25 @@ they can be stored in an ILBM file.
 NOTE: These functions should only be used for ILBM images and not for PBM or ACBM
 images. The `ILBM_imageIsILBM()` function can be used to check for this.
 
-    #include <libilbm/ilbmimage.h>
-    #include <libilbm/interleave.h>
+```C
+#include <libilbm/ilbmimage.h>
+#include <libilbm/interleave.h>
+
+int main(int argc, char *argv[])
+{
+    ILBM_Image *image;
     
-    int main(int argc, char *argv[])
+    /* Open an IFF file and extract an ILBM image here */
+    
+    if(ILBM_imageIsILBM(image)) /* It makes no sense for PBM or ACBM images */
     {
-        ILBM_Image *image;
-        
-        /* Open an IFF file and extract an ILBM image here */
-        
-        if(ILBM_imageIsILBM(image)) /* It makes no sense for PBM or ACBM images */
-        {
-            IFF_UByte *bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
-            IFF_UByte *interleavedBitplanes = ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes and returns the resulting interleaved bitplane surface */
-        }
-        
-        return 0;
+        IFF_UByte *bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
+        IFF_UByte *interleavedBitplanes = ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes and returns the resulting interleaved bitplane surface */
     }
+    
+    return 0;
+}
+```
 
 Besides the interaving functions that return arrays, interleaving can also be
 done directly from and to bitplane surfaces in memory on a real Amiga through
