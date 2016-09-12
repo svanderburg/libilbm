@@ -104,3 +104,11 @@ EXPORTS
 	ILBM_freeCMYKMap                  @102
 	ILBM_printCMYKMap                 @103
 	ILBM_compareCMYKMap               @104
+	ILBM_createColorNames             @105
+	ILBM_addColorName                 @106
+	ILBM_readColorNames               @107
+	ILBM_writeColorNames              @108
+	ILBM_checkColorNames              @109
+	ILBM_freeColorNames               @110
+	ILBM_printColorNames              @111
+	ILBM_compareColorNames            @112

@@ -27,6 +27,7 @@
 #include "bitmapheader.h"
 #include "colormap.h"
 #include "cmykmap.h"
+#include "colornames.h"
 #include "colorrange.h"
 #include "cycleinfo.h"
 #include "destmerge.h"
@@ -46,6 +47,7 @@ typedef struct
     ILBM_BitMapHeader *bitMapHeader;
     ILBM_ColorMap *colorMap;
     ILBM_CMYKMap *cmykMap;
+    ILBM_ColorNames *colorNames;
     ILBM_Point2D *point2d;
     ILBM_DestMerge *destMerge;
     ILBM_Sprite *sprite;

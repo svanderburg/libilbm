@@ -1,0 +1,32 @@
+Color naming chunk (Soft-Logik)
+
+CNAM Chunk for FORM ILBM and FORM DR2D
+======================================
+
+Submitted by Dan Weiss, Deron Kazmaier, and Gary Knight (8/29/91)
+
+New IFF Chunk ID: "CNAM"
+
+Description:  This chunk would provide names for the colors in a CMAP and CMYK
+chunk.  Each CNAM chunk will contains names for a consecutive group of colors.
+After the chunk length will be 2 words that identify the starting and ending
+color numbers that this CNAM provides names for. Each name will be a NULL
+terminated string. There will be (ending-starting)+1 number of NULL terminated
+strings in the CNAM chunk.
+
+
+Example:
+
+        CMAP                    - CMAP chunk ID
+        00000009                - chunk length (9 bytes)
+        FF 00 00                - color #1 (r=ff, g=00, b=00)
+        00 FF 00                - color #2 (r=00, g=ff. b=00)
+        00 00 FF                - color #3 (r=00, g=00, b=00)
+
+        CNAM                    - CNAM Chunk ID
+        00000011                - Chunk Length (19 bytes)
+        0000                    - starting color # in this CNAM chunk
+        0002                    - ending color # in this CNAM chunk
+        Red\0                   - name of color #1 (null terminated)
+        Green\0                 - name of color #2 (null terminated)
+        Blue\0                  - name of color #3 (null terminated)

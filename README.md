@@ -16,9 +16,15 @@ This parser library implements support for all chunks described in the ILBM
 specification that can be found in `doc/ILBM.asc`. Besides the chunk types
 described in the standard, it supports the following extensions:
 
-* The 'DRNG' dynamic color range chunk, which is a Deluxe Paint extension. The specification can be found in: `doc/ILBM.DRNG.asc`
-* Forms of type 'ACBM', which store planar graphics data non-interleaved. The specification can be found in: `doc/ACBM.asc`
-* Forms of type 'PBM ', which are created by the PC version of Deluxe Paint. Although I couldn't find any specification, the differences are relatively minor and I have documented them in `doc/PBM.asc`.
+* The 'DRNG' dynamic color range chunk, which is a Deluxe Paint extension. The
+  specification can be found in: `doc/ILBM.DRNG.asc`
+* Forms of type 'ACBM', which store planar graphics data non-interleaved. The
+  specification can be found in: `doc/ACBM.asc`
+* Forms of type 'PBM ', which are created by the PC version of Deluxe Paint.
+  Although I couldn't find any specification, the differences are relatively
+  minor and I have documented them in `doc/PBM.asc`.
+* A couple of other extension chunks whose specifications can be found in the
+  `doc/` folder.
 
 Prerequisites
 =============

@@ -51,6 +51,7 @@ IFF_Form *ILBM_createTestForm()
     ILBM_ColorMap *colorMap;
     ILBM_CMYKRegister *cmykRegister;
     ILBM_CMYKMap *cmykMap;
+    ILBM_ColorNames *colorNames;
     ILBM_Viewport *viewport;
     ILBM_Point2D *point2d;
     ILBM_Sprite *sprite;
@@ -83,7 +84,7 @@ IFF_Form *ILBM_createTestForm()
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 200;
     
-    /* Add some colors */
+    /* Add some RGB colors */
     colorMap = ILBM_createColorMap();
     
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
@@ -132,6 +133,16 @@ IFF_Form *ILBM_createTestForm()
     cmykRegister->magenta = 0;
     cmykRegister->yellow = 0;
     cmykRegister->black = 0xff;
+    
+    /* Add some color names */
+    colorNames = ILBM_createColorNames();
+    colorNames->startingColor = 0;
+    colorNames->endingColor = 3;
+    
+    ILBM_addColorName(colorNames, "black");
+    ILBM_addColorName(colorNames, "red");
+    ILBM_addColorName(colorNames, "green");
+    ILBM_addColorName(colorNames, "blue");
     
     /* Set viewport */
     
@@ -196,6 +207,7 @@ IFF_Form *ILBM_createTestForm()
     image->bitMapHeader = bitMapHeader;
     image->colorMap = colorMap;
     image->cmykMap = cmykMap;
+    image->colorNames = colorNames;
     image->viewport = viewport;
     image->point2d = point2d;
     image->sprite = sprite;
