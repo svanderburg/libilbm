@@ -30,6 +30,7 @@
 #include "colornames.h"
 #include "colorrange.h"
 #include "cycleinfo.h"
+#include "dpiheader.h"
 #include "destmerge.h"
 #include "grab.h"
 #include "sprite.h"
@@ -48,6 +49,7 @@ typedef struct
     ILBM_ColorMap *colorMap;
     ILBM_CMYKMap *cmykMap;
     ILBM_ColorNames *colorNames;
+    ILBM_DPIHeader *dpiHeader;
     ILBM_Point2D *point2d;
     ILBM_DestMerge *destMerge;
     ILBM_Sprite *sprite;

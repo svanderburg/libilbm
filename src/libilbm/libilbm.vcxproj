@@ -88,6 +88,7 @@
     <ClCompile Include="colorrange.c" />
     <ClCompile Include="cycleinfo.c" />
     <ClCompile Include="destmerge.c" />
+    <ClCompile Include="dpiheader.c" />
     <ClCompile Include="drange.c" />
     <ClCompile Include="grab.c" />
     <ClCompile Include="ilbm.c" />
@@ -105,6 +106,7 @@
     <ClInclude Include="colorrange.h" />
     <ClInclude Include="cycleinfo.h" />
     <ClInclude Include="destmerge.h" />
+    <ClInclude Include="dpiheader.h" />
     <ClInclude Include="drange.h" />
     <ClInclude Include="grab.h" />
     <ClInclude Include="ilbm.h" />

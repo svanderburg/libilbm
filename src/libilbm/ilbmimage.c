@@ -48,6 +48,7 @@ static ILBM_Image *createImageFromForm(IFF_Form *form, char *formType)
         image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
         image->cmykMap = (ILBM_CMYKMap*)IFF_getChunkFromForm(form, "CMYK");
         image->colorNames = (ILBM_ColorNames*)IFF_getChunkFromForm(form, "CNAM");
+        image->dpiHeader = (ILBM_DPIHeader*)IFF_getChunkFromForm(form, "DPI ");
         image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(form, "GRAB");
         image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(form, "DEST");
         image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(form, "SPRT");
@@ -141,6 +142,9 @@ IFF_Form *ILBM_convertImageToForm(ILBM_Image *image)
         
         if(image->colorNames != NULL)
             IFF_addToForm(form, (IFF_Chunk*)image->colorNames);
+        
+        if(image->dpiHeader != NULL)
+            IFF_addToForm(form, (IFF_Chunk*)image->dpiHeader);
         
         if(image->point2d != NULL)
             IFF_addToForm(form, (IFF_Chunk*)image->point2d);

@@ -53,6 +53,7 @@ IFF_Form *ILBM_createTestForm()
     ILBM_CMYKMap *cmykMap;
     ILBM_ColorNames *colorNames;
     ILBM_Viewport *viewport;
+    ILBM_DPIHeader *dpiHeader;
     ILBM_Point2D *point2d;
     ILBM_Sprite *sprite;
     ILBM_ColorRange *colorRange;
@@ -149,6 +150,12 @@ IFF_Form *ILBM_createTestForm()
     viewport = ILBM_createViewport();
     viewport->viewportMode = 0x4;
     
+    /* Define DPI header */
+    
+    dpiHeader = ILBM_createDPIHeader();
+    dpiHeader->dpiX = 100;
+    dpiHeader->dpiY = 100;
+    
     /* Define grab */
     
     point2d = ILBM_createGrab();
@@ -210,6 +217,7 @@ IFF_Form *ILBM_createTestForm()
     image->colorNames = colorNames;
     image->viewport = viewport;
     image->point2d = point2d;
+    image->dpiHeader = dpiHeader;
     image->sprite = sprite;
     
     ILBM_addColorRangeToImage(image, colorRange);

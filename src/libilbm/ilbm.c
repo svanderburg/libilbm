@@ -27,6 +27,7 @@
 #include "colornames.h"
 #include "colorrange.h"
 #include "cycleinfo.h"
+#include "dpiheader.h"
 #include "viewport.h"
 #include "grab.h"
 #include "sprite.h"
@@ -34,7 +35,7 @@
 #include "drange.h"
 
 #define ILBM_NUM_OF_FORM_TYPES 3
-#define ILBM_NUM_OF_EXTENSION_CHUNKS 11
+#define ILBM_NUM_OF_EXTENSION_CHUNKS 12
 
 /* An array of all application specific chunks belonging to ILBM. They must be alphabetically sorted. */
 static IFF_FormExtension ilbmFormExtension[] = {
@@ -46,6 +47,7 @@ static IFF_FormExtension ilbmFormExtension[] = {
     {"CNAM", &ILBM_readColorNames, &ILBM_writeColorNames, &ILBM_checkColorNames, &ILBM_freeColorNames, &ILBM_printColorNames, &ILBM_compareColorNames},
     {"CRNG", &ILBM_readColorRange, &ILBM_writeColorRange, &ILBM_checkColorRange, &ILBM_freeColorRange, &ILBM_printColorRange, &ILBM_compareColorRange},
     {"DEST", &ILBM_readDestMerge, &ILBM_writeDestMerge, &ILBM_checkDestMerge, &ILBM_freeDestMerge, &ILBM_printDestMerge, &ILBM_compareDestMerge},
+    {"DPI ", &ILBM_readDPIHeader, &ILBM_writeDPIHeader, &ILBM_checkDPIHeader, &ILBM_freeDPIHeader, &ILBM_printDPIHeader, &ILBM_compareDPIHeader},
     {"DRNG", &ILBM_readDRange, &ILBM_writeDRange, &ILBM_checkDRange, &ILBM_freeDRange, &ILBM_printDRange, &ILBM_compareDRange},
     {"GRAB", &ILBM_readGrab, &ILBM_writeGrab, &ILBM_checkGrab, &ILBM_freeGrab, &ILBM_printGrab, &ILBM_compareGrab},
     {"SPRT", &ILBM_readSprite, &ILBM_writeSprite, &ILBM_checkSprite, &ILBM_freeSprite, &ILBM_printSprite, &ILBM_compareSprite}

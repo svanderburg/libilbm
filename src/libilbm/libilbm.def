@@ -112,3 +112,10 @@ EXPORTS
 	ILBM_freeColorNames               @110
 	ILBM_printColorNames              @111
 	ILBM_compareColorNames            @112
+	ILBM_createDPIHeader              @113
+	ILBM_readDPIHeader                @114
+	ILBM_writeDPIHeader               @115
+	ILBM_checkDPIHeader               @116
+	ILBM_freeDPIHeader                @117
+	ILBM_printDPIHeader               @118
+	ILBM_compareDPIHeader             @119
