@@ -3,7 +3,10 @@
 , buildForAmiga ? false
 , buildForWindows ? false
 , amigaosenvPath ? <amigaosenv>
-, libiffJobset ? import ../libiff/release.nix { inherit nixpkgs systems officialRelease buildForAmiga buildForWindows; }
+, kickstartROMFile ? null
+, baseDiskImage ? null
+, useUAE ? true
+, libiffJobset ? import ../libiff/release.nix { inherit nixpkgs systems officialRelease buildForAmiga buildForWindows kickstartROMFile baseDiskImage useUAE; }
 , libilbm ? {outPath = ./.; rev = 1234;}
 , officialRelease ? false
 }:
@@ -65,8 +68,8 @@ let
       (pkgs.lib.optionalAttrs (buildForAmiga)
         (let
           amigaosenv = import amigaosenvPath {
-            inherit (pkgs) stdenv uae procps;
-            lndir = pkgs.xorg.lndir;
+            inherit (pkgs) stdenv fetchurl lhasa uae fsuae procps bchunk cdrtools;
+            inherit (pkgs.xorg) lndir;
           };
         in
         {
@@ -87,6 +90,7 @@ let
             '';
             
             buildInputs = [ libiff ];
+            inherit kickstartROMFile baseDiskImage useUAE;
           };
         
           m68k-amigaos.tools = let
@@ -106,6 +110,7 @@ let
             '';
             
             buildInputs = [ libiff ];
+            inherit kickstartROMFile baseDiskImage useUAE;
           };
         }));
   };
