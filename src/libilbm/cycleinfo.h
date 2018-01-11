@@ -27,6 +27,9 @@
 #include <libiff/group.h>
 #include <libiff/chunk.h>
 
+#define ILBM_CYCLEINFO_SHIFT_LEFT -1
+#define ILBM_CYCLEINFO_SHIFT_RIGHT 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif

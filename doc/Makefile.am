@@ -1,3 +1,3 @@
-doc_DATA = ACBM.asc ILBM-additions.asc ILBM.asc ILBM.DRNG-additions.asc ILBM.DRNG.asc PBM.asc
+doc_DATA = ACBM.asc ILBM-appendix.asc ILBM.asc ILBM_CMYK.txt ILBM_CNAM.txt ILBM_DPI.txt ILBM.DRNG.asc
 
-EXTRA_DIST = ACBM.asc ILBM-additions.asc ILBM.asc ILBM.DRNG-additions.asc ILBM.DRNG.asc PBM.asc
+EXTRA_DIST = ACBM.asc ILBM-appendix.asc ILBM.asc ILBM_CMYK.txt ILBM_CNAM.txt ILBM_DPI.txt ILBM.DRNG.asc

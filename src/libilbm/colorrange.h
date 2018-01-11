@@ -32,6 +32,7 @@ extern "C" {
 #endif
 
 #define ILBM_COLORRANGE_60_STEPS_PER_SECOND 16384
+#define ILBM_COLORRANGE_SHIFT_RIGHT 0x2
 
 typedef struct
 {
