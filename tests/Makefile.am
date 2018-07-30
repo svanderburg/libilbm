@@ -42,6 +42,6 @@ byterun_SOURCES = byterun.c
 byterun_LDADD = ../src/libilbm/libilbm.la $(LIBIFF_LIBS)
 byterun_CFLAGS = -I../src/libilbm $(LIBIFF_CFLAGS)
 
-TESTS = writesimpleilbm writesimpleilbm-padded readsimpleilbm check-missing-BMHD.sh writesimplepbm readsimplepbm writesimpleacbm readsimpleacbm interleave-simple.sh interleave-simple-padded.sh byterun-simple.sh byterun-simple-padded.sh
+TESTS = writesimpleilbm writesimpleilbm-padded readsimpleilbm writesimplepbm readsimplepbm writesimpleacbm readsimpleacbm interleave-simple.sh interleave-simple-padded.sh byterun-simple.sh byterun-simple-padded.sh
 
-EXTRA_DIST = check-missing-BMHD.sh missing-BMHD.ILBM interleave-simple.sh interleave-simple-padded.sh byterun-simple.sh byterun-simple-padded.sh
+EXTRA_DIST = interleave-simple.sh interleave-simple-padded.sh byterun-simple.sh byterun-simple-padded.sh

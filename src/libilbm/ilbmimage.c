@@ -37,14 +37,14 @@ ILBM_Image *ILBM_createImage(char *formType)
     return image;
 }
 
-static ILBM_Image *createImageFromForm(IFF_Form *form)
+static ILBM_Image *createImageFromForm(IFF_Form *form, ILBM_BitMapHeader *bitMapHeader)
 {
     ILBM_Image *image = (ILBM_Image*)malloc(sizeof(ILBM_Image));
 
     if(image != NULL)
     {
         IFF_createId(image->formType, form->formType);
-        image->bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(form, "BMHD");
+        image->bitMapHeader = bitMapHeader;
         image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
         image->cmykMap = (ILBM_CMYKMap*)IFF_getChunkFromForm(form, "CMYK");
         image->colorNames = (ILBM_ColorNames*)IFF_getChunkFromForm(form, "CNAM");
@@ -66,24 +66,45 @@ static ILBM_Image *createImageFromForm(IFF_Form *form)
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 {
     const char *formTypes[] = { "ACBM", "ILBM", "PBM " };
-    IFF_Form **imageForms = IFF_searchFormsFromArray(chunk, formTypes, 3, imagesLength);
+    unsigned int formsLength;
+    IFF_Form **imageForms = IFF_searchFormsFromArray(chunk, formTypes, 3, &formsLength);
 
-    if(*imagesLength == 0)
+    if(formsLength == 0)
     {
-        IFF_error("No form with formType: 'ILBM', 'PBM ' or 'ACBM' found!\n");
+        IFF_error("No form with formType: 'ACBM', 'ILBM' or 'PBM ' found!\n");
         return NULL;
     }
     else
     {
-        ILBM_Image **images = (ILBM_Image**)malloc(*imagesLength * sizeof(ILBM_Image*));
+        ILBM_Image **images = (ILBM_Image**)malloc(formsLength * sizeof(ILBM_Image*));
 
         if(images != NULL)
         {
-            unsigned int i;
+            unsigned int i, count = 0;
 
             /* Extract all supported images */
-            for(i = 0; i < *imagesLength; i++)
-                images[i] = createImageFromForm(imageForms[i]);
+            for(i = 0; i < formsLength; i++)
+            {
+                IFF_Form *imageForm = imageForms[i];
+
+                /*
+                 * Only include images with a bitmap header. Images without a
+                 * bitmap header could be delta frames in the ANIM format. By
+                 * filtering them out, we can still see the first frame image.
+                 */
+
+                ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(imageForm, "BMHD");
+
+                if(bitMapHeader != NULL)
+                {
+                    images[count] = createImageFromForm(imageForm, bitMapHeader);
+                    count++;
+                }
+            }
+
+            /* Adjust the length to only include the displayable images */
+            images = (ILBM_Image**)realloc(images, count * sizeof(ILBM_Image*));
+            *imagesLength = count;
 
             /* Clean up stuff */
             free(imageForms);
