@@ -37,13 +37,13 @@ ILBM_Image *ILBM_createImage(char *formType)
     return image;
 }
 
-static ILBM_Image *createImageFromForm(IFF_Form *form, char *formType)
+static ILBM_Image *createImageFromForm(IFF_Form *form)
 {
     ILBM_Image *image = (ILBM_Image*)malloc(sizeof(ILBM_Image));
-    
+
     if(image != NULL)
     {
-        IFF_createId(image->formType, formType);
+        IFF_createId(image->formType, form->formType);
         image->bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(form, "BMHD");
         image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
         image->cmykMap = (ILBM_CMYKMap*)IFF_getChunkFromForm(form, "CMYK");
@@ -65,15 +65,9 @@ static ILBM_Image *createImageFromForm(IFF_Form *form, char *formType)
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 {
-    unsigned int ilbmFormsLength;
-    IFF_Form **ilbmForms = IFF_searchForms(chunk, "ILBM", &ilbmFormsLength);
-    unsigned int pbmFormsLength;
-    IFF_Form **pbmForms = IFF_searchForms(chunk, "PBM ", &pbmFormsLength);
-    unsigned int acbmFormsLength;
-    IFF_Form **acbmForms = IFF_searchForms(chunk, "ACBM", &acbmFormsLength);
-    
-    *imagesLength = ilbmFormsLength + pbmFormsLength + acbmFormsLength;
-    
+    const char *formTypes[] = { "ACBM", "ILBM", "PBM " };
+    IFF_Form **imageForms = IFF_searchFormsFromArray(chunk, formTypes, 3, imagesLength);
+
     if(*imagesLength == 0)
     {
         IFF_error("No form with formType: 'ILBM', 'PBM ' or 'ACBM' found!\n");
@@ -82,42 +76,19 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
     else
     {
         ILBM_Image **images = (ILBM_Image**)malloc(*imagesLength * sizeof(ILBM_Image*));
-        
+
         if(images != NULL)
         {
-            unsigned int offset, i;
-            
-            /* Extract all ILBM images */
-            for(i = 0; i < ilbmFormsLength; i++)
-            {
-                IFF_Form *ilbmForm = ilbmForms[i];
-                images[i] = createImageFromForm(ilbmForm, "ILBM");
-            }
-            
-            offset = ilbmFormsLength;
-            
-            /* Extract all PBM images */
-            for(i = 0; i < pbmFormsLength; i++)
-            {
-                IFF_Form *pbmForm = pbmForms[i];
-                images[offset + i] = createImageFromForm(pbmForm, "PBM ");
-            }
-            
-            offset += pbmFormsLength;
-            
-            /* Extract all ACBM images */
-            for(i = 0; i < acbmFormsLength; i++)
-            {
-                IFF_Form *acbmForm = acbmForms[i];
-                images[offset + i] = createImageFromForm(acbmForm, "ACBM");
-            }
-            
+            unsigned int i;
+
+            /* Extract all supported images */
+            for(i = 0; i < *imagesLength; i++)
+                images[i] = createImageFromForm(imageForms[i]);
+
             /* Clean up stuff */
-            free(ilbmForms);
-            free(pbmForms);
-            free(acbmForms);
+            free(imageForms);
         }
-        
+
         /* Return generated images array */
         return images;
     }

@@ -28,6 +28,7 @@ let
         src = libilbm;
         inherit version officialRelease;
         dontBuild = false;
+        CFLAGS = "-ansi -pedantic -Wall";
 
         buildInputs = [ pkgconfig help2man libiff ];
       };
