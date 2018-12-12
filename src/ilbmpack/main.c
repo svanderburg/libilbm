@@ -35,45 +35,57 @@
 
 static void printUsage(const char *command)
 {
+    printf(
 #if _MSC_VER
-    printf("Usage: %s /c [OPTION] [/i file.IFF] [/o file.IFF]\n", command);
-    printf("  or: %s /d [OPTION] [/i file.IFF] [/o file.IFF]\n\n", command);
+    "Usage: %s /c [OPTION] [/i file.IFF] [/o file.IFF]\n"
+    "  or: %s /d [OPTION] [/i file.IFF] [/o file.IFF]\n\n"
 #else
-    printf("Usage: %s -c [OPTION] [-i file.IFF] [-o file.IFF]\n", command);
-    printf("  or: %s -d [OPTION] [-i file.IFF] [-o file.IFF]\n\n", command);
+    "Usage: %s -c [OPTION] [-i file.IFF] [-o file.IFF]\n"
+    "  or: %s -d [OPTION] [-i file.IFF] [-o file.IFF]\n\n"
 #endif
+    , command, command);
 
-    printf("The command `ilbmpack' compresses or decompresses all the BODY chunks of all\n");
-    printf("ILBM forms in the given IFF file using the byte run (packbits) algorithm. If no\n");
-    printf("IFF file is specified, it reads an IFF file from the standard input.\n\n");
-    
-    printf("Options:\n\n");
+    puts(
+    "The command `ilbmpack' compresses or decompresses all the BODY chunks of all\n"
+    "ILBM forms in the given IFF file using the byte run (packbits) algorithm. If no\n"
+    "IFF file is specified, it reads an IFF file from the standard input.\n"
+    );
+
+    puts(
+    "Options:\n\n"
 #if _MSC_VER
-    printf("  /c       Compress the ILBM images\n");
-    printf("  /d       Decompress the ILBM images\n");
-    printf("  /i FILE  Specifies the input IFF file. If no input file is given,\n");
-    printf("           then data will be read from the standard input\n");
-    printf("  /o FILE  Specifies the output IFF file. If no output file is\n");
-    printf("           given, then data will be written to the standard output\n");
-    printf("  /?       Shows the usage of this command to the user\n");
-    printf("  /v       Shows the version of this command to the user\n");
+    "  /c       Compress the ILBM images\n"
+    "  /d       Decompress the ILBM images\n"
+    "  /i FILE  Specifies the input IFF file. If no input file is given,\n"
+    "           then data will be read from the standard input"
+    );
+    puts(
+    "  /o FILE  Specifies the output IFF file. If no output file is\n"
+    "           given, then data will be written to the standard output\n"
+    "  /?       Shows the usage of this command to the user\n"
+    "  /v       Shows the version of this command to the user\n"
 #else
-    printf("  -c, --compress          Compress the ILBM images\n");
-    printf("  -d, --decompress        Decompress the ILBM images\n");
-    printf("  -i, --input-file=FILE   Specifies the input IFF file. If no input file is\n");
-    printf("                          given, then data will be read from the standard input\n");
-    printf("  -o, --output-file=FILE  Specifies the output IFF file. If no output file is\n");
-    printf("                          given, then data will be written to the standard\n");
-    printf("                          output\n");
-    printf("  -h, --help              Shows the usage of this command to the user\n");
-    printf("  -v, --version           Shows the version of this command to the user\n");
+    "  -c, --compress          Compress the ILBM images\n"
+    "  -d, --decompress        Decompress the ILBM images\n"
+    "  -i, --input-file=FILE   Specifies the input IFF file. If no input file is\n"
+    "                          given, then data will be read from the standard input"
+    );
+    puts(
+    "  -o, --output-file=FILE  Specifies the output IFF file. If no output file is\n"
+    "                          given, then data will be written to the standard\n"
+    "                          output\n"
+    "  -h, --help              Shows the usage of this command to the user\n"
+    "  -v, --version           Shows the version of this command to the user"
 #endif
+    );
 }
 
 static void printVersion(const char *command)
 {
-    printf("%s (" PACKAGE_NAME ") " PACKAGE_VERSION "\n\n", command);
-    printf("Copyright (C) 2012-2015 Sander van der Burg\n");
+    printf(
+    "%s (" PACKAGE_NAME ") " PACKAGE_VERSION "\n\n"
+    "Copyright (C) 2012-2015 Sander van der Burg\n"
+    , command);
 }
 
 int main(int argc, char *argv[])

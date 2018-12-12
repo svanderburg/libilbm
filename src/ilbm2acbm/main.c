@@ -35,43 +35,50 @@
 
 static void printUsage(const char *command)
 {
+    printf(
 #if _MSC_VER
-    printf("Usage: %s [OPTION] [/i file.IFF] [/o file.IFF] file.ILBM\n\n", command);
+    "Usage: %s [OPTION] [/i file.IFF] [/o file.IFF] file.ILBM\n\n"
 #else
-    printf("Usage: %s [OPTION] [-i file.IFF] [-o file.IFF] file.ILBM\n\n", command);
+    "Usage: %s [OPTION] [-i file.IFF] [-o file.IFF] file.ILBM\n\n"
 #endif
+    , command);
+    puts(
+    "The command `ilbm2acbm' converts all ILBM images inside an IFF file to ACBM\n"
+    "images.\n\n"
+    "This command only converts uncompressed ILBM forms. Compressed forms are\n"
+    "automatically skipped.\n\n"
+    "If needed, these forms can be uncompressed by running the `ilbmpack' command\n"
+    "first, redirecting its output to the standard output and let `ilbm2acbm' read\n"
+    "from the standard input.\n"
+    );
 
-    printf("The command `ilbm2acbm' converts all ILBM images inside an IFF file to ACBM\n");
-    printf("images.\n\n");
-    printf("This command only converts uncompressed ILBM forms. Compressed forms are\n");
-    printf("automatically skipped.\n\n");
-    printf("If needed, these forms can be uncompressed by running the `ilbmpack' command\n");
-    printf("first, redirecting its output to the standard output and let `ilbm2acbm' read\n");
-    printf("from the standard input.\n\n");
-
-    printf("Options:\n\n");
+    puts(
+    "Options:\n\n"
 #if _MSC_VER
-    printf("  /i FILE    Specifies the input IFF file. If no input file is given,\n");
-    printf("             then data will be read from the standard input\n");
-    printf("  /o FILE    Specifies the output IFF file. If no output file is given,\n");
-    printf("             then data will be written to the standard output.\n");
-    printf("  /?         Shows the usage of this command to the user\n");
-    printf("  /v         Shows the version of this command to the user\n");
+    "  /i FILE    Specifies the input IFF file. If no input file is given,\n"
+    "             then data will be read from the standard input\n"
+    "  /o FILE    Specifies the output IFF file. If no output file is given,\n"
+    "             then data will be written to the standard output.\n"
+    "  /?         Shows the usage of this command to the user\n"
+    "  /v         Shows the version of this command to the user"
 #else
-    printf("  -i, --input-file=FILE   Specifies the input IFF file. If no input file is\n");
-    printf("                          given, then data will be read from the standard input\n");
-    printf("  -o, --output-file=FILE  Specifies the output IFF file. If no output file is\n");
-    printf("                          given, then data will be written to the standard\n");
-    printf("                          output.\n");
-    printf("  -h, --help              Shows the usage of this command to the user\n");
-    printf("  -v, --version           Shows the version of this command to the user\n");
+    "  -i, --input-file=FILE   Specifies the input IFF file. If no input file is\n"
+    "                          given, then data will be read from the standard input\n"
+    "  -o, --output-file=FILE  Specifies the output IFF file. If no output file is\n"
+    "                          given, then data will be written to the standard\n"
+    "                          output.\n"
+    "  -h, --help              Shows the usage of this command to the user\n"
+    "  -v, --version           Shows the version of this command to the user"
 #endif
+    );
 }
 
 static void printVersion(const char *command)
 {
-    printf("%s (" PACKAGE_NAME ") " PACKAGE_VERSION "\n\n", command);
-    printf("Copyright (C) 2012-2015 Sander van der Burg\n");
+    printf(
+    "%s (" PACKAGE_NAME ") " PACKAGE_VERSION "\n\n"
+    "Copyright (C) 2012-2015 Sander van der Burg\n"
+    , command);
 }
 
 int main(int argc, char *argv[])
