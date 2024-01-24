@@ -61,7 +61,7 @@ ILBM_DFade;
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
 
@@ -71,10 +71,10 @@ typedef struct
     IFF_Word flags;
     IFF_UByte ntrue;
     IFF_UByte nregs;
-    
+
     ILBM_DColor *dcolor;
     ILBM_DIndex *dindex;
-    
+
     IFF_UByte nfades;
     IFF_UByte pad;
     ILBM_DFade *dfade;
@@ -91,15 +91,15 @@ ILBM_DFade *ILBM_addDFadeToDRange(ILBM_DRange *drange);
 
 IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkDRange(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkDRange(const IFF_Chunk *chunk);
 
 void ILBM_freeDRange(IFF_Chunk *chunk);
 
 void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

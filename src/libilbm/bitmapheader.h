@@ -50,10 +50,10 @@ ILBM_Compression;
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_UWord w, h;
     IFF_Word x, y;
     IFF_UByte nPlanes;
@@ -70,15 +70,15 @@ ILBM_BitMapHeader *ILBM_createBitMapHeader(void);
 
 IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkBitMapHeader(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkBitMapHeader(const IFF_Chunk *chunk);
 
 void ILBM_freeBitMapHeader(IFF_Chunk *chunk);
 
 void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 unsigned int ILBM_calculateNumOfColors(const ILBM_BitMapHeader *bitMapHeader);
 

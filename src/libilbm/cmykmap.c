@@ -30,59 +30,59 @@
 ILBM_CMYKMap *ILBM_createCMYKMap(void)
 {
     ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_CMYKMap));
-    
+
     if(cmykMap != NULL)
     {
         cmykMap->chunkSize = 0;
-    
+
         cmykMap->cmykRegisterLength = 0;
         cmykMap->cmykRegister = NULL;
     }
-    
+
     return cmykMap;
 }
 
 ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
 {
     ILBM_CMYKRegister *cmykRegister;
-    
+
     cmykMap->cmykRegister = (ILBM_CMYKRegister*)realloc(cmykMap->cmykRegister, (cmykMap->cmykRegisterLength + 1) * sizeof(ILBM_CMYKRegister));
     cmykRegister = &cmykMap->cmykRegister[cmykMap->cmykRegisterLength];
     cmykMap->cmykRegisterLength++;
-    
+
     cmykMap->chunkSize += sizeof(ILBM_CMYKRegister);
-    
+
     return cmykRegister;
 }
 
 IFF_Chunk *ILBM_readCMYKMap(FILE *file, const IFF_Long chunkSize)
 {
     ILBM_CMYKMap *cmykMap = ILBM_createCMYKMap();
-    
+
     if(cmykMap != NULL)
     {
         while(cmykMap->chunkSize < chunkSize)
         {
             ILBM_CMYKRegister *cmykRegister = ILBM_addCMYKRegisterInCMYKMap(cmykMap);
-        
+
             if(!IFF_readUByte(file, &cmykRegister->cyan, CHUNKID, "cmykRegister.cyan"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
             }
-            
+
             if(!IFF_readUByte(file, &cmykRegister->magenta, CHUNKID, "cmykRegister.magenta"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
             }
-        
+
             if(!IFF_readUByte(file, &cmykRegister->yellow, CHUNKID, "cmykRegister.yellow"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
             }
-        
+
             if(!IFF_readUByte(file, &cmykRegister->black, CHUNKID, "cmykRegister.black"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
@@ -90,36 +90,36 @@ IFF_Chunk *ILBM_readCMYKMap(FILE *file, const IFF_Long chunkSize)
             }
         }
     }
-    
+
     return (IFF_Chunk*)cmykMap;
 }
 
-int ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_CMYKMap *cmykMap = (const ILBM_CMYKMap*)chunk;
     unsigned int i;
-    
+
     for(i = 0; i < cmykMap->cmykRegisterLength; i++)
     {
         ILBM_CMYKRegister *cmykRegister = &cmykMap->cmykRegister[i];
-        
+
         if(!IFF_writeUByte(file, cmykRegister->cyan, CHUNKID, "cmykRegister.cyan"))
             return FALSE;
-        
+
         if(!IFF_writeUByte(file, cmykRegister->magenta, CHUNKID, "cmykRegister.magenta"))
             return FALSE;
-        
+
         if(!IFF_writeUByte(file, cmykRegister->yellow, CHUNKID, "cmykRegister.yellow"))
             return FALSE;
-        
+
         if(!IFF_writeUByte(file, cmykRegister->black, CHUNKID, "cmykRegister.black"))
             return FALSE;
     }
-    
+
     return TRUE;
 }
 
-int ILBM_checkCMYKMap(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk)
 {
     return TRUE;
 }
@@ -134,7 +134,7 @@ void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
     const ILBM_CMYKMap *cmykMap = (const ILBM_CMYKMap*)chunk;
     unsigned int i;
-    
+
     for(i = 0; i < cmykMap->cmykRegisterLength; i++)
     {
         IFF_printIndent(stdout, indentLevel, "{ cyan = %x, magenta = %x, yellow = %x, black = %x };\n",
@@ -142,31 +142,31 @@ void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
     }
 }
 
-int ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
 {
     const ILBM_CMYKMap *cmykMap1 = (const ILBM_CMYKMap*)chunk1;
     const ILBM_CMYKMap *cmykMap2 = (const ILBM_CMYKMap*)chunk2;
     unsigned int i;
-    
+
     if(cmykMap1->cmykRegisterLength == cmykMap2->cmykRegisterLength)
     {
         for(i = 0; i < cmykMap1->cmykRegisterLength; i++)
         {
             if(cmykMap1->cmykRegister[i].cyan != cmykMap2->cmykRegister[i].cyan)
                 return FALSE;
-        
+
             if(cmykMap1->cmykRegister[i].magenta != cmykMap2->cmykRegister[i].magenta)
                 return FALSE;
-        
+
             if(cmykMap1->cmykRegister[i].yellow != cmykMap2->cmykRegister[i].yellow)
                 return FALSE;
-        
+
             if(cmykMap1->cmykRegister[i].black != cmykMap2->cmykRegister[i].black)
                 return FALSE;
         }
     }
     else
         return FALSE;
-    
+
     return TRUE;
 }

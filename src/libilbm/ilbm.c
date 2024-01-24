@@ -43,17 +43,17 @@ IFF_Chunk *ILBM_readFd(FILE *file)
     return IFF_readFd(file, extension, ILBM_NUM_OF_FORM_TYPES);
 }
 
-int ILBM_writeFd(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_writeFd(FILE *file, const IFF_Chunk *chunk)
 {
     return IFF_writeFd(file, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
 }
 
-int ILBM_write(const char *filename, const IFF_Chunk *chunk)
+IFF_Bool ILBM_write(const char *filename, const IFF_Chunk *chunk)
 {
     return IFF_write(filename, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
 }
 
-int ILBM_check(const IFF_Chunk *chunk)
+IFF_Bool ILBM_check(const IFF_Chunk *chunk)
 {
     return IFF_check(chunk, extension, ILBM_NUM_OF_FORM_TYPES);
 }
@@ -68,7 +68,7 @@ void ILBM_print(const IFF_Chunk *chunk, const unsigned int indentLevel)
     IFF_print(chunk, 0, extension, ILBM_NUM_OF_FORM_TYPES);
 }
 
-int ILBM_compare(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compare(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
 {
     return IFF_compare(chunk1, chunk2, extension, ILBM_NUM_OF_FORM_TYPES);
 }

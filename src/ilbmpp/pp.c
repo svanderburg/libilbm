@@ -25,35 +25,35 @@
 int ILBM_prettyPrint(const char *filename, const int options)
 {
     IFF_Chunk *chunk;
-    
+
     if(filename == NULL)
-	chunk = ILBM_readFd(stdin);
+        chunk = ILBM_readFd(stdin);
     else
-	chunk = ILBM_read(filename);
-    
+        chunk = ILBM_read(filename);
+
     if(chunk == NULL)
     {
-	fprintf(stderr, "Cannot open ILBM file!\n");
-	return 1;
+        fprintf(stderr, "Cannot open ILBM file!\n");
+        return 1;
     }
     else
     {
-	int status;
-	
-	/* Check the file */
-	if((options & ILBMPP_DISABLE_CHECK) || ILBM_check(chunk))
-	{
-	    /* Print the file */
-	    ILBM_print(chunk, 0); 
-	    
-	    status = 0;
-	}
-	else
-	    status = 1;
-	
-	/* Free the chunk structure */
-	ILBM_free(chunk);
-	
-	return status;
+        int status;
+
+        /* Check the file */
+        if((options & ILBMPP_DISABLE_CHECK) || ILBM_check(chunk))
+        {
+            /* Print the file */
+            ILBM_print(chunk, 0); 
+
+            status = 0;
+        }
+        else
+            status = 1;
+
+        /* Free the chunk structure */
+        ILBM_free(chunk);
+
+        return status;
     }
 }

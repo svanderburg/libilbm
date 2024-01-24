@@ -46,15 +46,15 @@ ILBM_Sprite *ILBM_createSprite(void);
 
 IFF_Chunk *ILBM_readSprite(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkSprite(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkSprite(const IFF_Chunk *chunk);
 
 void ILBM_freeSprite(IFF_Chunk *chunk);
 
 void ILBM_printSprite(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareSprite(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareSprite(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

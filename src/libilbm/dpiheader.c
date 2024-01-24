@@ -30,49 +30,49 @@
 ILBM_DPIHeader *ILBM_createDPIHeader(void)
 {
     ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_DPIHeader));
-    
+
     if(dpiHeader != NULL)
-	dpiHeader->chunkSize = 2 * sizeof(IFF_UWord);
-    
+        dpiHeader->chunkSize = 2 * sizeof(IFF_UWord);
+
     return dpiHeader;
 }
 
 IFF_Chunk *ILBM_readDPIHeader(FILE *file, const IFF_Long chunkSize)
 {
     ILBM_DPIHeader *dpiHeader = ILBM_createDPIHeader();
-    
+
     if(dpiHeader != NULL)
     {
-	if(!IFF_readUWord(file, &dpiHeader->dpiX, CHUNKID, "dpiX"))
-	{
-	    ILBM_free((IFF_Chunk*)dpiHeader);
-	    return NULL;
-	}
-    
-	if(!IFF_readUWord(file, &dpiHeader->dpiY, CHUNKID, "dpiY"))
-	{
-	    ILBM_free((IFF_Chunk*)dpiHeader);
-	    return NULL;
-	}
+        if(!IFF_readUWord(file, &dpiHeader->dpiX, CHUNKID, "dpiX"))
+        {
+            ILBM_free((IFF_Chunk*)dpiHeader);
+            return NULL;
+        }
+
+        if(!IFF_readUWord(file, &dpiHeader->dpiY, CHUNKID, "dpiY"))
+        {
+            ILBM_free((IFF_Chunk*)dpiHeader);
+            return NULL;
+        }
     }
-    
+
     return (IFF_Chunk*)dpiHeader;
 }
 
-int ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_DPIHeader *dpiHeader = (const ILBM_DPIHeader*)chunk;
-    
+
     if(!IFF_writeUWord(file, dpiHeader->dpiX, CHUNKID, "dpiX"))
-	return FALSE;
-	
+        return FALSE;
+
     if(!IFF_writeUWord(file, dpiHeader->dpiY, CHUNKID, "dpiY"))
-	return FALSE;
-	
+        return FALSE;
+
     return TRUE;
 }
 
-int ILBM_checkDPIHeader(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk)
 {
     return TRUE;
 }
@@ -84,21 +84,21 @@ void ILBM_freeDPIHeader(IFF_Chunk *chunk)
 void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
     const ILBM_DPIHeader *dpiHeader = (const ILBM_DPIHeader*)chunk;
-    
+
     IFF_printIndent(stdout, indentLevel, "dpiX = %u;\n", dpiHeader->dpiX);
     IFF_printIndent(stdout, indentLevel, "dpiY = %u;\n", dpiHeader->dpiY);
 }
 
-int ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
 {
     const ILBM_DPIHeader *dpiHeader1 = (const ILBM_DPIHeader*)chunk1;
     const ILBM_DPIHeader *dpiHeader2 = (const ILBM_DPIHeader*)chunk2;
-    
+
     if(dpiHeader1->dpiX != dpiHeader2->dpiX)
-	return FALSE;
-    
+        return FALSE;
+
     if(dpiHeader1->dpiY != dpiHeader2->dpiY)
-	return FALSE;
-    
+        return FALSE;
+
     return TRUE;
 }

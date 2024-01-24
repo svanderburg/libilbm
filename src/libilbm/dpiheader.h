@@ -37,7 +37,7 @@ typedef struct
 
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_UWord dpiX, dpiY;
 }
 ILBM_DPIHeader;
@@ -46,15 +46,15 @@ ILBM_DPIHeader *ILBM_createDPIHeader(void);
 
 IFF_Chunk *ILBM_readDPIHeader(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkDPIHeader(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk);
 
 void ILBM_freeDPIHeader(IFF_Chunk *chunk);
 
 void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

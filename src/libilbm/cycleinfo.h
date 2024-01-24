@@ -37,10 +37,10 @@ extern "C" {
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_Word direction;
     IFF_UByte start, end;
     IFF_Long seconds;
@@ -53,15 +53,15 @@ ILBM_CycleInfo *ILBM_createCycleInfo(void);
 
 IFF_Chunk *ILBM_readCycleInfo(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkCycleInfo(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk);
 
 void ILBM_freeCycleInfo(IFF_Chunk *chunk);
 
 void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

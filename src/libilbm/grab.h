@@ -37,7 +37,7 @@ typedef struct
 
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_Word x, y;
 }
 ILBM_Point2D;
@@ -46,15 +46,15 @@ ILBM_Point2D *ILBM_createGrab(void);
 
 IFF_Chunk *ILBM_readGrab(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkGrab(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkGrab(const IFF_Chunk *chunk);
 
 void ILBM_freeGrab(IFF_Chunk *chunk);
 
 void ILBM_printGrab(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareGrab(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareGrab(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

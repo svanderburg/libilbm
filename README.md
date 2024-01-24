@@ -37,9 +37,11 @@ Installation on Unix-like systems
 Compilation and installation of this library on Unix-like systems is straight
 forward, by using the standard GNU autotools build instructions:
 
-    $ ./configure
-    $ make
-    $ make install
+```bash
+$ ./configure
+$ make
+$ make install
+```
 
 More details about the installation process can be found in the `INSTALL` file
 included in this package.
@@ -50,7 +52,9 @@ This package can also be built with Visual C++ for Windows platforms. The
 solution file resides in `src/libilbm.sln` that can be opened in Visual Studio
 to edit or build it. Alternatively, you can also use `MSBuild` to compile it:
 
-    $ MSBuild libilbm.sln
+```
+$ MSBuild libilbm.sln
+```
 
 To make any builds work you must have built `libiff` first. By default, the
 project file looks for the `libiff` folder that resides in the parent directory
@@ -59,7 +63,9 @@ of the current solution.
 You can also specify the location of the `libiff` includes and `libiff` libraries
 through property parameters:
 
-    $ MSBuild /p:libiffIncludePath:..\..\..\libiff\src /p:libiffLibPath:..\..\..\libiff\src\Debug libilbm.sln
+```
+$ MSBuild /p:libiffIncludePath:..\..\..\libiff\src /p:libiffLibPath:..\..\..\libiff\src\Debug libilbm.sln
+```
 
 The output is produced in the `Debug/` directory.
 
@@ -102,9 +108,9 @@ int main(int argc, char *argv[])
     unsigned int imagesLength;
     IFF_Chunk *chunk = ILBM_read("input.ILBM");
     ILBM_Image **image = ILBM_extractImages(chunk, &imagesLength);
-    
+
     /* Retrieve an image from the array and access its properties here */
-    
+
     return 0;
 }
 ```
@@ -125,9 +131,9 @@ int main(int argc, char *argv[])
      * types can be used to create these corresponding images.
      */
     ILBM_Image *image = ILBM_createImage("ILBM");
-    
+
     ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
-    
+
     /* Create bitmap header properties */
     bitMapHeader->w = 320;
     bitMapHeader->h = 200;
@@ -140,10 +146,10 @@ int main(int argc, char *argv[])
     bitMapHeader->yAspect = 10;
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 200;
-    
+
     /* Attach bitmap header to the image */
     image->bitMapHeader = bitMapHeader;
-    
+
     return 0;
 }
 ```
@@ -164,21 +170,21 @@ int main(int argc, char *argv[])
     IFF_Chunk *chunk;
     ILBM_Image **images;
     unsigned int i, imagesLength;
-    
+
     /* Open or create ILBM forms here */
-    
+
     images = ILBM_extractImages(chunk, &imagesLength);
-    
+
     for(i = 0; i < imagesLength; i++)
     {
         ILBM_Image *image = images[i];
         ILBM_BitMapHeader *bitMapHeader = image->bitMapHeader; /* Struct representing bitmap header properties */
         ILBM_ColorMap *colorMap = image->colorMap; /* Struct containing the color palette */
         IFF_RawChunk *body = image->body; /* Body chunk containing compressed or uncompressed planar graphics data */
-        
+
         /* Retrieve more properties here */
     }
-    
+
     return 0;
 }
 ```
@@ -197,11 +203,11 @@ int main(int argc, char *argv[])
 {
     ILBM_Image *image;
     IFF_Form *form;
-    
+
     /* Create an ILBM image here */
-    
+
     form = ILBM_convertImageToForm(image);
-    
+
     if(ILBM_write("output.ILBM", (IFF_Chunk*)form))
         return 0; /* File has been successfully written */
     else
@@ -246,12 +252,12 @@ be used.
 int main(int argc, char *argv[])
 {
     ILBM_Image *image;
-    
+
     /* Open an IFF file and extract an ILBM image here */
-    
+
     ILBM_unpackByteRun(image); /* Now the body of the image is decompressed */
     ILBM_packByteRun(image); /* Now the body of the image is compressed */
-    
+
     return 0;
 }
 ```
@@ -277,15 +283,15 @@ images. The `ILBM_imageIsILBM()` function can be used to check for this.
 int main(int argc, char *argv[])
 {
     ILBM_Image *image;
-    
+
     /* Open an IFF file and extract an ILBM image here */
-    
+
     if(ILBM_imageIsILBM(image)) /* It makes no sense for PBM or ACBM images */
     {
         IFF_UByte *bitplanes = ILBM_deinterleave(image); /* Produce a deinterleaved version of the body in the resulting array */
         IFF_UByte *interleavedBitplanes = ILBM_interleave(image, bitplanes); /* Interleave the given bitplanes and returns the resulting interleaved bitplane surface */
     }
-    
+
     return 0;
 }
 ```

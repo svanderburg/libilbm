@@ -37,7 +37,7 @@ typedef struct
 
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_Long viewportMode;
 }
 ILBM_Viewport;
@@ -46,15 +46,15 @@ ILBM_Viewport *ILBM_createViewport(void);
 
 IFF_Chunk *ILBM_readViewport(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkViewport(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkViewport(const IFF_Chunk *chunk);
 
 void ILBM_freeViewport(IFF_Chunk *chunk);
 
 void ILBM_printViewport(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareViewport(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareViewport(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

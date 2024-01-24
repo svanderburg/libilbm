@@ -34,13 +34,13 @@ extern "C" {
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_UWord startingColor;
     IFF_UWord endingColor;
-    
+
     unsigned int colorNamesLength;
     char **colorNames;
 }
@@ -52,15 +52,15 @@ void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName);
 
 IFF_Chunk *ILBM_readColorNames(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkColorNames(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk);
 
 void ILBM_freeColorNames(IFF_Chunk *chunk);
 
 void ILBM_printColorNames(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareColorNames(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareColorNames(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

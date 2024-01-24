@@ -34,10 +34,10 @@ extern "C" {
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     IFF_UByte depth;
     IFF_UByte pad1;
     IFF_UWord planePick;
@@ -50,15 +50,15 @@ ILBM_DestMerge *ILBM_createDestMerge(void);
 
 IFF_Chunk *ILBM_readDestMerge(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkDestMerge(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkDestMerge(const IFF_Chunk *chunk);
 
 void ILBM_freeDestMerge(IFF_Chunk *chunk);
 
 void ILBM_printDestMerge(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareDestMerge(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareDestMerge(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

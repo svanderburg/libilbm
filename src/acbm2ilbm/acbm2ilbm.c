@@ -27,12 +27,12 @@
 int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
 {
     IFF_Chunk *chunk;
-    
+
     if(inputFilename == NULL)
         chunk = ILBM_readFd(stdin);
     else
         chunk = ILBM_read(inputFilename);
-    
+
     if(chunk == NULL)
     {
         fprintf(stderr, "Error parsing ACBM file!\n");
@@ -43,7 +43,7 @@ int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
         unsigned int imagesLength;
         ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
         int status = 0;
-        
+
         if(!ILBM_checkImages(chunk, images, imagesLength))
         {
             fprintf(stderr, "Invalid ACBM file!\n");
@@ -57,11 +57,11 @@ int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
         else
         {
             unsigned int i;
-            
+
             for(i = 0; i < imagesLength; i++)
             {
                 ILBM_Image *image = images[i];
-                
+
                 if(image->bitMapHeader->compression == ILBM_CMP_NONE)
                 {
                     if(!ILBM_convertACBMToILBM(image))
@@ -73,7 +73,7 @@ int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
                 else
                     fprintf(stderr, "WARNING: image: %d is compressed! Skipping...", i);
             }
-            
+
             if(outputFilename == NULL)
             {
                 if(!ILBM_writeFd(stdout, chunk))
@@ -90,12 +90,12 @@ int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
                     status = 1;
                 }
             }
-            
+
             ILBM_freeImages(images, imagesLength);
         }
-        
+
         ILBM_free(chunk);
-        
+
         /* Everything has succeeded */
         return status;
     }

@@ -13,9 +13,9 @@
 
 let
   pkgs = import nixpkgs {};
-  
+
   version = builtins.readFile ./version;
-  
+
   jobs = rec {
     tarball =
       with pkgs;
@@ -30,13 +30,13 @@ let
         dontBuild = false;
         CFLAGS = "-ansi -pedantic -Wall";
 
-        buildInputs = [ pkgconfig help2man libiff ];
+        buildInputs = [ pkg-config help2man libiff ];
       };
-      
+
     build =
       (pkgs.lib.genAttrs systems (system:
         with import nixpkgs { inherit system; };
-        
+
         let
           libiff = builtins.getAttr system (libiffJobset.build);
         in
@@ -44,7 +44,7 @@ let
           name = "libilbm";
           inherit version;
           src = tarball;
-          buildInputs = [ pkgconfig libiff ];
+          buildInputs = [ pkg-config libiff ];
           CFLAGS = "-ansi -pedantic -Wall";
         }
       )) //
@@ -80,7 +80,7 @@ let
           amigaosenv.mkDerivation {
             name = "libilbm-${version}";
             src = "${tarball}/tarballs/libilbm-${version}pre1234.tar.gz";
-      
+
             buildCommand = ''
               tar xfvz $src
               cd libilbm-${version}pre1234
@@ -89,18 +89,18 @@ let
               make
               make install
             '';
-            
+
             buildInputs = [ libiff ];
             inherit kickstartROMFile baseDiskImage useUAE;
           };
-        
+
           m68k-amigaos.tools = let
             libiff = libiffJobset.build.m68k-amigaos.lib;
           in
           amigaosenv.mkDerivation {
             name = "libilbm-${version}";
             src = "${tarball}/tarballs/libilbm-${version}pre1234.tar.gz";
-      
+
             buildCommand = ''
               tar xfvz $src
               cd libilbm-${version}pre1234
@@ -109,7 +109,7 @@ let
               make check
               make install
             '';
-            
+
             buildInputs = [ libiff ];
             inherit kickstartROMFile baseDiskImage useUAE;
           };

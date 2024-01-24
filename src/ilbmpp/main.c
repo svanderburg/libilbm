@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 #endif
 
     /* Parse command-line options */
-    
+
 #if HAVE_GETOPT_H == 1
     while((c = getopt_long(argc, argv, "chv", long_options, &option_index)) != -1)
 #else
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     }
 #endif
     /* Validate non options */
-    
+
     if(optind >= argc)
         filename = NULL;
     else

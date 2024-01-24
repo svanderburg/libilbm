@@ -30,49 +30,49 @@
 ILBM_Point2D *ILBM_createGrab(void)
 {
     ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_Point2D));
-    
+
     if(point2d != NULL)
-	point2d->chunkSize = 2 * sizeof(IFF_Word);
-    
+        point2d->chunkSize = 2 * sizeof(IFF_Word);
+
     return point2d;
 }
 
 IFF_Chunk *ILBM_readGrab(FILE *file, const IFF_Long chunkSize)
 {
     ILBM_Point2D *point2d = ILBM_createGrab();
-    
+
     if(point2d != NULL)
     {
-	if(!IFF_readWord(file, &point2d->x, CHUNKID, "x"))
-	{
-	    ILBM_free((IFF_Chunk*)point2d);
-	    return NULL;
-	}
-    
-	if(!IFF_readWord(file, &point2d->y, CHUNKID, "y"))
-	{
-	    ILBM_free((IFF_Chunk*)point2d);
-	    return NULL;
-	}
+        if(!IFF_readWord(file, &point2d->x, CHUNKID, "x"))
+        {
+            ILBM_free((IFF_Chunk*)point2d);
+            return NULL;
+        }
+
+        if(!IFF_readWord(file, &point2d->y, CHUNKID, "y"))
+        {
+            ILBM_free((IFF_Chunk*)point2d);
+            return NULL;
+        }
     }
-    
+
     return (IFF_Chunk*)point2d;
 }
 
-int ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_Point2D *point2d = (const ILBM_Point2D*)chunk;
-    
+
     if(!IFF_writeWord(file, point2d->x, CHUNKID, "x"))
-	return FALSE;
-	
+        return FALSE;
+
     if(!IFF_writeWord(file, point2d->y, CHUNKID, "y"))
-	return FALSE;
-	
+        return FALSE;
+
     return TRUE;
 }
 
-int ILBM_checkGrab(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkGrab(const IFF_Chunk *chunk)
 {
     return TRUE;
 }
@@ -84,21 +84,21 @@ void ILBM_freeGrab(IFF_Chunk *chunk)
 void ILBM_printGrab(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
     const ILBM_Point2D *point2d = (const ILBM_Point2D*)chunk;
-    
+
     IFF_printIndent(stdout, indentLevel, "x = %d;\n", point2d->x);
     IFF_printIndent(stdout, indentLevel, "y = %d;\n", point2d->y);
 }
 
-int ILBM_compareGrab(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareGrab(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
 {
     const ILBM_Point2D *point2d1 = (const ILBM_Point2D*)chunk1;
     const ILBM_Point2D *point2d2 = (const ILBM_Point2D*)chunk2;
-    
+
     if(point2d1->x != point2d2->x)
-	return FALSE;
-    
+        return FALSE;
+
     if(point2d1->y != point2d2->y)
-	return FALSE;
-    
+        return FALSE;
+
     return TRUE;
 }

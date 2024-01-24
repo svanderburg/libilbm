@@ -40,10 +40,10 @@ ILBM_ColorRegister;
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     unsigned int colorRegisterLength;
     ILBM_ColorRegister *colorRegister;
 }
@@ -55,15 +55,15 @@ ILBM_ColorRegister *ILBM_addColorRegisterInColorMap(ILBM_ColorMap *colorMap);
 
 IFF_Chunk *ILBM_readColorMap(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkColorMap(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkColorMap(const IFF_Chunk *chunk);
 
 void ILBM_freeColorMap(IFF_Chunk *chunk);
 
 void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

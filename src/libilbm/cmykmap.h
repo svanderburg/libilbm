@@ -40,10 +40,10 @@ ILBM_CMYKRegister;
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
-    
+
     unsigned int cmykRegisterLength;
     ILBM_CMYKRegister *cmykRegister;
 }
@@ -55,15 +55,15 @@ ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap);
 
 IFF_Chunk *ILBM_readCMYKMap(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkCMYKMap(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk);
 
 void ILBM_freeCMYKMap(IFF_Chunk *chunk);
 
 void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

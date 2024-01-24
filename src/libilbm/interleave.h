@@ -33,13 +33,13 @@ void ILBM_deinterleaveToBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitp
 
 IFF_UByte *ILBM_deinterleave(const ILBM_Image *image);
 
-int ILBM_convertILBMToACBM(ILBM_Image *image);
+IFF_Bool ILBM_convertILBMToACBM(ILBM_Image *image);
 
 IFF_UByte *ILBM_interleaveFromBitplaneMemory(const ILBM_Image *image, IFF_UByte **bitplanePointers);
 
 IFF_UByte *ILBM_interleave(const ILBM_Image *image, IFF_UByte *bitplanes);
 
-int ILBM_convertACBMToILBM(ILBM_Image *image);
+IFF_Bool ILBM_convertACBMToILBM(ILBM_Image *image);
 
 #ifdef __cplusplus
 }

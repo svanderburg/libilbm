@@ -37,7 +37,7 @@ extern "C" {
 typedef struct
 {
     IFF_Group *parent;
-    
+
     IFF_ID chunkId;
     IFF_Long chunkSize;
 
@@ -52,15 +52,15 @@ ILBM_ColorRange *ILBM_createColorRange(void);
 
 IFF_Chunk *ILBM_readColorRange(FILE *file, const IFF_Long chunkSize);
 
-int ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_checkColorRange(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkColorRange(const IFF_Chunk *chunk);
 
 void ILBM_freeColorRange(IFF_Chunk *chunk);
 
 void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compareColorRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareColorRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }

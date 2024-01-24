@@ -29,70 +29,70 @@
 int pack(const char *inputFilename, const char *outputFilename, const int compress)
 {
     IFF_Chunk *chunk;
-    
+
     if(inputFilename == NULL)
-	chunk = ILBM_readFd(stdin);
+        chunk = ILBM_readFd(stdin);
     else
-	chunk = ILBM_read(inputFilename);
-    
+        chunk = ILBM_read(inputFilename);
+
     if(chunk == NULL)
     {
-	fprintf(stderr, "Error parsing ILBM file!\n");
-	return 1;
+        fprintf(stderr, "Error parsing ILBM file!\n");
+        return 1;
     }
     else
     {
-	unsigned int imagesLength;
-	ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
-	int status = 0;
-	
-	if(!ILBM_checkImages(chunk, images, imagesLength))
-	{
-	    fprintf(stderr, "Invalid ILBM file!\n");
-	    status = 1;
-	}
-	else if(imagesLength == 0)
-	{
-	    fprintf(stderr, "No ILBM images found in IFF file!\n");
-	    status = 1;
-	}
-	else
-	{
-	    unsigned int i;
-	    
-	    for(i = 0; i < imagesLength; i++)
-	    {
-		ILBM_Image *image = images[i];
-		
-		if(compress)
-		    ILBM_packByteRun(image);
-		else
-		    ILBM_unpackByteRun(image);
-	    }
-	    
-	    if(outputFilename == NULL)
-	    {
-		if(!ILBM_writeFd(stdout, chunk))
-		{
-		    fprintf(stderr, "Error writing ILBM file!\n");
-		    status = 1;
-		}
-	    }
-	    else
-	    {
-		if(!ILBM_write(outputFilename, chunk))
-		{
-		    fprintf(stderr, "Error writing ILBM file!\n");
-		    status = 1;
-		}
-	    }
-	    
-	    ILBM_freeImages(images, imagesLength);
-	}
-	
-	ILBM_free(chunk);
-	
-	/* Everything has succeeded */
-	return status;
+        unsigned int imagesLength;
+        ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
+        int status = 0;
+
+        if(!ILBM_checkImages(chunk, images, imagesLength))
+        {
+            fprintf(stderr, "Invalid ILBM file!\n");
+            status = 1;
+        }
+        else if(imagesLength == 0)
+        {
+            fprintf(stderr, "No ILBM images found in IFF file!\n");
+            status = 1;
+        }
+        else
+        {
+            unsigned int i;
+
+            for(i = 0; i < imagesLength; i++)
+            {
+                ILBM_Image *image = images[i];
+
+                if(compress)
+                    ILBM_packByteRun(image);
+                else
+                    ILBM_unpackByteRun(image);
+            }
+
+            if(outputFilename == NULL)
+            {
+                if(!ILBM_writeFd(stdout, chunk))
+                {
+                    fprintf(stderr, "Error writing ILBM file!\n");
+                    status = 1;
+                }
+            }
+            else
+            {
+                if(!ILBM_write(outputFilename, chunk))
+                {
+                    fprintf(stderr, "Error writing ILBM file!\n");
+                    status = 1;
+                }
+            }
+
+            ILBM_freeImages(images, imagesLength);
+        }
+
+        ILBM_free(chunk);
+
+        /* Everything has succeeded */
+        return status;
     }
 }

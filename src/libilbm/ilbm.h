@@ -33,17 +33,17 @@ IFF_Chunk *ILBM_readFd(FILE *file);
 
 IFF_Chunk *ILBM_read(const char *filename);
 
-int ILBM_writeFd(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeFd(FILE *file, const IFF_Chunk *chunk);
 
-int ILBM_write(const char *filename, const IFF_Chunk *chunk);
+IFF_Bool ILBM_write(const char *filename, const IFF_Chunk *chunk);
 
 void ILBM_free(IFF_Chunk *chunk);
 
-int ILBM_check(const IFF_Chunk *chunk);
+IFF_Bool ILBM_check(const IFF_Chunk *chunk);
 
 void ILBM_print(const IFF_Chunk *chunk, const unsigned int indentLevel);
 
-int ILBM_compare(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compare(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
 
 #ifdef __cplusplus
 }
