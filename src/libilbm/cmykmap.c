@@ -25,11 +25,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "CMYK"
-
 ILBM_CMYKMap *ILBM_createCMYKMap(void)
 {
-    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_CMYKMap));
+    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_allocateChunk(ILBM_ID_CMYK, sizeof(ILBM_CMYKMap));
 
     if(cmykMap != NULL)
     {
@@ -65,25 +63,25 @@ IFF_Chunk *ILBM_readCMYKMap(FILE *file, const IFF_Long chunkSize)
         {
             ILBM_CMYKRegister *cmykRegister = ILBM_addCMYKRegisterInCMYKMap(cmykMap);
 
-            if(!IFF_readUByte(file, &cmykRegister->cyan, CHUNKID, "cmykRegister.cyan"))
+            if(!IFF_readUByte(file, &cmykRegister->cyan, ILBM_ID_CMYK, "cmykRegister.cyan"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &cmykRegister->magenta, CHUNKID, "cmykRegister.magenta"))
+            if(!IFF_readUByte(file, &cmykRegister->magenta, ILBM_ID_CMYK, "cmykRegister.magenta"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &cmykRegister->yellow, CHUNKID, "cmykRegister.yellow"))
+            if(!IFF_readUByte(file, &cmykRegister->yellow, ILBM_ID_CMYK, "cmykRegister.yellow"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &cmykRegister->black, CHUNKID, "cmykRegister.black"))
+            if(!IFF_readUByte(file, &cmykRegister->black, ILBM_ID_CMYK, "cmykRegister.black"))
             {
                 ILBM_free((IFF_Chunk*)cmykMap);
                 return NULL;
@@ -103,16 +101,16 @@ IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk)
     {
         ILBM_CMYKRegister *cmykRegister = &cmykMap->cmykRegister[i];
 
-        if(!IFF_writeUByte(file, cmykRegister->cyan, CHUNKID, "cmykRegister.cyan"))
+        if(!IFF_writeUByte(file, cmykRegister->cyan, ILBM_ID_CMYK, "cmykRegister.cyan"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, cmykRegister->magenta, CHUNKID, "cmykRegister.magenta"))
+        if(!IFF_writeUByte(file, cmykRegister->magenta, ILBM_ID_CMYK, "cmykRegister.magenta"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, cmykRegister->yellow, CHUNKID, "cmykRegister.yellow"))
+        if(!IFF_writeUByte(file, cmykRegister->yellow, ILBM_ID_CMYK, "cmykRegister.yellow"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, cmykRegister->black, CHUNKID, "cmykRegister.black"))
+        if(!IFF_writeUByte(file, cmykRegister->black, ILBM_ID_CMYK, "cmykRegister.black"))
             return FALSE;
     }
 

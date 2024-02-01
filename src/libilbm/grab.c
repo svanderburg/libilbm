@@ -25,11 +25,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "GRAB"
-
 ILBM_Point2D *ILBM_createGrab(void)
 {
-    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_Point2D));
+    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_allocateChunk(ILBM_ID_GRAB, sizeof(ILBM_Point2D));
 
     if(point2d != NULL)
         point2d->chunkSize = 2 * sizeof(IFF_Word);
@@ -43,13 +41,13 @@ IFF_Chunk *ILBM_readGrab(FILE *file, const IFF_Long chunkSize)
 
     if(point2d != NULL)
     {
-        if(!IFF_readWord(file, &point2d->x, CHUNKID, "x"))
+        if(!IFF_readWord(file, &point2d->x, ILBM_ID_GRAB, "x"))
         {
             ILBM_free((IFF_Chunk*)point2d);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &point2d->y, CHUNKID, "y"))
+        if(!IFF_readWord(file, &point2d->y, ILBM_ID_GRAB, "y"))
         {
             ILBM_free((IFF_Chunk*)point2d);
             return NULL;
@@ -63,10 +61,10 @@ IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_Point2D *point2d = (const ILBM_Point2D*)chunk;
 
-    if(!IFF_writeWord(file, point2d->x, CHUNKID, "x"))
+    if(!IFF_writeWord(file, point2d->x, ILBM_ID_GRAB, "x"))
         return FALSE;
 
-    if(!IFF_writeWord(file, point2d->y, CHUNKID, "y"))
+    if(!IFF_writeWord(file, point2d->y, ILBM_ID_GRAB, "y"))
         return FALSE;
 
     return TRUE;

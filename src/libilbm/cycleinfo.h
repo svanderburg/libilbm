@@ -26,9 +26,12 @@
 #include <libiff/ifftypes.h>
 #include <libiff/group.h>
 #include <libiff/chunk.h>
+#include <libiff/id.h>
 
 #define ILBM_CYCLEINFO_SHIFT_LEFT -1
 #define ILBM_CYCLEINFO_SHIFT_RIGHT 1
+
+#define ILBM_ID_CCRT IFF_MAKEID('C', 'C', 'R', 'T')
 
 #ifdef __cplusplus
 extern "C" {

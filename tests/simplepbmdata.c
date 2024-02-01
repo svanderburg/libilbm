@@ -22,26 +22,27 @@
 #include "simplepbmdata.h"
 #include <stdlib.h>
 #include <string.h>
+#include <ilbm.h>
 #include <ilbmimage.h>
 
-IFF_Form *ILBM_createTestForm()
+IFF_Form *ILBM_createTestForm(void)
 {
     ILBM_BitMapHeader *bitMapHeader;
     ILBM_ColorMap *colorMap;
-    
+
     IFF_Long bodyChunkSize;
     IFF_UByte *bodyChunkData;
     IFF_RawChunk *body;
     ILBM_Image *image;
     IFF_Form *form;
-    
+
     unsigned int i;
     unsigned int count = 0;
     unsigned int rowSize;
 
     /* Define bitmap header */
     bitMapHeader = ILBM_createBitMapHeader();
-    
+
     bitMapHeader->w = 320;
     bitMapHeader->h = 240;
     bitMapHeader->x = 0;
@@ -53,72 +54,72 @@ IFF_Form *ILBM_createTestForm()
     bitMapHeader->yAspect = 22;
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 240;
-    
+
     /* Add some colors */
     colorMap = ILBM_createColorMap();
-    
+
     for(i = 0; i < 64; i++)
     {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i * 4;
-	colorRegister->green = i * 2;
-	colorRegister->blue = i * 2;
+        ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+
+        colorRegister->red = i * 4;
+        colorRegister->green = i * 2;
+        colorRegister->blue = i * 2;
     }
-    
+
     for(i = 64; i < 128; i++)
     {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i;
-	colorRegister->green = i * 2;
-	colorRegister->blue = i / 2;
+        ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+
+        colorRegister->red = i;
+        colorRegister->green = i * 2;
+        colorRegister->blue = i / 2;
     }
-    
+
     for(i = 128; i < 192; i++)
     {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i / 4;
-	colorRegister->green = i / 2;
-	colorRegister->blue = i;
+        ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+
+        colorRegister->red = i / 4;
+        colorRegister->green = i / 2;
+        colorRegister->blue = i;
     }
-    
+
     for(i = 192; i < 256; i++)
     {
-	ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-	
-	colorRegister->red = i;
-	colorRegister->green = i;
-	colorRegister->blue = i;
+        ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
+
+        colorRegister->red = i;
+        colorRegister->green = i;
+        colorRegister->blue = i;
     }
-    
+
     /* Create image */
-    
-    image = ILBM_createImage("PBM ");
+
+    image = ILBM_createImage(ILBM_ID_PBM);
     image->bitMapHeader = bitMapHeader;
     image->colorMap = colorMap;
-    
+
     /* Set pixel data */
-    
+
     rowSize = ILBM_calculateRowSize(image);
     bodyChunkSize = bitMapHeader->w * bitMapHeader->h; 
     bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
-    body = IFF_createRawChunk("BODY");
-    
+    body = IFF_createRawChunk(ILBM_ID_BODY);
+
     /* Each scanline has a new color from the palette */
     for(i = 0; i < bitMapHeader->h; i++)
     {
-	memset(bodyChunkData + count, i, bitMapHeader->w);
-	count += rowSize;
+        memset(bodyChunkData + count, i, bitMapHeader->w);
+        count += rowSize;
     }
-    
+
     /* Attach data to the body chunk */
     IFF_setRawChunkData(body, bodyChunkData, bodyChunkSize);
-    
+
     /* Attach body the image */
     image->body = body;
-    
+
     /* Convert image to form */
     form = ILBM_convertImageToForm(image);
 

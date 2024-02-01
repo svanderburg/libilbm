@@ -26,6 +26,9 @@
 #include <libiff/ifftypes.h>
 #include <libiff/group.h>
 #include <libiff/chunk.h>
+#include <libiff/id.h>
+
+#define ILBM_ID_CAMG IFF_MAKEID('C', 'A', 'M', 'G')
 
 #ifdef __cplusplus
 extern "C" {

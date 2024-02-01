@@ -26,11 +26,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-#define CHUNKID "CCRT"
-
 ILBM_CycleInfo *ILBM_createCycleInfo(void)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_CycleInfo));
+    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_allocateChunk(ILBM_ID_CCRT, sizeof(ILBM_CycleInfo));
 
     if(cycleInfo != NULL)
     {
@@ -47,37 +45,37 @@ IFF_Chunk *ILBM_readCycleInfo(FILE *file, const IFF_Long chunkSize)
 
     if(cycleInfo != NULL)
     {
-        if(!IFF_readWord(file, &cycleInfo->direction, CHUNKID, "direction"))
+        if(!IFF_readWord(file, &cycleInfo->direction, ILBM_ID_CCRT, "direction"))
         {
             ILBM_free((IFF_Chunk*)cycleInfo);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &cycleInfo->start, CHUNKID, "start"))
+        if(!IFF_readUByte(file, &cycleInfo->start, ILBM_ID_CCRT, "start"))
         {
             ILBM_free((IFF_Chunk*)cycleInfo);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &cycleInfo->end, CHUNKID, "end"))
+        if(!IFF_readUByte(file, &cycleInfo->end, ILBM_ID_CCRT, "end"))
         {
             ILBM_free((IFF_Chunk*)cycleInfo);
             return NULL;
         }
 
-        if(!IFF_readLong(file, &cycleInfo->seconds, CHUNKID, "seconds"))
+        if(!IFF_readLong(file, &cycleInfo->seconds, ILBM_ID_CCRT, "seconds"))
         {
             ILBM_free((IFF_Chunk*)cycleInfo);
             return NULL;
         }
 
-        if(!IFF_readLong(file, &cycleInfo->microSeconds, CHUNKID, "microSeconds"))
+        if(!IFF_readLong(file, &cycleInfo->microSeconds, ILBM_ID_CCRT, "microSeconds"))
         {
             ILBM_free((IFF_Chunk*)cycleInfo);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &cycleInfo->pad, CHUNKID, "pad"))
+        if(!IFF_readWord(file, &cycleInfo->pad, ILBM_ID_CCRT, "pad"))
         {
             ILBM_free((IFF_Chunk*)cycleInfo);
             return NULL;
@@ -91,22 +89,22 @@ IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
 
-    if(!IFF_writeWord(file, cycleInfo->direction, CHUNKID, "direction"))
+    if(!IFF_writeWord(file, cycleInfo->direction, ILBM_ID_CCRT, "direction"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, cycleInfo->start, CHUNKID, "start"))
+    if(!IFF_writeUByte(file, cycleInfo->start, ILBM_ID_CCRT, "start"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, cycleInfo->end, CHUNKID, "end"))
+    if(!IFF_writeUByte(file, cycleInfo->end, ILBM_ID_CCRT, "end"))
         return FALSE;
 
-    if(!IFF_writeLong(file, cycleInfo->seconds, CHUNKID, "seconds"))
+    if(!IFF_writeLong(file, cycleInfo->seconds, ILBM_ID_CCRT, "seconds"))
         return FALSE;
 
-    if(!IFF_writeLong(file, cycleInfo->microSeconds, CHUNKID, "microSeconds"))
+    if(!IFF_writeLong(file, cycleInfo->microSeconds, ILBM_ID_CCRT, "microSeconds"))
         return FALSE;
 
-    if(!IFF_writeWord(file, cycleInfo->pad, CHUNKID, "pad"))
+    if(!IFF_writeWord(file, cycleInfo->pad, ILBM_ID_CCRT, "pad"))
         return FALSE;
 
     return TRUE;

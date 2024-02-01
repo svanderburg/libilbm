@@ -27,12 +27,11 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "CNAM"
 #define BUFFER_SIZE 1024
 
 ILBM_ColorNames *ILBM_createColorNames(void)
 {
-    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_ColorNames));
+    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_allocateChunk(ILBM_ID_CNAM, sizeof(ILBM_ColorNames));
 
     if(colorNames != NULL)
     {
@@ -68,13 +67,13 @@ IFF_Chunk *ILBM_readColorNames(FILE *file, const IFF_Long chunkSize)
     {
         unsigned int i, colorNamesLength;
 
-        if(!IFF_readUWord(file, &colorNames->startingColor, CHUNKID, "startingColor"))
+        if(!IFF_readUWord(file, &colorNames->startingColor, ILBM_ID_CNAM, "startingColor"))
         {
             ILBM_free((IFF_Chunk*)colorNames);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &colorNames->endingColor, CHUNKID, "endingColor"))
+        if(!IFF_readUWord(file, &colorNames->endingColor, ILBM_ID_CNAM, "endingColor"))
         {
             ILBM_free((IFF_Chunk*)colorNames);
             return NULL;
@@ -117,7 +116,7 @@ IFF_Chunk *ILBM_readColorNames(FILE *file, const IFF_Long chunkSize)
     }
 
     /* Read the padding byte, if needed */
-    if(!IFF_readPaddingByte(file, chunkSize, CHUNKID))
+    if(!IFF_readPaddingByte(file, chunkSize, ILBM_ID_CNAM))
     {
         ILBM_free((IFF_Chunk*)colorNames);
         return NULL;
@@ -131,10 +130,10 @@ IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk)
     const ILBM_ColorNames *colorNames = (const ILBM_ColorNames*)chunk;
     unsigned int i;
 
-    if(!IFF_writeUWord(file, colorNames->startingColor, CHUNKID, "startingColor"))
+    if(!IFF_writeUWord(file, colorNames->startingColor, ILBM_ID_CNAM, "startingColor"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, colorNames->endingColor, CHUNKID, "endingColor"))
+    if(!IFF_writeUWord(file, colorNames->endingColor, ILBM_ID_CNAM, "endingColor"))
         return FALSE;
 
     for(i = 0; i < colorNames->colorNamesLength; i++)
@@ -144,7 +143,7 @@ IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk)
         fputc('\0', file);
     }
 
-    if(!IFF_writePaddingByte(file, colorNames->chunkSize, CHUNKID))
+    if(!IFF_writePaddingByte(file, colorNames->chunkSize, ILBM_ID_CNAM))
         return FALSE;
 
     return TRUE;

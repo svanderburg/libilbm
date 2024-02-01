@@ -26,16 +26,19 @@
 #include <libiff/ifftypes.h>
 #include <libiff/group.h>
 #include <libiff/chunk.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <libiff/id.h>
 
 #define ILBM_DRANGE_60_STEPS_PER_SECOND 16384
 
 #define ILBM_RNG_ACTIVE 1
 #define ILBM_RNG_DP_RESERVED 4
 #define ILBM_RNG_FADE 8
+
+#define ILBM_ID_DRNG IFF_MAKEID('D', 'R', 'N', 'G')
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct
 {

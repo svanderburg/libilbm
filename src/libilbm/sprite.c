@@ -25,11 +25,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "SPRT"
-
 ILBM_Sprite *ILBM_createSprite(void)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_Sprite));
+    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_allocateChunk(ILBM_ID_SPRT, sizeof(ILBM_Sprite));
 
     if(sprite != NULL)
         sprite->chunkSize = sizeof(IFF_UWord);
@@ -43,7 +41,7 @@ IFF_Chunk *ILBM_readSprite(FILE *file, const IFF_Long chunkSize)
 
     if(sprite != NULL)
     {
-        if(!IFF_readUWord(file, &sprite->spritePrecedence, CHUNKID, "spritePrecedence"))
+        if(!IFF_readUWord(file, &sprite->spritePrecedence, ILBM_ID_SPRT, "spritePrecedence"))
         {
             ILBM_free((IFF_Chunk*)sprite);
             return NULL;
@@ -57,7 +55,7 @@ IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_Sprite *sprite = (const ILBM_Sprite*)chunk;
 
-    if(!IFF_writeUWord(file, sprite->spritePrecedence, CHUNKID, "spritePrecedence"))
+    if(!IFF_writeUWord(file, sprite->spritePrecedence, ILBM_ID_SPRT, "spritePrecedence"))
         return FALSE;
 
     return TRUE;

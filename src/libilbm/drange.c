@@ -25,8 +25,6 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "DRNG"
-
 static void increaseChunkSizeWithFades(ILBM_DRange *drange)
 {
     drange->chunkSize += 2 * sizeof(IFF_UByte);
@@ -34,7 +32,7 @@ static void increaseChunkSizeWithFades(ILBM_DRange *drange)
 
 ILBM_DRange *ILBM_createDRange(IFF_Word flags)
 {
-    ILBM_DRange *drange = (ILBM_DRange*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_DRange));
+    ILBM_DRange *drange = (ILBM_DRange*)IFF_allocateChunk(ILBM_ID_DRNG, sizeof(ILBM_DRange));
 
     if(drange != NULL)
     {
@@ -104,37 +102,37 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
         IFF_UByte nregs, ntrue;
         unsigned int i;
 
-        if(!IFF_readUByte(file, &drange->min, CHUNKID, "min"))
+        if(!IFF_readUByte(file, &drange->min, ILBM_ID_DRNG, "min"))
         {
             ILBM_free((IFF_Chunk*)drange);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &drange->max, CHUNKID, "max"))
+        if(!IFF_readUByte(file, &drange->max, ILBM_ID_DRNG, "max"))
         {
             ILBM_free((IFF_Chunk*)drange);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &drange->rate, CHUNKID, "rate"))
+        if(!IFF_readWord(file, &drange->rate, ILBM_ID_DRNG, "rate"))
         {
             ILBM_free((IFF_Chunk*)drange);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &drange->flags, CHUNKID, "flags"))
+        if(!IFF_readWord(file, &drange->flags, ILBM_ID_DRNG, "flags"))
         {
             ILBM_free((IFF_Chunk*)drange);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &ntrue, CHUNKID, "ntrue"))
+        if(!IFF_readUByte(file, &ntrue, ILBM_ID_DRNG, "ntrue"))
         {
             ILBM_free((IFF_Chunk*)drange);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &nregs, CHUNKID, "nregs"))
+        if(!IFF_readUByte(file, &nregs, ILBM_ID_DRNG, "nregs"))
         {
             ILBM_free((IFF_Chunk*)drange);
             return NULL;
@@ -144,25 +142,25 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
         {
             ILBM_DColor *dcolor = ILBM_addDColorToDRange(drange);
 
-            if(!IFF_readUByte(file, &dcolor->cell, CHUNKID, "dcolor.cell"))
+            if(!IFF_readUByte(file, &dcolor->cell, ILBM_ID_DRNG, "dcolor.cell"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &dcolor->r, CHUNKID, "dcolor.r"))
+            if(!IFF_readUByte(file, &dcolor->r, ILBM_ID_DRNG, "dcolor.r"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &dcolor->g, CHUNKID, "dcolor.g"))
+            if(!IFF_readUByte(file, &dcolor->g, ILBM_ID_DRNG, "dcolor.g"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &dcolor->b, CHUNKID, "dcolor.b"))
+            if(!IFF_readUByte(file, &dcolor->b, ILBM_ID_DRNG, "dcolor.b"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
@@ -173,13 +171,13 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
         {
             ILBM_DIndex *dindex = ILBM_addDIndexToDRange(drange);
 
-            if(!IFF_readUByte(file, &dindex->cell, CHUNKID, "dindex.cell"))
+            if(!IFF_readUByte(file, &dindex->cell, ILBM_ID_DRNG, "dindex.cell"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &dindex->index, CHUNKID, "dindex.index"))
+            if(!IFF_readUByte(file, &dindex->index, ILBM_ID_DRNG, "dindex.index"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
@@ -192,13 +190,13 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
 
             increaseChunkSizeWithFades(drange);
 
-            if(!IFF_readUByte(file, &nfades, CHUNKID, "nfades"))
+            if(!IFF_readUByte(file, &nfades, ILBM_ID_DRNG, "nfades"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &drange->pad, CHUNKID, "pad"))
+            if(!IFF_readUByte(file, &drange->pad, ILBM_ID_DRNG, "pad"))
             {
                 ILBM_free((IFF_Chunk*)drange);
                 return NULL;
@@ -208,13 +206,13 @@ IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize)
             {
                 ILBM_DFade *dfade = ILBM_addDFadeToDRange(drange);
 
-                if(!IFF_readUByte(file, &dfade->cell, CHUNKID, "dfade.cell"))
+                if(!IFF_readUByte(file, &dfade->cell, ILBM_ID_DRNG, "dfade.cell"))
                 {
                     ILBM_free((IFF_Chunk*)drange);
                     return NULL;
                 }
 
-                if(!IFF_readUByte(file, &dfade->fade, CHUNKID, "dfade.fade"))
+                if(!IFF_readUByte(file, &dfade->fade, ILBM_ID_DRNG, "dfade.fade"))
                 {
                     ILBM_free((IFF_Chunk*)drange);
                     return NULL;
@@ -231,38 +229,38 @@ IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk)
     const ILBM_DRange *drange = (const ILBM_DRange*)chunk;
     unsigned int i;
 
-    if(!IFF_writeUByte(file, drange->min, CHUNKID, "min"))
+    if(!IFF_writeUByte(file, drange->min, ILBM_ID_DRNG, "min"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, drange->max, CHUNKID, "max"))
+    if(!IFF_writeUByte(file, drange->max, ILBM_ID_DRNG, "max"))
         return FALSE;
 
-    if(!IFF_writeWord(file, drange->rate, CHUNKID, "rate"))
+    if(!IFF_writeWord(file, drange->rate, ILBM_ID_DRNG, "rate"))
         return FALSE;
 
-    if(!IFF_writeWord(file, drange->flags, CHUNKID, "flags"))
+    if(!IFF_writeWord(file, drange->flags, ILBM_ID_DRNG, "flags"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, drange->ntrue, CHUNKID, "ntrue"))
+    if(!IFF_writeUByte(file, drange->ntrue, ILBM_ID_DRNG, "ntrue"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, drange->nregs, CHUNKID, "nregs"))
+    if(!IFF_writeUByte(file, drange->nregs, ILBM_ID_DRNG, "nregs"))
         return FALSE;
 
     for(i = 0; i < drange->ntrue; i++)
     {
         ILBM_DColor *dcolor = &drange->dcolor[i];
 
-        if(!IFF_writeUByte(file, dcolor->cell, CHUNKID, "dcolor.cell"))
+        if(!IFF_writeUByte(file, dcolor->cell, ILBM_ID_DRNG, "dcolor.cell"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, dcolor->r, CHUNKID, "dcolor.r"))
+        if(!IFF_writeUByte(file, dcolor->r, ILBM_ID_DRNG, "dcolor.r"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, dcolor->g, CHUNKID, "dcolor.g"))
+        if(!IFF_writeUByte(file, dcolor->g, ILBM_ID_DRNG, "dcolor.g"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, dcolor->b, CHUNKID, "dcolor.b"))
+        if(!IFF_writeUByte(file, dcolor->b, ILBM_ID_DRNG, "dcolor.b"))
             return FALSE;
     }
 
@@ -270,29 +268,29 @@ IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk)
     {
         ILBM_DIndex *dindex = &drange->dindex[i];
 
-        if(!IFF_writeUByte(file, dindex->cell, CHUNKID, "dindex.cell"))
+        if(!IFF_writeUByte(file, dindex->cell, ILBM_ID_DRNG, "dindex.cell"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, dindex->index, CHUNKID, "dindex.index"))
+        if(!IFF_writeUByte(file, dindex->index, ILBM_ID_DRNG, "dindex.index"))
             return FALSE;
     }
 
     if((drange->flags & ILBM_RNG_FADE) == ILBM_RNG_FADE)
     {
-        if(!IFF_writeUByte(file, drange->nfades, CHUNKID, "nfades"))
+        if(!IFF_writeUByte(file, drange->nfades, ILBM_ID_DRNG, "nfades"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, drange->pad, CHUNKID, "pad"))
+        if(!IFF_writeUByte(file, drange->pad, ILBM_ID_DRNG, "pad"))
             return FALSE;
 
         for(i = 0; i < drange->nfades; i++)
         {
             ILBM_DFade *dfade = &drange->dfade[i];
 
-            if(!IFF_writeUByte(file, dfade->cell, CHUNKID, "dfade.cell"))
+            if(!IFF_writeUByte(file, dfade->cell, ILBM_ID_DRNG, "dfade.cell"))
                 return FALSE;
 
-            if(!IFF_writeUByte(file, dfade->fade, CHUNKID, "dfade.fade"))
+            if(!IFF_writeUByte(file, dfade->fade, ILBM_ID_DRNG, "dfade.fade"))
                 return FALSE;
         }
     }

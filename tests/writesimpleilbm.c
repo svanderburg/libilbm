@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
     int status = 0;
 
     /* Write the form */
-    
     if(!ILBM_write("bars.ILBM", (IFF_Chunk*)form))
     {
 	fprintf(stderr, "Error writing ILBM file!\n");

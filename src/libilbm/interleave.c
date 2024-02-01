@@ -83,7 +83,7 @@ IFF_UByte *ILBM_deinterleave(const ILBM_Image *image)
 
 IFF_Bool ILBM_convertILBMToACBM(ILBM_Image *image)
 {
-    if(IFF_compareId(image->formType, "ILBM") == 0 && image->bitMapHeader->compression == ILBM_CMP_NONE)
+    if(image->formType == ILBM_ID_ILBM && image->bitMapHeader->compression == ILBM_CMP_NONE)
     {
         if(image->body != NULL)
         {
@@ -93,7 +93,7 @@ IFF_Bool ILBM_convertILBMToACBM(ILBM_Image *image)
                 return FALSE;
 
             /* The body chunk becomes a bitplanes chunk */
-            IFF_createId(image->body->chunkId, "ABIT");
+            image->body->chunkId = ILBM_ID_ABIT;
             free(image->body->chunkData);
             image->body->chunkData = bitplaneData;
 
@@ -103,8 +103,8 @@ IFF_Bool ILBM_convertILBMToACBM(ILBM_Image *image)
         }
 
         /* Update form type to ACBM */
-        IFF_createId(image->formType, "ACBM");
-        IFF_createId(image->bitMapHeader->parent->groupType, "ACBM");
+        image->formType = ILBM_ID_ACBM;
+        image->bitMapHeader->parent->groupType = ILBM_ID_ACBM;
 
         return TRUE;
     }
@@ -169,7 +169,7 @@ IFF_UByte *ILBM_interleave(const ILBM_Image *image, IFF_UByte *bitplanes)
 
 IFF_Bool ILBM_convertACBMToILBM(ILBM_Image *image)
 {
-    if(IFF_compareId(image->formType, "ACBM") == 0 && image->bitMapHeader->compression == ILBM_CMP_NONE)
+    if(image->formType == ILBM_ID_ACBM && image->bitMapHeader->compression == ILBM_CMP_NONE)
     {
         if(image->bitplanes != NULL)
         {
@@ -179,7 +179,7 @@ IFF_Bool ILBM_convertACBMToILBM(ILBM_Image *image)
                 return FALSE;
 
             /* The bitplanes chunk becomes a body chunk */
-            IFF_createId(image->bitplanes->chunkId, "BODY");
+            image->bitplanes->chunkId = ILBM_ID_BODY;
             free(image->bitplanes->chunkData);
             image->bitplanes->chunkData = bitplaneData;
 
@@ -189,8 +189,8 @@ IFF_Bool ILBM_convertACBMToILBM(ILBM_Image *image)
         }
 
         /* Update form type to ILBM */
-        IFF_createId(image->formType, "ILBM");
-        IFF_createId(image->bitMapHeader->parent->groupType, "ILBM");
+        image->formType = ILBM_ID_ILBM;
+        image->bitMapHeader->parent->groupType = ILBM_ID_ILBM;
 
         return TRUE;
     }

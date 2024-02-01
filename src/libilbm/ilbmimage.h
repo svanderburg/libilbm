@@ -69,7 +69,7 @@ typedef struct
 }
 ILBM_Image;
 
-ILBM_Image *ILBM_createImage(char *formType);
+ILBM_Image *ILBM_createImage(IFF_ID formType);
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength);
 

@@ -25,11 +25,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "DPI "
-
 ILBM_DPIHeader *ILBM_createDPIHeader(void)
 {
-    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_DPIHeader));
+    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_allocateChunk(ILBM_ID_DPI, sizeof(ILBM_DPIHeader));
 
     if(dpiHeader != NULL)
         dpiHeader->chunkSize = 2 * sizeof(IFF_UWord);
@@ -43,13 +41,13 @@ IFF_Chunk *ILBM_readDPIHeader(FILE *file, const IFF_Long chunkSize)
 
     if(dpiHeader != NULL)
     {
-        if(!IFF_readUWord(file, &dpiHeader->dpiX, CHUNKID, "dpiX"))
+        if(!IFF_readUWord(file, &dpiHeader->dpiX, ILBM_ID_DPI, "dpiX"))
         {
             ILBM_free((IFF_Chunk*)dpiHeader);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &dpiHeader->dpiY, CHUNKID, "dpiY"))
+        if(!IFF_readUWord(file, &dpiHeader->dpiY, ILBM_ID_DPI, "dpiY"))
         {
             ILBM_free((IFF_Chunk*)dpiHeader);
             return NULL;
@@ -63,10 +61,10 @@ IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_DPIHeader *dpiHeader = (const ILBM_DPIHeader*)chunk;
 
-    if(!IFF_writeUWord(file, dpiHeader->dpiX, CHUNKID, "dpiX"))
+    if(!IFF_writeUWord(file, dpiHeader->dpiX, ILBM_ID_DPI, "dpiX"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, dpiHeader->dpiY, CHUNKID, "dpiY"))
+    if(!IFF_writeUWord(file, dpiHeader->dpiY, ILBM_ID_DPI, "dpiY"))
         return FALSE;
 
     return TRUE;

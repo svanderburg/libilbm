@@ -24,6 +24,14 @@
 
 #include <stdio.h>
 #include <libiff/chunk.h>
+#include <libiff/id.h>
+
+#define ILBM_ID_ACBM IFF_MAKEID('A', 'C', 'B', 'M')
+#define ILBM_ID_ILBM IFF_MAKEID('I', 'L', 'B', 'M')
+#define ILBM_ID_PBM IFF_MAKEID('P', 'B', 'M', ' ')
+
+#define ILBM_ID_ABIT IFF_MAKEID('A', 'B', 'I', 'T')
+#define ILBM_ID_BODY IFF_MAKEID('B', 'O', 'D', 'Y')
 
 #ifdef __cplusplus
 extern "C" {

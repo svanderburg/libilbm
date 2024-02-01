@@ -25,11 +25,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "CAMG"
-
 ILBM_Viewport *ILBM_createViewport(void)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_Viewport));
+    ILBM_Viewport *viewport = (ILBM_Viewport*)IFF_allocateChunk(ILBM_ID_CAMG, sizeof(ILBM_Viewport));
 
     if(viewport != NULL)
         viewport->chunkSize = sizeof(IFF_Long);
@@ -43,7 +41,7 @@ IFF_Chunk *ILBM_readViewport(FILE *file, const IFF_Long chunkSize)
 
     if(viewport != NULL)
     {
-        if(!IFF_readLong(file, &viewport->viewportMode, CHUNKID, "viewportMode"))
+        if(!IFF_readLong(file, &viewport->viewportMode, ILBM_ID_CAMG, "viewportMode"))
         {
             ILBM_free((IFF_Chunk*)viewport);
             return NULL;
@@ -57,7 +55,7 @@ IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_Viewport *viewport = (const ILBM_Viewport*)chunk;
 
-    if(!IFF_writeLong(file, viewport->viewportMode, CHUNKID, "viewportMode"))
+    if(!IFF_writeLong(file, viewport->viewportMode, ILBM_ID_CAMG, "viewportMode"))
         return FALSE;
 
     return TRUE;

@@ -26,11 +26,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-#define CHUNKID "BMHD"
-
 ILBM_BitMapHeader *ILBM_createBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_BitMapHeader));
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_allocateChunk(ILBM_ID_BMHD, sizeof(ILBM_BitMapHeader));
 
     if(bitMapHeader != NULL)
     {
@@ -49,37 +47,37 @@ IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize)
     {
         IFF_UByte byte;
 
-        if(!IFF_readUWord(file, &bitMapHeader->w, CHUNKID, "w"))
+        if(!IFF_readUWord(file, &bitMapHeader->w, ILBM_ID_BMHD, "w"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &bitMapHeader->h, CHUNKID, "h"))
+        if(!IFF_readUWord(file, &bitMapHeader->h, ILBM_ID_BMHD, "h"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &bitMapHeader->x, CHUNKID, "x"))
+        if(!IFF_readWord(file, &bitMapHeader->x, ILBM_ID_BMHD, "x"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &bitMapHeader->y, CHUNKID, "y"))
+        if(!IFF_readWord(file, &bitMapHeader->y, ILBM_ID_BMHD, "y"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &bitMapHeader->nPlanes, CHUNKID, "nPlanes"))
+        if(!IFF_readUByte(file, &bitMapHeader->nPlanes, ILBM_ID_BMHD, "nPlanes"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &byte, CHUNKID, "masking"))
+        if(!IFF_readUByte(file, &byte, ILBM_ID_BMHD, "masking"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
@@ -87,7 +85,7 @@ IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize)
 
         bitMapHeader->masking = byte;
 
-        if(!IFF_readUByte(file, &byte, CHUNKID, "compression"))
+        if(!IFF_readUByte(file, &byte, ILBM_ID_BMHD, "compression"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
@@ -95,37 +93,37 @@ IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize)
 
         bitMapHeader->compression = byte;
 
-        if(!IFF_readUByte(file, &bitMapHeader->pad1, CHUNKID, "pad1"))
+        if(!IFF_readUByte(file, &bitMapHeader->pad1, ILBM_ID_BMHD, "pad1"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &bitMapHeader->transparentColor, CHUNKID, "transparentColor"))
+        if(!IFF_readUWord(file, &bitMapHeader->transparentColor, ILBM_ID_BMHD, "transparentColor"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &bitMapHeader->xAspect, CHUNKID, "xAspect"))
+        if(!IFF_readUByte(file, &bitMapHeader->xAspect, ILBM_ID_BMHD, "xAspect"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &bitMapHeader->yAspect, CHUNKID, "yAspect"))
+        if(!IFF_readUByte(file, &bitMapHeader->yAspect, ILBM_ID_BMHD, "yAspect"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &bitMapHeader->pageWidth, CHUNKID, "pageWidth"))
+        if(!IFF_readWord(file, &bitMapHeader->pageWidth, ILBM_ID_BMHD, "pageWidth"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &bitMapHeader->pageHeight, CHUNKID, "pageHeight"))
+        if(!IFF_readWord(file, &bitMapHeader->pageHeight, ILBM_ID_BMHD, "pageHeight"))
         {
             ILBM_free((IFF_Chunk*)bitMapHeader);
             return NULL;
@@ -139,43 +137,43 @@ IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
 
-    if(!IFF_writeUWord(file, bitMapHeader->w, CHUNKID, "w"))
+    if(!IFF_writeUWord(file, bitMapHeader->w, ILBM_ID_BMHD, "w"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, bitMapHeader->h, CHUNKID, "h"))
+    if(!IFF_writeUWord(file, bitMapHeader->h, ILBM_ID_BMHD, "h"))
         return FALSE;
 
-    if(!IFF_writeWord(file, bitMapHeader->x, CHUNKID, "x"))
+    if(!IFF_writeWord(file, bitMapHeader->x, ILBM_ID_BMHD, "x"))
         return FALSE;
 
-    if(!IFF_writeWord(file, bitMapHeader->y, CHUNKID, "y"))
+    if(!IFF_writeWord(file, bitMapHeader->y, ILBM_ID_BMHD, "y"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, bitMapHeader->nPlanes, CHUNKID, "nPlanes"))
+    if(!IFF_writeUByte(file, bitMapHeader->nPlanes, ILBM_ID_BMHD, "nPlanes"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->masking, CHUNKID, "masking"))
+    if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->masking, ILBM_ID_BMHD, "masking"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->compression, CHUNKID, "compression"))
+    if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->compression, ILBM_ID_BMHD, "compression"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, bitMapHeader->pad1, CHUNKID, "pad1"))
+    if(!IFF_writeUByte(file, bitMapHeader->pad1, ILBM_ID_BMHD, "pad1"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, bitMapHeader->transparentColor, CHUNKID, "transparentColor"))
+    if(!IFF_writeUWord(file, bitMapHeader->transparentColor, ILBM_ID_BMHD, "transparentColor"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, bitMapHeader->xAspect, CHUNKID, "xAspect"))
+    if(!IFF_writeUByte(file, bitMapHeader->xAspect, ILBM_ID_BMHD, "xAspect"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, bitMapHeader->yAspect, CHUNKID, "yAspect"))
+    if(!IFF_writeUByte(file, bitMapHeader->yAspect, ILBM_ID_BMHD, "yAspect"))
         return FALSE;
 
-    if(!IFF_writeWord(file, bitMapHeader->pageWidth, CHUNKID, "pageWidth"))
+    if(!IFF_writeWord(file, bitMapHeader->pageWidth, ILBM_ID_BMHD, "pageWidth"))
         return FALSE;
 
-    if(!IFF_writeWord(file, bitMapHeader->pageHeight, CHUNKID, "pageHeight"))
+    if(!IFF_writeWord(file, bitMapHeader->pageHeight, ILBM_ID_BMHD, "pageHeight"))
         return FALSE;
 
     return TRUE;

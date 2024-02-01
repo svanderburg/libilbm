@@ -26,11 +26,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-#define CHUNKID "DEST"
-
 ILBM_DestMerge *ILBM_createDestMerge(void)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_DestMerge));
+    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_allocateChunk(ILBM_ID_DEST, sizeof(ILBM_DestMerge));
 
     if(destMerge != NULL)
     {
@@ -47,31 +45,31 @@ IFF_Chunk *ILBM_readDestMerge(FILE *file, const IFF_Long chunkSize)
 
     if(destMerge != NULL)
     {
-        if(!IFF_readUByte(file, &destMerge->depth, CHUNKID, "depth"))
+        if(!IFF_readUByte(file, &destMerge->depth, ILBM_ID_DEST, "depth"))
         {
             ILBM_free((IFF_Chunk*)destMerge);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &destMerge->pad1, CHUNKID, "pad1"))
+        if(!IFF_readUByte(file, &destMerge->pad1, ILBM_ID_DEST, "pad1"))
         {
             ILBM_free((IFF_Chunk*)destMerge);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &destMerge->planePick, CHUNKID, "planePick"))
+        if(!IFF_readUWord(file, &destMerge->planePick, ILBM_ID_DEST, "planePick"))
         {
             ILBM_free((IFF_Chunk*)destMerge);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &destMerge->planeOnOff, CHUNKID, "planeOnOff"))
+        if(!IFF_readUWord(file, &destMerge->planeOnOff, ILBM_ID_DEST, "planeOnOff"))
         {
             ILBM_free((IFF_Chunk*)destMerge);
             return NULL;
         }
 
-        if(!IFF_readUWord(file, &destMerge->planeMask, CHUNKID, "planeMask"))
+        if(!IFF_readUWord(file, &destMerge->planeMask, ILBM_ID_DEST, "planeMask"))
         {
             ILBM_free((IFF_Chunk*)destMerge);
             return NULL;
@@ -85,19 +83,19 @@ IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
 
-    if(!IFF_writeUByte(file, destMerge->depth, CHUNKID, "depth"))
+    if(!IFF_writeUByte(file, destMerge->depth, ILBM_ID_DEST, "depth"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, destMerge->pad1, CHUNKID, "pad1"))
+    if(!IFF_writeUByte(file, destMerge->pad1, ILBM_ID_DEST, "pad1"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, destMerge->planePick, CHUNKID, "planePick"))
+    if(!IFF_writeUWord(file, destMerge->planePick, ILBM_ID_DEST, "planePick"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, destMerge->planeOnOff, CHUNKID, "planeOnOff"))
+    if(!IFF_writeUWord(file, destMerge->planeOnOff, ILBM_ID_DEST, "planeOnOff"))
         return FALSE;
 
-    if(!IFF_writeUWord(file, destMerge->planeMask, CHUNKID, "planeMask"))
+    if(!IFF_writeUWord(file, destMerge->planeMask, ILBM_ID_DEST, "planeMask"))
         return FALSE;
 
     return TRUE;

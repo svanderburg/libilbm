@@ -26,11 +26,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-#define CHUNKID "CRNG"
-
 ILBM_ColorRange *ILBM_createColorRange(void)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_ColorRange));
+    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_allocateChunk(ILBM_ID_CRNG, sizeof(ILBM_ColorRange));
 
     if(colorRange != NULL)
     {
@@ -47,31 +45,31 @@ IFF_Chunk *ILBM_readColorRange(FILE *file, const IFF_Long chunkSize)
 
     if(colorRange != NULL)
     {
-        if(!IFF_readWord(file, &colorRange->pad1, CHUNKID, "pad1"))
+        if(!IFF_readWord(file, &colorRange->pad1, ILBM_ID_CRNG, "pad1"))
         {
             ILBM_free((IFF_Chunk*)colorRange);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &colorRange->rate, CHUNKID, "rate"))
+        if(!IFF_readWord(file, &colorRange->rate, ILBM_ID_CRNG, "rate"))
         {
             ILBM_free((IFF_Chunk*)colorRange);
             return NULL;
         }
 
-        if(!IFF_readWord(file, &colorRange->active, CHUNKID, "active"))
+        if(!IFF_readWord(file, &colorRange->active, ILBM_ID_CRNG, "active"))
         {
             ILBM_free((IFF_Chunk*)colorRange);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &colorRange->low, CHUNKID, "low"))
+        if(!IFF_readUByte(file, &colorRange->low, ILBM_ID_CRNG, "low"))
         {
             ILBM_free((IFF_Chunk*)colorRange);
             return NULL;
         }
 
-        if(!IFF_readUByte(file, &colorRange->high, CHUNKID, "high"))
+        if(!IFF_readUByte(file, &colorRange->high, ILBM_ID_CRNG, "high"))
         {
             ILBM_free((IFF_Chunk*)colorRange);
             return NULL;
@@ -85,19 +83,19 @@ IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk)
 {
     const ILBM_ColorRange *colorRange = (const ILBM_ColorRange*)chunk;
 
-    if(!IFF_writeWord(file, colorRange->pad1, CHUNKID, "pad1"))
+    if(!IFF_writeWord(file, colorRange->pad1, ILBM_ID_CRNG, "pad1"))
         return FALSE;
 
-    if(!IFF_writeWord(file, colorRange->rate, CHUNKID, "rate"))
+    if(!IFF_writeWord(file, colorRange->rate, ILBM_ID_CRNG, "rate"))
         return FALSE;
 
-    if(!IFF_writeWord(file, colorRange->active, CHUNKID, "active"))
+    if(!IFF_writeWord(file, colorRange->active, ILBM_ID_CRNG, "active"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, colorRange->low, CHUNKID, "low"))
+    if(!IFF_writeUByte(file, colorRange->low, ILBM_ID_CRNG, "low"))
         return FALSE;
 
-    if(!IFF_writeUByte(file, colorRange->high, CHUNKID, "high"))
+    if(!IFF_writeUByte(file, colorRange->high, ILBM_ID_CRNG, "high"))
         return FALSE;
 
     return TRUE;

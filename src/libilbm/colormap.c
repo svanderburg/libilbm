@@ -25,11 +25,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-#define CHUNKID "CMAP"
-
 ILBM_ColorMap *ILBM_createColorMap(void)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_allocateChunk(CHUNKID, sizeof(ILBM_ColorMap));
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_allocateChunk(ILBM_ID_CMAP, sizeof(ILBM_ColorMap));
 
     if(colorMap != NULL)
     {
@@ -65,26 +63,26 @@ IFF_Chunk *ILBM_readColorMap(FILE *file, const IFF_Long chunkSize)
         {
             ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
 
-            if(!IFF_readUByte(file, &colorRegister->red, CHUNKID, "colorRegister.red"))
+            if(!IFF_readUByte(file, &colorRegister->red, ILBM_ID_CMAP, "colorRegister.red"))
             {
                 ILBM_free((IFF_Chunk*)colorMap);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &colorRegister->green, CHUNKID, "colorRegister.green"))
+            if(!IFF_readUByte(file, &colorRegister->green, ILBM_ID_CMAP, "colorRegister.green"))
             {
                 ILBM_free((IFF_Chunk*)colorMap);
                 return NULL;
             }
 
-            if(!IFF_readUByte(file, &colorRegister->blue, CHUNKID, "colorRegister.blue"))
+            if(!IFF_readUByte(file, &colorRegister->blue, ILBM_ID_CMAP, "colorRegister.blue"))
             {
                 ILBM_free((IFF_Chunk*)colorMap);
                 return NULL;
             }
         }
 
-        if(!IFF_readPaddingByte(file, chunkSize, CHUNKID))
+        if(!IFF_readPaddingByte(file, chunkSize, ILBM_ID_CMAP))
         {
             ILBM_free((IFF_Chunk*)colorMap);
             return NULL;
@@ -103,17 +101,17 @@ IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk)
     {
         ILBM_ColorRegister *colorRegister = &colorMap->colorRegister[i];
 
-        if(!IFF_writeUByte(file, colorRegister->red, CHUNKID, "colorRegister.red"))
+        if(!IFF_writeUByte(file, colorRegister->red, ILBM_ID_CMAP, "colorRegister.red"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, colorRegister->green, CHUNKID, "colorRegister.green"))
+        if(!IFF_writeUByte(file, colorRegister->green, ILBM_ID_CMAP, "colorRegister.green"))
             return FALSE;
 
-        if(!IFF_writeUByte(file, colorRegister->blue, CHUNKID, "colorRegister.blue"))
+        if(!IFF_writeUByte(file, colorRegister->blue, ILBM_ID_CMAP, "colorRegister.blue"))
             return FALSE;
     }
 
-    if(!IFF_writePaddingByte(file, colorMap->chunkSize, CHUNKID))
+    if(!IFF_writePaddingByte(file, colorMap->chunkSize, ILBM_ID_CMAP))
         return FALSE;
 
     return TRUE;

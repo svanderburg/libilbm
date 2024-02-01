@@ -22,9 +22,10 @@
 #include "simpleilbmdata.h"
 #include <stdlib.h>
 #include <string.h>
+#include <ilbm.h>
 #include <ilbmimage.h>
 
-IFF_Form *ILBM_createTestForm()
+IFF_Form *ILBM_createTestForm(void)
 {
     ILBM_BitMapHeader *bitMapHeader;
     ILBM_ColorRegister *colorRegister;
@@ -40,7 +41,7 @@ IFF_Form *ILBM_createTestForm()
 
     /* Define bitmap header */
     bitMapHeader = ILBM_createBitMapHeader();
-    
+
     bitMapHeader->w = 320;
     bitMapHeader->h = 200;
     bitMapHeader->x = 0;
@@ -52,68 +53,68 @@ IFF_Form *ILBM_createTestForm()
     bitMapHeader->yAspect = 22;
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 200;
-    
+
     /* Add some colors */
     colorMap = ILBM_createColorMap();
-    
+
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0xf0;
     colorRegister->green = 0;
     colorRegister->blue = 0;
-    
+
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0;
     colorRegister->green = 0;
     colorRegister->blue = 0xf0;
-    
+
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0x50;
     colorRegister->green = 0;
     colorRegister->blue = 0;
-    
+
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0;
     colorRegister->green = 0;
     colorRegister->blue = 0x50;
-    
+
     /* Set viewport */
     viewport = ILBM_createViewport();
     viewport->viewportMode = 0x4;
-    
+
     /* Create image */
-    image = ILBM_createImage("ACBM");
-    
+    image = ILBM_createImage(ILBM_ID_ACBM);
+
     image->bitMapHeader = bitMapHeader;
     image->colorMap = colorMap;
     image->viewport = viewport;
-    
+
     /* Set pixel data */
     bitplaneSize = ILBM_calculateRowSize(image) * bitMapHeader->h;
     bitplanesChunkSize = bitplaneSize * bitMapHeader->nPlanes;
     bitplanesChunkData = (IFF_UByte*)malloc(bitplanesChunkSize * sizeof(IFF_UByte));
-    bitplanes = IFF_createRawChunk("ABIT");
-    
+    bitplanes = IFF_createRawChunk(ILBM_ID_ABIT);
+
     /* Compose first bitplane that uses 0 for odd pixels and 1 for even pixels */
     memset(bitplanesChunkData, 0x5, bitplaneSize);
     offset = bitplaneSize;
-    
+
     /* The second plane has an upperhalf that consists of 0s and a lowerhalf that consists of 1s */
     memset(bitplanesChunkData + offset, 0, bitplaneSize / 2);
     offset += bitplaneSize / 2;
     memset(bitplanesChunkData + offset, 0xff, bitplaneSize / 2);
-    
+
     /* Attach data to the body chunk */
     IFF_setRawChunkData(bitplanes, bitplanesChunkData, bitplanesChunkSize);
-    
+
     /* Attach bitplanes to the image */
     image->bitplanes = bitplanes;
-    
+
     /* Convert image to form */
     form = ILBM_convertImageToForm(image);
-    
+
     /* Free stuff */
     ILBM_freeImage(image);
-    
+
     /* Return generated form */
     return form;
 }

@@ -27,12 +27,12 @@
 #include <libiff/id.h>
 #include <libiff/error.h>
 
-ILBM_Image *ILBM_createImage(char *formType)
+ILBM_Image *ILBM_createImage(IFF_ID formType)
 {
     ILBM_Image *image = (ILBM_Image*)calloc(1, sizeof(ILBM_Image));
 
     if(image != NULL)
-        IFF_createId(image->formType, formType);
+        image->formType = formType;
 
     return image;
 }
@@ -43,21 +43,21 @@ static ILBM_Image *createImageFromForm(IFF_Form *form, ILBM_BitMapHeader *bitMap
 
     if(image != NULL)
     {
-        IFF_createId(image->formType, form->formType);
+        image->formType = form->formType;
         image->bitMapHeader = bitMapHeader;
-        image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, "CMAP");
-        image->cmykMap = (ILBM_CMYKMap*)IFF_getChunkFromForm(form, "CMYK");
-        image->colorNames = (ILBM_ColorNames*)IFF_getChunkFromForm(form, "CNAM");
-        image->dpiHeader = (ILBM_DPIHeader*)IFF_getChunkFromForm(form, "DPI ");
-        image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(form, "GRAB");
-        image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(form, "DEST");
-        image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(form, "SPRT");
-        image->viewport = (ILBM_Viewport*)IFF_getChunkFromForm(form, "CAMG");
-        image->colorRange = (ILBM_ColorRange**)IFF_getChunksFromForm(form, "CRNG", &image->colorRangeLength);
-        image->drange = (ILBM_DRange**)IFF_getChunksFromForm(form, "DRNG", &image->drangeLength);
-        image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(form, "CCRT", &image->cycleInfoLength);
-        image->body = (IFF_RawChunk*)IFF_getChunkFromForm(form, "BODY");
-        image->bitplanes = (IFF_RawChunk*)IFF_getChunkFromForm(form, "ABIT");
+        image->colorMap = (ILBM_ColorMap*)IFF_getChunkFromForm(form, ILBM_ID_CMAP);
+        image->cmykMap = (ILBM_CMYKMap*)IFF_getChunkFromForm(form, ILBM_ID_CMYK);
+        image->colorNames = (ILBM_ColorNames*)IFF_getChunkFromForm(form, ILBM_ID_CNAM);
+        image->dpiHeader = (ILBM_DPIHeader*)IFF_getChunkFromForm(form, ILBM_ID_DPI);
+        image->point2d = (ILBM_Point2D*)IFF_getChunkFromForm(form, ILBM_ID_GRAB);
+        image->destMerge = (ILBM_DestMerge*)IFF_getChunkFromForm(form, ILBM_ID_DEST);
+        image->sprite = (ILBM_Sprite*)IFF_getChunkFromForm(form, ILBM_ID_SPRT);
+        image->viewport = (ILBM_Viewport*)IFF_getChunkFromForm(form, ILBM_ID_CAMG);
+        image->colorRange = (ILBM_ColorRange**)IFF_getChunksFromForm(form, ILBM_ID_CRNG, &image->colorRangeLength);
+        image->drange = (ILBM_DRange**)IFF_getChunksFromForm(form, ILBM_ID_DRNG, &image->drangeLength);
+        image->cycleInfo = (ILBM_CycleInfo**)IFF_getChunksFromForm(form, ILBM_ID_CCRT, &image->cycleInfoLength);
+        image->body = (IFF_RawChunk*)IFF_getChunkFromForm(form, ILBM_ID_BODY);
+        image->bitplanes = (IFF_RawChunk*)IFF_getChunkFromForm(form, ILBM_ID_ABIT);
     }
 
     return image;
@@ -65,7 +65,7 @@ static ILBM_Image *createImageFromForm(IFF_Form *form, ILBM_BitMapHeader *bitMap
 
 ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 {
-    const char *formTypes[] = { "ACBM", "ILBM", "PBM " };
+    const IFF_ID formTypes[] = { ILBM_ID_ACBM, ILBM_ID_ILBM, ILBM_ID_PBM };
     unsigned int formsLength;
     IFF_Form **imageForms = IFF_searchFormsFromArray(chunk, formTypes, 3, &formsLength);
 
@@ -93,7 +93,7 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
                  * filtering them out, we can still see the first frame image.
                  */
 
-                ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(imageForm, "BMHD");
+                ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_getChunkFromForm(imageForm, ILBM_ID_BMHD);
 
                 if(bitMapHeader != NULL)
                 {
@@ -240,17 +240,17 @@ void ILBM_addCycleInfoToImage(ILBM_Image *image, ILBM_CycleInfo *cycleInfo)
 
 IFF_Bool ILBM_imageIsILBM(const ILBM_Image *image)
 {
-    return (IFF_compareId(image->formType, "ILBM") == 0);
+    return image->formType == ILBM_ID_ILBM;
 }
 
 IFF_Bool ILBM_imageIsACBM(const ILBM_Image *image)
 {
-    return (IFF_compareId(image->formType, "ACBM") == 0);
+    return image->formType == ILBM_ID_ACBM;
 }
 
 IFF_Bool ILBM_imageIsPBM(const ILBM_Image *image)
 {
-    return (IFF_compareId(image->formType, "PBM ") == 0);
+    return image->formType == ILBM_ID_PBM;
 }
 
 unsigned int ILBM_calculateRowSize(const ILBM_Image *image)
