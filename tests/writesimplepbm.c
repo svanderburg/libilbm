@@ -27,17 +27,17 @@ int main(int argc, char *argv[])
 {
     IFF_Form *form = ILBM_createTestForm();
     int status = 0;
-    
+
     /* Write the form */
-    
+
     if(!ILBM_write("lines.LBM", (IFF_Chunk*)form))
     {
-	fprintf(stderr, "Error writing PBM file!\n");
-	status = 1;
+        fprintf(stderr, "Error writing PBM file!\n");
+        status = 1;
     }
-    
+
     /* Free stuff */
     ILBM_free((IFF_Chunk*)form);
-    
+
     return status;
 }

@@ -27,17 +27,17 @@ int main(int argc, char *argv[])
 {
     IFF_Form *form = ILBM_createTestForm();
     int status = 0;
-    
+
     /* Write the form */
-    
+
     if(!ILBM_write("pixels.ACBM", (IFF_Chunk*)form))
     {
         fprintf(stderr, "Error writing ACBM file!\n");
         status = 1;
     }
-    
+
     /* Free stuff */
     ILBM_free((IFF_Chunk*)form);
-    
+
     return status;
 }

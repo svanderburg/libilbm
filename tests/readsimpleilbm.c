@@ -27,39 +27,39 @@
 int main(int argc, char *argv[])
 {
     IFF_Chunk *chunk = ILBM_read("bars.ILBM");
-    
+
     if(chunk == NULL)
     {
-	fprintf(stderr, "Cannot open ILBM file!\n");
-	return 1;
+        fprintf(stderr, "Cannot open ILBM file!\n");
+        return 1;
     }
     else
     {
-	unsigned int imagesLength;
-	ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
-	int status = 0;
-    
-	if(ILBM_checkImages(chunk, images, imagesLength))
-	{
-	    IFF_Form *form = ILBM_createTestForm();
-	    
-	    if(!ILBM_compare(chunk, (const IFF_Chunk*)form))
-	    {
-		fprintf(stderr, "The IFF file is not identical to the original!\n");
-		status = 1;
-	    }
-	    
-	    ILBM_free((IFF_Chunk*)form);
-	}
-	else
-	{
-	    fprintf(stderr, "The IFF file containing ILBM images is not valid!\n");
-	    status = 1;
-	}
-	
-	ILBM_freeImages(images, imagesLength);
-	ILBM_free(chunk);
-	
-	return status;
+        unsigned int imagesLength;
+        ILBM_Image **images = ILBM_extractImages(chunk, &imagesLength);
+        int status = 0;
+
+        if(ILBM_checkImages(chunk, images, imagesLength))
+        {
+            IFF_Form *form = ILBM_createTestForm();
+
+            if(!ILBM_compare(chunk, (const IFF_Chunk*)form))
+            {
+                fprintf(stderr, "The IFF file is not identical to the original!\n");
+                status = 1;
+            }
+
+            ILBM_free((IFF_Chunk*)form);
+        }
+        else
+        {
+            fprintf(stderr, "The IFF file containing ILBM images is not valid!\n");
+            status = 1;
+        }
+
+        ILBM_freeImages(images, imagesLength);
+        ILBM_free(chunk);
+
+        return status;
     }
 }

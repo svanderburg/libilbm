@@ -25,23 +25,9 @@
 #include <ilbm.h>
 #include <ilbmimage.h>
 
-IFF_Form *ILBM_createTestForm(void)
+static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader;
-    ILBM_ColorMap *colorMap;
-
-    IFF_Long bodyChunkSize;
-    IFF_UByte *bodyChunkData;
-    IFF_RawChunk *body;
-    ILBM_Image *image;
-    IFF_Form *form;
-
-    unsigned int i;
-    unsigned int count = 0;
-    unsigned int rowSize;
-
-    /* Define bitmap header */
-    bitMapHeader = ILBM_createBitMapHeader();
+    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
 
     bitMapHeader->w = 320;
     bitMapHeader->h = 240;
@@ -50,13 +36,19 @@ IFF_Form *ILBM_createTestForm(void)
     bitMapHeader->nPlanes = 8;
     bitMapHeader->masking = ILBM_MSK_NONE;
     bitMapHeader->compression = ILBM_CMP_NONE;
+    bitMapHeader->transparentColor = 0;
     bitMapHeader->xAspect = 20;
     bitMapHeader->yAspect = 22;
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 240;
 
-    /* Add some colors */
-    colorMap = ILBM_createColorMap();
+    return bitMapHeader;
+}
+
+static ILBM_ColorMap *createTestColorMap(void)
+{
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
+    unsigned int i;
 
     for(i = 0; i < 64; i++)
     {
@@ -94,34 +86,47 @@ IFF_Form *ILBM_createTestForm(void)
         colorRegister->blue = i;
     }
 
-    /* Create image */
+    return colorMap;
+}
 
-    image = ILBM_createImage(ILBM_ID_PBM);
-    image->bitMapHeader = bitMapHeader;
-    image->colorMap = colorMap;
-
-    /* Set pixel data */
-
-    rowSize = ILBM_calculateRowSize(image);
-    bodyChunkSize = bitMapHeader->w * bitMapHeader->h; 
-    bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
-    body = IFF_createRawChunk(ILBM_ID_BODY);
+static IFF_RawChunk *createTestBody(const ILBM_Image *image)
+{
+    unsigned int rowSize = ILBM_calculateRowSize(image) * image->bitMapHeader->nPlanes;
+    IFF_Long bodyChunkSize = rowSize * image->bitMapHeader->h; 
+    IFF_UByte *bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
+    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY);
+    unsigned int i;
+    unsigned int count = 0;
 
     /* Each scanline has a new color from the palette */
-    for(i = 0; i < bitMapHeader->h; i++)
+    for(i = 0; i < image->bitMapHeader->h; i++)
     {
-        memset(bodyChunkData + count, i, bitMapHeader->w);
+        memset(bodyChunkData + count, i, image->bitMapHeader->w);
         count += rowSize;
     }
 
     /* Attach data to the body chunk */
     IFF_setRawChunkData(body, bodyChunkData, bodyChunkSize);
 
-    /* Attach body the image */
-    image->body = body;
+    /* Return generated body */
+    return body;
+}
 
-    /* Convert image to form */
-    form = ILBM_convertImageToForm(image);
+static ILBM_Image *createTestImage(void)
+{
+    ILBM_Image *image = ILBM_createImage(ILBM_ID_PBM);
+
+    image->bitMapHeader = createTestBitMapHeader();
+    image->colorMap = createTestColorMap();
+    image->body = createTestBody(image);
+
+    return image;
+}
+
+IFF_Form *ILBM_createTestForm(void)
+{
+    ILBM_Image *image = createTestImage();
+    IFF_Form *form = ILBM_convertImageToForm(image); /* Convert image to form */
 
     /* Free stuff */
     ILBM_freeImage(image);

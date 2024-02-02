@@ -124,14 +124,8 @@ a bitmap header chunk:
 ```C
 #include <libilbm/ilbmimage.h>
 
-int main(int argc, char *argv[])
+static ILBM_BitMapHeader *createCustomBitMapHeader(void)
 {
-    /*
-     * Specifies that we want to create an ILBM file. Also, the ACBM and PBM
-     * types can be used to create these corresponding images.
-     */
-    ILBM_Image *image = ILBM_createImage("ILBM");
-
     ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
 
     /* Create bitmap header properties */
@@ -147,8 +141,19 @@ int main(int argc, char *argv[])
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 200;
 
+    return bitMapHeader;
+}
+
+int main(int argc, char *argv[])
+{
+    /*
+     * Specifies that we want to create an ILBM file. Also, the ACBM and PBM
+     * types can be used to create these corresponding images.
+     */
+    ILBM_Image *image = ILBM_createImage("ILBM");
+
     /* Attach bitmap header to the image */
-    image->bitMapHeader = bitMapHeader;
+    image->bitMapHeader = createCustomBitMapHeader();
 
     return 0;
 }

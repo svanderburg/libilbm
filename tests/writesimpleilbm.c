@@ -31,12 +31,12 @@ int main(int argc, char *argv[])
     /* Write the form */
     if(!ILBM_write("bars.ILBM", (IFF_Chunk*)form))
     {
-	fprintf(stderr, "Error writing ILBM file!\n");
-	status = 1;
+        fprintf(stderr, "Error writing ILBM file!\n");
+        status = 1;
     }
-    
+
     /* Free stuff */
     ILBM_free((IFF_Chunk*)form);
-    
+
     return status;
 }

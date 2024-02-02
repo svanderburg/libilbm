@@ -39,43 +39,43 @@ int main(int argc, char *argv[])
         ILBM_Image **images;
         IFF_Chunk *chunk; 
         int status = 0;
-    
+
         chunk = ILBM_read(argv[1]);
-    
+
         if(chunk == NULL)
         {
             fprintf(stderr, "Cannot open bars.ILBM\n");
             return 1;
         }
-    
+
         images = ILBM_extractImages(chunk, &imagesLength);
-    
+
         if(imagesLength == 1)
         {
             unsigned int i;
             ILBM_Image *image = images[0];
             unsigned int chunkSize = image->body->chunkSize;
             IFF_UByte *interleavedBitplanes = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
-            
+
             /* Make a copy of the original interleaved bitmap */
             memcpy(interleavedBitplanes, image->body->chunkData, chunkSize);
-            
+
             /* Deinterleave image */
             if(!ILBM_convertILBMToACBM(image))
             {
                 fprintf(stderr, "Error while converting image to ACBM!\n");
                 status = 1;
             }
-            
+
             /* Interleave image */
             if(!ILBM_convertACBMToILBM(image))
             {
                 fprintf(stderr, "Error while converting image to ILBM!\n");
                 status = 1;
             }
-            
+
             /* Check whether original interleaved bitmap and the new one are identical */
-        
+
             if(chunkSize == image->body->chunkSize)
             {
                 for(i = 0; i < chunkSize; i++)
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "The chunk size does not match the original!\n");
                 status = 1;
             }
-            
+
             /* Cleanup */
             free(interleavedBitplanes);
         }
@@ -102,10 +102,10 @@ int main(int argc, char *argv[])
             fprintf(stderr, "The IFF file should contain 1 ILBM image!\n");
             status = 1;
         }
-    
+
         ILBM_freeImages(images, imagesLength);
         ILBM_free(chunk);
-    
+
         return status;
     }
 }

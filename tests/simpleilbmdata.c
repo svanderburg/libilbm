@@ -45,34 +45,9 @@ static IFF_UByte blueScanLine[] = {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-IFF_Form *ILBM_createTestForm(void)
+static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader;
-    ILBM_ColorRegister *colorRegister;
-    ILBM_ColorMap *colorMap;
-    ILBM_CMYKRegister *cmykRegister;
-    ILBM_CMYKMap *cmykMap;
-    ILBM_ColorNames *colorNames;
-    ILBM_Viewport *viewport;
-    ILBM_DPIHeader *dpiHeader;
-    ILBM_Point2D *point2d;
-    ILBM_Sprite *sprite;
-    ILBM_ColorRange *colorRange;
-    ILBM_DRange *drange;
-    ILBM_DIndex *dindex;
-    ILBM_CycleInfo *cycleInfo;
-
-    unsigned int rowSize;
-    IFF_Long bodyChunkSize;
-    IFF_UByte *bodyChunkData;
-    IFF_RawChunk *body;
-    ILBM_Image *image;
-    unsigned int count = 0;
-    unsigned int i;
-    IFF_Form *form;
-
-    /* Define bitmap header */
-    bitMapHeader = ILBM_createBitMapHeader();
+    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
 
     bitMapHeader->w = 160;
     bitMapHeader->h = 120;
@@ -81,13 +56,19 @@ IFF_Form *ILBM_createTestForm(void)
     bitMapHeader->nPlanes = 2;
     bitMapHeader->masking = ILBM_MSK_NONE;
     bitMapHeader->compression = ILBM_CMP_NONE;
+    bitMapHeader->transparentColor = 0;
     bitMapHeader->xAspect = 20;
     bitMapHeader->yAspect = 22;
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 200;
 
-    /* Add some RGB colors */
-    colorMap = ILBM_createColorMap();
+    return bitMapHeader;
+}
+
+static ILBM_ColorMap *createTestColorMap(void)
+{
+    ILBM_ColorRegister *colorRegister;
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
 
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0;
@@ -109,8 +90,13 @@ IFF_Form *ILBM_createTestForm(void)
     colorRegister->green = 0;
     colorRegister->blue = 0xf0;
 
-    /* Add some CYMK colors */
-    cmykMap = ILBM_createCMYKMap();
+    return colorMap;
+}
+
+static ILBM_CMYKMap *createTestCMYKMap(void)
+{
+    ILBM_CMYKRegister *cmykRegister;
+    ILBM_CMYKMap *cmykMap = ILBM_createCMYKMap();
 
     cmykRegister = ILBM_addCMYKRegisterInCMYKMap(cmykMap);
     cmykRegister->cyan = 0xff;
@@ -136,8 +122,13 @@ IFF_Form *ILBM_createTestForm(void)
     cmykRegister->yellow = 0;
     cmykRegister->black = 0xff;
 
-    /* Add some color names */
-    colorNames = ILBM_createColorNames();
+    return cmykMap;
+}
+
+static ILBM_ColorNames *createTestColorNames(void)
+{
+    ILBM_ColorNames *colorNames = ILBM_createColorNames();
+
     colorNames->startingColor = 0;
     colorNames->endingColor = 3;
 
@@ -146,39 +137,60 @@ IFF_Form *ILBM_createTestForm(void)
     ILBM_addColorName(colorNames, "green");
     ILBM_addColorName(colorNames, "blue");
 
-    /* Set viewport */
+    return colorNames;
+}
 
-    viewport = ILBM_createViewport();
+static ILBM_Viewport *createTestViewport(void)
+{
+    ILBM_Viewport *viewport = ILBM_createViewport();
     viewport->viewportMode = 0x4;
+    return viewport;
+}
 
-    /* Define DPI header */
+static ILBM_DPIHeader *createTestDPIHeader(void)
+{
+    ILBM_DPIHeader *dpiHeader = ILBM_createDPIHeader();
 
-    dpiHeader = ILBM_createDPIHeader();
     dpiHeader->dpiX = 100;
     dpiHeader->dpiY = 100;
 
-    /* Define grab */
+    return dpiHeader;
+}
 
-    point2d = ILBM_createGrab();
+static ILBM_Point2D *createTestGrab(void)
+{
+    ILBM_Point2D *point2d = ILBM_createGrab();
+
     point2d->x = 10;
     point2d->y = 20;
 
-    /* Define sprite */
+    return point2d;
+}
 
-    sprite = ILBM_createSprite();
+static ILBM_Sprite *createTestSprite(void)
+{
+    ILBM_Sprite *sprite = ILBM_createSprite();
     sprite->spritePrecedence = 1;
+    return sprite;
+}
 
-    /* Define a color range */
+static ILBM_ColorRange *createTestColorRange(void)
+{
+    ILBM_ColorRange *colorRange = ILBM_createColorRange();
 
-    colorRange = ILBM_createColorRange();
     colorRange->rate = 8192;
     colorRange->active = 1;
     colorRange->low = 0;
     colorRange->high = 3;
 
-    /* Define a dynamic range */
+    return colorRange;
+}
 
-    drange = ILBM_createDRange(0);
+static ILBM_DRange *createTestDRange(void)
+{
+    ILBM_DIndex *dindex;
+    ILBM_DRange *drange = ILBM_createDRange(0);
+
     drange->min = 0;
     drange->max = 3;
     drange->rate = 8192;
@@ -200,39 +212,32 @@ IFF_Form *ILBM_createTestForm(void)
     dindex->cell = 3;
     dindex->index = 3;
 
-    /* Define a cycle info range */
+    return drange;
+}
 
-    cycleInfo = ILBM_createCycleInfo();
+static ILBM_CycleInfo *createTestCycleInfo(void)
+{
+    ILBM_CycleInfo *cycleInfo = ILBM_createCycleInfo();
+
     cycleInfo->direction = 1;
     cycleInfo->start = 0;
     cycleInfo->end = 3;
     cycleInfo->seconds = 0;
     cycleInfo->microSeconds = 100;
 
-    /* Create image */
-    image = ILBM_createImage(ILBM_ID_ILBM);
+    return cycleInfo;
+}
 
-    image->bitMapHeader = bitMapHeader;
-    image->colorMap = colorMap;
-    image->cmykMap = cmykMap;
-    image->colorNames = colorNames;
-    image->viewport = viewport;
-    image->point2d = point2d;
-    image->dpiHeader = dpiHeader;
-    image->sprite = sprite;
-
-    ILBM_addColorRangeToImage(image, colorRange);
-    ILBM_addDRangeToImage(image, drange);
-    ILBM_addCycleInfoToImage(image, cycleInfo);
-
-    /* Set pixel data */
+static IFF_RawChunk *createTestBody(const ILBM_Image *image)
+{
+    unsigned int rowSize = ILBM_calculateRowSize(image) * image->bitMapHeader->nPlanes;
+    IFF_Long bodyChunkSize = rowSize * image->bitMapHeader->h;
+    IFF_UByte *bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
+    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY);
+    unsigned int count = 0;
+    unsigned int i;
 
     /* Create a red scanline block */
-
-    rowSize = ILBM_calculateRowSize(image) * bitMapHeader->nPlanes;
-    bodyChunkSize = rowSize * bitMapHeader->h;
-    bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
-    body = IFF_createRawChunk(ILBM_ID_BODY);
 
     for(i = 0; i < 39; i++)
     {
@@ -273,11 +278,52 @@ IFF_Form *ILBM_createTestForm(void)
     /* Attach data to the body chunk */
     IFF_setRawChunkData(body, bodyChunkData, bodyChunkSize);
 
-    /* Attach body the image */
-    image->body = body;
+    /* Return generated body chunk */
+    return body;
+}
 
-    /* Convert image to form */
-    form = ILBM_convertImageToForm(image);
+static ILBM_Image *createTestImage(void)
+{
+    ILBM_ColorRange *colorRange;
+    ILBM_DRange *drange;
+    ILBM_CycleInfo *cycleInfo;
+
+    ILBM_Image *image;
+
+    /* Define a color range */
+    colorRange = createTestColorRange();
+
+    /* Define a dynamic range */
+    drange = createTestDRange();
+
+    /* Define a cycle info range */
+    cycleInfo = createTestCycleInfo();
+
+    /* Create image */
+    image = ILBM_createImage(ILBM_ID_ILBM);
+
+    image->bitMapHeader = createTestBitMapHeader();
+    image->colorMap = createTestColorMap();
+    image->cmykMap = createTestCMYKMap();
+    image->colorNames = createTestColorNames();
+    image->viewport = createTestViewport();
+    image->dpiHeader = createTestDPIHeader();
+    image->point2d = createTestGrab();
+    image->sprite = createTestSprite();
+    image->body = createTestBody(image);
+
+    ILBM_addColorRangeToImage(image, colorRange);
+    ILBM_addDRangeToImage(image, drange);
+    ILBM_addCycleInfoToImage(image, cycleInfo);
+
+    /* Return generated image */
+    return image;
+}
+
+IFF_Form *ILBM_createTestForm(void)
+{
+    ILBM_Image *image = createTestImage();
+    IFF_Form *form = ILBM_convertImageToForm(image); /* Convert image to form */
 
     /* Free stuff */
     ILBM_freeImage(image);
