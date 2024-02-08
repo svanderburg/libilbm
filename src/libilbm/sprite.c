@@ -21,42 +21,39 @@
 
 #include "sprite.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include "ilbm.h"
 
-ILBM_Sprite *ILBM_createSprite(void)
+IFF_Chunk *ILBM_createSprite(const IFF_Long chunkSize)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_allocateChunk(ILBM_ID_SPRT, sizeof(ILBM_Sprite));
+    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_allocateChunk(ILBM_ID_SPRT, chunkSize, sizeof(ILBM_Sprite));
 
     if(sprite != NULL)
-        sprite->chunkSize = sizeof(IFF_UWord);
-
-    return sprite;
-}
-
-IFF_Chunk *ILBM_readSprite(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_Sprite *sprite = ILBM_createSprite();
-
-    if(sprite != NULL)
-    {
-        if(!IFF_readUWord(file, &sprite->spritePrecedence, ILBM_ID_SPRT, "spritePrecedence"))
-        {
-            ILBM_free((IFF_Chunk*)sprite);
-            return NULL;
-        }
-    }
+        sprite->spritePrecedence = 0;
 
     return (IFF_Chunk*)sprite;
 }
 
-IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readSprite(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_Sprite *sprite = (ILBM_Sprite*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readUWordField(file, &sprite->spritePrecedence, chunk, "spritePrecedence", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_Sprite *sprite = (const ILBM_Sprite*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeUWord(file, sprite->spritePrecedence, ILBM_ID_SPRT, "spritePrecedence"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, sprite->spritePrecedence, chunk, "spritePrecedence", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

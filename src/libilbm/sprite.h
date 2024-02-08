@@ -30,6 +30,8 @@
 
 #define ILBM_ID_SPRT IFF_MAKEID('S', 'P', 'R', 'T')
 
+#define ILBM_SPRT_DEFAULT_SIZE (sizeof(IFF_UWord))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,11 +47,11 @@ typedef struct
 }
 ILBM_Sprite;
 
-ILBM_Sprite *ILBM_createSprite(void);
+IFF_Chunk *ILBM_createSprite(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readSprite(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readSprite(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkSprite(const IFF_Chunk *chunk);
 

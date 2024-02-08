@@ -21,160 +21,126 @@
 
 #include "bitmapheader.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include <libiff/error.h>
 #include "ilbm.h"
 
-ILBM_BitMapHeader *ILBM_createBitMapHeader(void)
+IFF_Chunk *ILBM_createBitMapHeader(const IFF_Long chunkSize)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_allocateChunk(ILBM_ID_BMHD, sizeof(ILBM_BitMapHeader));
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_allocateChunk(ILBM_ID_BMHD, chunkSize, sizeof(ILBM_BitMapHeader));
 
     if(bitMapHeader != NULL)
     {
-        bitMapHeader->chunkSize = 2 * sizeof(IFF_UWord) + 2 * sizeof(IFF_Word) + 4 * sizeof(IFF_UByte) + sizeof(IFF_UWord) + 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Word);
+        bitMapHeader->w = 0;
+        bitMapHeader->h = 0;
+        bitMapHeader->x = 0;
+        bitMapHeader->y = 0;
+        bitMapHeader->nPlanes = 0;
+        bitMapHeader->masking = 0;
+        bitMapHeader->compression = 0;
         bitMapHeader->pad1 = '\0';
-    }
-
-    return bitMapHeader;
-}
-
-IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
-
-    if(bitMapHeader != NULL)
-    {
-        IFF_UByte byte;
-
-        if(!IFF_readUWord(file, &bitMapHeader->w, ILBM_ID_BMHD, "w"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUWord(file, &bitMapHeader->h, ILBM_ID_BMHD, "h"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &bitMapHeader->x, ILBM_ID_BMHD, "x"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &bitMapHeader->y, ILBM_ID_BMHD, "y"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &bitMapHeader->nPlanes, ILBM_ID_BMHD, "nPlanes"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &byte, ILBM_ID_BMHD, "masking"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        bitMapHeader->masking = byte;
-
-        if(!IFF_readUByte(file, &byte, ILBM_ID_BMHD, "compression"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        bitMapHeader->compression = byte;
-
-        if(!IFF_readUByte(file, &bitMapHeader->pad1, ILBM_ID_BMHD, "pad1"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUWord(file, &bitMapHeader->transparentColor, ILBM_ID_BMHD, "transparentColor"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &bitMapHeader->xAspect, ILBM_ID_BMHD, "xAspect"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &bitMapHeader->yAspect, ILBM_ID_BMHD, "yAspect"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &bitMapHeader->pageWidth, ILBM_ID_BMHD, "pageWidth"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &bitMapHeader->pageHeight, ILBM_ID_BMHD, "pageHeight"))
-        {
-            ILBM_free((IFF_Chunk*)bitMapHeader);
-            return NULL;
-        }
+        bitMapHeader->transparentColor = 0;
+        bitMapHeader->xAspect = 0;
+        bitMapHeader->yAspect = 0;
+        bitMapHeader->pageWidth = 0;
+        bitMapHeader->pageHeight = 0;
     }
 
     return (IFF_Chunk*)bitMapHeader;
 }
 
-IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readBitMapHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readUWordField(file, &bitMapHeader->w, chunk, "w", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &bitMapHeader->h, chunk, "h", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &bitMapHeader->x, chunk, "x", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &bitMapHeader->y, chunk, "y", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &bitMapHeader->nPlanes, chunk, "nPlanes", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &bitMapHeader->masking, chunk, "masking", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &bitMapHeader->compression, chunk, "compression", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &bitMapHeader->pad1, chunk, "pad1", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &bitMapHeader->transparentColor, chunk, "transparentColor", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &bitMapHeader->xAspect, chunk, "xAspect", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &bitMapHeader->yAspect, chunk, "yAspect", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &bitMapHeader->pageWidth, chunk, "pageWidth", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &bitMapHeader->pageHeight, chunk, "pageHeight", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeUWord(file, bitMapHeader->w, ILBM_ID_BMHD, "w"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, bitMapHeader->w, chunk, "w", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, bitMapHeader->h, ILBM_ID_BMHD, "h"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, bitMapHeader->h, chunk, "h", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, bitMapHeader->x, ILBM_ID_BMHD, "x"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, bitMapHeader->x, chunk, "x", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, bitMapHeader->y, ILBM_ID_BMHD, "y"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, bitMapHeader->y, chunk, "y", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, bitMapHeader->nPlanes, ILBM_ID_BMHD, "nPlanes"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, bitMapHeader->nPlanes, chunk, "nPlanes", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->masking, ILBM_ID_BMHD, "masking"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, bitMapHeader->masking, chunk, "masking", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, (IFF_UByte)bitMapHeader->compression, ILBM_ID_BMHD, "compression"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, bitMapHeader->compression, chunk, "compression", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, bitMapHeader->pad1, ILBM_ID_BMHD, "pad1"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, bitMapHeader->pad1, chunk, "pad1", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, bitMapHeader->transparentColor, ILBM_ID_BMHD, "transparentColor"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, bitMapHeader->transparentColor, chunk, "transparentColor", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, bitMapHeader->xAspect, ILBM_ID_BMHD, "xAspect"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, bitMapHeader->xAspect, chunk, "xAspect", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, bitMapHeader->yAspect, ILBM_ID_BMHD, "yAspect"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, bitMapHeader->yAspect, chunk, "yAspect", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, bitMapHeader->pageWidth, ILBM_ID_BMHD, "pageWidth"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, bitMapHeader->pageWidth, chunk, "pageWidth", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, bitMapHeader->pageHeight, ILBM_ID_BMHD, "pageHeight"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, bitMapHeader->pageHeight, chunk, "pageHeight", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

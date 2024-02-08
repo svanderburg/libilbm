@@ -21,26 +21,25 @@
 
 #include "cmykmap.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include "ilbm.h"
 
-ILBM_CMYKMap *ILBM_createCMYKMap(void)
+IFF_Chunk *ILBM_createCMYKMap(const IFF_Long chunkSize)
 {
-    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_allocateChunk(ILBM_ID_CMYK, sizeof(ILBM_CMYKMap));
+    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_allocateChunk(ILBM_ID_CMYK, chunkSize, sizeof(ILBM_CMYKMap));
 
     if(cmykMap != NULL)
     {
-        cmykMap->chunkSize = 0;
-
         cmykMap->cmykRegisterLength = 0;
         cmykMap->cmykRegister = NULL;
     }
 
-    return cmykMap;
+    return (IFF_Chunk*)cmykMap;
 }
 
-ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
+static ILBM_CMYKRegister *allocateCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
 {
     ILBM_CMYKRegister *cmykRegister;
 
@@ -48,70 +47,62 @@ ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
     cmykRegister = &cmykMap->cmykRegister[cmykMap->cmykRegisterLength];
     cmykMap->cmykRegisterLength++;
 
-    cmykMap->chunkSize += sizeof(ILBM_CMYKRegister);
-
     return cmykRegister;
 }
 
-IFF_Chunk *ILBM_readCMYKMap(FILE *file, const IFF_Long chunkSize)
+ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
 {
-    ILBM_CMYKMap *cmykMap = ILBM_createCMYKMap();
-
-    if(cmykMap != NULL)
-    {
-        while(cmykMap->chunkSize < chunkSize)
-        {
-            ILBM_CMYKRegister *cmykRegister = ILBM_addCMYKRegisterInCMYKMap(cmykMap);
-
-            if(!IFF_readUByte(file, &cmykRegister->cyan, ILBM_ID_CMYK, "cmykRegister.cyan"))
-            {
-                ILBM_free((IFF_Chunk*)cmykMap);
-                return NULL;
-            }
-
-            if(!IFF_readUByte(file, &cmykRegister->magenta, ILBM_ID_CMYK, "cmykRegister.magenta"))
-            {
-                ILBM_free((IFF_Chunk*)cmykMap);
-                return NULL;
-            }
-
-            if(!IFF_readUByte(file, &cmykRegister->yellow, ILBM_ID_CMYK, "cmykRegister.yellow"))
-            {
-                ILBM_free((IFF_Chunk*)cmykMap);
-                return NULL;
-            }
-
-            if(!IFF_readUByte(file, &cmykRegister->black, ILBM_ID_CMYK, "cmykRegister.black"))
-            {
-                ILBM_free((IFF_Chunk*)cmykMap);
-                return NULL;
-            }
-        }
-    }
-
-    return (IFF_Chunk*)cmykMap;
+    ILBM_CMYKRegister *cmykRegister = allocateCMYKRegisterInCMYKMap(cmykMap);
+    cmykMap->chunkSize += sizeof(ILBM_CMYKRegister);
+    return cmykRegister;
 }
 
-IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)chunk;
+    IFF_FieldStatus status;
+
+    while(*bytesProcessed < cmykMap->chunkSize)
+    {
+        ILBM_CMYKRegister *cmykRegister = allocateCMYKRegisterInCMYKMap(cmykMap);
+
+        if((status = IFF_readUByteField(file, &cmykRegister->cyan, chunk, "cmykRegister.cyan", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+
+        if((status = IFF_readUByteField(file, &cmykRegister->magenta, chunk, "cmykRegister.magenta", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+
+        if((status = IFF_readUByteField(file, &cmykRegister->yellow, chunk, "cmykRegister.yellow", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+
+        if((status = IFF_readUByteField(file, &cmykRegister->black, chunk, "cmykRegister.black", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+    }
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_CMYKMap *cmykMap = (const ILBM_CMYKMap*)chunk;
+    IFF_FieldStatus status;
     unsigned int i;
 
     for(i = 0; i < cmykMap->cmykRegisterLength; i++)
     {
         ILBM_CMYKRegister *cmykRegister = &cmykMap->cmykRegister[i];
 
-        if(!IFF_writeUByte(file, cmykRegister->cyan, ILBM_ID_CMYK, "cmykRegister.cyan"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, cmykRegister->cyan, chunk, "cmykRegister.cyan", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
 
-        if(!IFF_writeUByte(file, cmykRegister->magenta, ILBM_ID_CMYK, "cmykRegister.magenta"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, cmykRegister->magenta, chunk, "cmykRegister.magenta", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
 
-        if(!IFF_writeUByte(file, cmykRegister->yellow, ILBM_ID_CMYK, "cmykRegister.yellow"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, cmykRegister->yellow, chunk, "cmykRegister.yellow", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
 
-        if(!IFF_writeUByte(file, cmykRegister->black, ILBM_ID_CMYK, "cmykRegister.black"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, cmykRegister->black, chunk, "cmykRegister.black", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
     }
 
     return TRUE;

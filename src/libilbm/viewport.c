@@ -21,42 +21,39 @@
 
 #include "viewport.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include "ilbm.h"
 
-ILBM_Viewport *ILBM_createViewport(void)
+IFF_Chunk *ILBM_createViewport(const IFF_Long chunkSize)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)IFF_allocateChunk(ILBM_ID_CAMG, sizeof(ILBM_Viewport));
+    ILBM_Viewport *viewport = (ILBM_Viewport*)IFF_allocateChunk(ILBM_ID_CAMG, chunkSize, sizeof(ILBM_Viewport));
 
     if(viewport != NULL)
-        viewport->chunkSize = sizeof(IFF_Long);
-
-    return viewport;
-}
-
-IFF_Chunk *ILBM_readViewport(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_Viewport *viewport = ILBM_createViewport();
-
-    if(viewport != NULL)
-    {
-        if(!IFF_readLong(file, &viewport->viewportMode, ILBM_ID_CAMG, "viewportMode"))
-        {
-            ILBM_free((IFF_Chunk*)viewport);
-            return NULL;
-        }
-    }
+        viewport->viewportMode = 0;
 
     return (IFF_Chunk*)viewport;
 }
 
-IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readViewport(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_Viewport *viewport = (ILBM_Viewport*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readLongField(file, &viewport->viewportMode, chunk, "viewportMode", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_Viewport *viewport = (const ILBM_Viewport*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeLong(file, viewport->viewportMode, ILBM_ID_CAMG, "viewportMode"))
-        return FALSE;
+    if((status = IFF_writeLongField(file, viewport->viewportMode, chunk, "viewportMode", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

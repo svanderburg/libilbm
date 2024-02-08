@@ -21,82 +21,70 @@
 
 #include "destmerge.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include <libiff/error.h>
 #include "ilbm.h"
 
-ILBM_DestMerge *ILBM_createDestMerge(void)
+IFF_Chunk *ILBM_createDestMerge(const IFF_Long chunkSize)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_allocateChunk(ILBM_ID_DEST, sizeof(ILBM_DestMerge));
+    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_allocateChunk(ILBM_ID_DEST, chunkSize, sizeof(ILBM_DestMerge));
 
     if(destMerge != NULL)
     {
-        destMerge->chunkSize = 2 * sizeof(IFF_UByte) + 3 * sizeof(IFF_UWord);
+        destMerge->depth = '\0';
         destMerge->pad1 = '\0';
-    }
-
-    return destMerge;
-}
-
-IFF_Chunk *ILBM_readDestMerge(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_DestMerge *destMerge = ILBM_createDestMerge();
-
-    if(destMerge != NULL)
-    {
-        if(!IFF_readUByte(file, &destMerge->depth, ILBM_ID_DEST, "depth"))
-        {
-            ILBM_free((IFF_Chunk*)destMerge);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &destMerge->pad1, ILBM_ID_DEST, "pad1"))
-        {
-            ILBM_free((IFF_Chunk*)destMerge);
-            return NULL;
-        }
-
-        if(!IFF_readUWord(file, &destMerge->planePick, ILBM_ID_DEST, "planePick"))
-        {
-            ILBM_free((IFF_Chunk*)destMerge);
-            return NULL;
-        }
-
-        if(!IFF_readUWord(file, &destMerge->planeOnOff, ILBM_ID_DEST, "planeOnOff"))
-        {
-            ILBM_free((IFF_Chunk*)destMerge);
-            return NULL;
-        }
-
-        if(!IFF_readUWord(file, &destMerge->planeMask, ILBM_ID_DEST, "planeMask"))
-        {
-            ILBM_free((IFF_Chunk*)destMerge);
-            return NULL;
-        }
+        destMerge->planePick = 0;
+        destMerge->planeOnOff = 0;
+        destMerge->planeMask = 0;
     }
 
     return (IFF_Chunk*)destMerge;
 }
 
-IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readDestMerge(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readUByteField(file, &destMerge->depth, chunk, "depth", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &destMerge->pad1, chunk, "pad1", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &destMerge->planePick, chunk, "planePick", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &destMerge->planeOnOff, chunk, "planeOnOff", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &destMerge->planeMask, chunk, "planeMask", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeUByte(file, destMerge->depth, ILBM_ID_DEST, "depth"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, destMerge->depth, chunk, "depth", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, destMerge->pad1, ILBM_ID_DEST, "pad1"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, destMerge->pad1, chunk, "pad1", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, destMerge->planePick, ILBM_ID_DEST, "planePick"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, destMerge->planePick, chunk, "planePick", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, destMerge->planeOnOff, ILBM_ID_DEST, "planeOnOff"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, destMerge->planeOnOff, chunk, "planeOnOff", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, destMerge->planeMask, ILBM_ID_DEST, "planeMask"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, destMerge->planeMask, chunk, "planeMask", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

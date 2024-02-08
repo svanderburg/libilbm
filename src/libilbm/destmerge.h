@@ -30,6 +30,8 @@
 
 #define ILBM_ID_DEST IFF_MAKEID('D', 'E', 'S', 'T')
 
+#define ILBM_DEST_DEFAULT_SIZE (2 * sizeof(IFF_UByte) + 3 * sizeof(IFF_UWord))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,11 +51,11 @@ typedef struct
 }
 ILBM_DestMerge;
 
-ILBM_DestMerge *ILBM_createDestMerge(void);
+IFF_Chunk *ILBM_createDestMerge(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readDestMerge(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readDestMerge(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkDestMerge(const IFF_Chunk *chunk);
 

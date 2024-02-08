@@ -30,6 +30,8 @@
 
 #define ILBM_ID_CMAP IFF_MAKEID('C', 'M', 'A', 'P')
 
+#define ILBM_CMAP_DEFAULT_SIZE 0
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,13 +54,13 @@ typedef struct
 }
 ILBM_ColorMap;
 
-ILBM_ColorMap *ILBM_createColorMap(void);
+IFF_Chunk *ILBM_createColorMap(const IFF_Long chunkSize);
 
 ILBM_ColorRegister *ILBM_addColorRegisterInColorMap(ILBM_ColorMap *colorMap);
 
-IFF_Chunk *ILBM_readColorMap(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkColorMap(const IFF_Chunk *chunk);
 

@@ -47,32 +47,9 @@ IFF_UByte blueScanLine[] = {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x80, 0x00
 };
 
-int main(int argc, char *argv[])
+static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader;
-    ILBM_ColorRegister *colorRegister;
-    ILBM_ColorMap *colorMap;
-    ILBM_Viewport *viewport;
-    ILBM_Point2D *point2d;
-    ILBM_Sprite *sprite;
-    ILBM_ColorRange *colorRange;
-    ILBM_DRange *drange;
-    ILBM_DIndex *dindex;
-    ILBM_CycleInfo *cycleInfo;
-
-    unsigned int rowSize; 
-    IFF_Long bodyChunkSize;
-    IFF_UByte *bodyChunkData;
-    IFF_RawChunk *body;
-    ILBM_Image *image;
-    IFF_Form *form;
-
-    unsigned int i;
-    unsigned int count = 0;
-    int status = 0;
-
-    /* Define bitmap header */
-    bitMapHeader = ILBM_createBitMapHeader();
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)ILBM_createBitMapHeader(ILBM_BMHD_DEFAULT_SIZE);
 
     bitMapHeader->w = 161;
     bitMapHeader->h = 120;
@@ -86,8 +63,13 @@ int main(int argc, char *argv[])
     bitMapHeader->pageWidth = 320;
     bitMapHeader->pageHeight = 200;
 
-    /* Add some colors */
-    colorMap = ILBM_createColorMap();
+    return bitMapHeader;
+}
+
+static ILBM_ColorMap *createTestColorMap(void)
+{
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
+    ILBM_ColorRegister *colorRegister;
 
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0;
@@ -109,33 +91,50 @@ int main(int argc, char *argv[])
     colorRegister->green = 0;
     colorRegister->blue = 0xf0;
 
-    /* Set viewport */
+    return colorMap;
+}
 
-    viewport = ILBM_createViewport();
+static ILBM_Viewport *createTestViewport(void)
+{
+    ILBM_Viewport *viewport = (ILBM_Viewport*)ILBM_createViewport(ILBM_CAMG_DEFAULT_SIZE);
     viewport->viewportMode = 0x4;
+    return viewport;
+}
 
-    /* Define grab */
+static ILBM_Point2D *createTestGrab(void)
+{
+    ILBM_Point2D *point2d = (ILBM_Point2D*)ILBM_createGrab(ILBM_GRAB_DEFAULT_SIZE);
 
-    point2d = ILBM_createGrab();
     point2d->x = 10;
     point2d->y = 20;
 
-    /* Define sprite */
+    return point2d;
+}
 
-    sprite = ILBM_createSprite();
+static ILBM_Sprite *createTestSprite(void)
+{
+    ILBM_Sprite *sprite = (ILBM_Sprite*)ILBM_createSprite(ILBM_SPRT_DEFAULT_SIZE);
     sprite->spritePrecedence = 1;
+    return sprite;
+}
 
-    /* Define a color range */
+static ILBM_ColorRange *createTestColorRange(void)
+{
+    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)ILBM_createColorRange(ILBM_CRNG_DEFAULT_SIZE);
 
-    colorRange = ILBM_createColorRange();
     colorRange->rate = 8192;
     colorRange->active = 1;
     colorRange->low = 0;
     colorRange->high = 3;
 
-    /* Define a dynamic range */
+    return colorRange;
+}
 
-    drange = ILBM_createDRange(0);
+static ILBM_DRange *createTestDRange(void)
+{
+    ILBM_DRange *drange = (ILBM_DRange*)ILBM_createDRange(ILBM_DRNG_DEFAULT_SIZE);
+    ILBM_DIndex *dindex;
+
     drange->min = 0;
     drange->max = 3;
     drange->rate = 8192;
@@ -157,36 +156,32 @@ int main(int argc, char *argv[])
     dindex->cell = 3;
     dindex->index = 3;
 
-    /* Define a cycle info range */
+    return drange;
+}
 
-    cycleInfo = ILBM_createCycleInfo();
+static ILBM_CycleInfo *createTestCycleInfo(void)
+{
+    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)ILBM_createCycleInfo(ILBM_CCRT_DEFAULT_SIZE);
+
     cycleInfo->direction = 1;
     cycleInfo->start = 0;
     cycleInfo->end = 3;
     cycleInfo->seconds = 0;
     cycleInfo->microSeconds = 100;
 
-    /* Create image */
-    image = ILBM_createImage(ILBM_ID_ILBM);
+    return cycleInfo;
+}
 
-    image->bitMapHeader = bitMapHeader;
-    image->colorMap = colorMap;
-    image->viewport = viewport;
-    image->point2d = point2d;
-    image->sprite = sprite;
-
-    ILBM_addColorRangeToImage(image, colorRange);
-    ILBM_addDRangeToImage(image, drange);
-    ILBM_addCycleInfoToImage(image, cycleInfo);
-
-    /* Set pixel data */
+static IFF_RawChunk *createTestBody(const ILBM_Image *image)
+{
+    unsigned int rowSize = ILBM_calculateRowSize(image) * image->bitMapHeader->nPlanes;
+    IFF_Long bodyChunkSize = rowSize * image->bitMapHeader->h;
+    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY, bodyChunkSize);
+    IFF_UByte *bodyChunkData = body->chunkData;
+    unsigned int i;
+    unsigned int count = 0;
 
     /* Create a red scanline block */
-
-    body = IFF_createRawChunk(ILBM_ID_BODY);
-    rowSize = ILBM_calculateRowSize(image) * bitMapHeader->nPlanes;
-    bodyChunkSize = rowSize * bitMapHeader->h;
-    bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
 
     for(i = 0; i < 39; i++)
     {
@@ -227,15 +222,45 @@ int main(int argc, char *argv[])
     /* Attach data to the body chunk */
     IFF_setRawChunkData(body, bodyChunkData, bodyChunkSize);
 
-    /* Attach body the image */
-    image->body = body;
+    /* Return generated body */
+    return body;
+}
+
+static ILBM_Image *createTestImage(void)
+{
+    ILBM_ColorRange *colorRange = createTestColorRange();
+    ILBM_DRange *drange = createTestDRange();
+    ILBM_CycleInfo *cycleInfo = createTestCycleInfo();
+
+    ILBM_Image *image = ILBM_createImage(ILBM_ID_ILBM);
+
+    image->bitMapHeader = createTestBitMapHeader();
+    image->colorMap = createTestColorMap();
+    image->viewport = createTestViewport();
+    image->point2d = createTestGrab();
+    image->sprite = createTestSprite();
+    image->body = createTestBody(image);
+
+    ILBM_addColorRangeToImage(image, colorRange);
+    ILBM_addDRangeToImage(image, drange);
+    ILBM_addCycleInfoToImage(image, cycleInfo);
+
+    return image;
+}
+
+int main(int argc, char *argv[])
+{
+    int status;
 
     /* Convert image to form */
-    form = ILBM_convertImageToForm(image);
+    ILBM_Image *image = createTestImage();
+    IFF_Form *form = ILBM_convertImageToForm(image);
 
     /* Write the form */
 
-    if(!ILBM_write("bars-padded.ILBM", (IFF_Chunk*)form))
+    if(ILBM_write("bars-padded.ILBM", (IFF_Chunk*)form))
+        status = 0;
+    else
     {
         fprintf(stderr, "Error writing ILBM file!\n");
         status = 1;

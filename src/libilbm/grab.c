@@ -21,51 +21,48 @@
 
 #include "grab.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include "ilbm.h"
 
-ILBM_Point2D *ILBM_createGrab(void)
+IFF_Chunk *ILBM_createGrab(const IFF_Long chunkSize)
 {
-    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_allocateChunk(ILBM_ID_GRAB, sizeof(ILBM_Point2D));
-
-    if(point2d != NULL)
-        point2d->chunkSize = 2 * sizeof(IFF_Word);
-
-    return point2d;
-}
-
-IFF_Chunk *ILBM_readGrab(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_Point2D *point2d = ILBM_createGrab();
+    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_allocateChunk(ILBM_ID_GRAB, chunkSize, sizeof(ILBM_Point2D));
 
     if(point2d != NULL)
     {
-        if(!IFF_readWord(file, &point2d->x, ILBM_ID_GRAB, "x"))
-        {
-            ILBM_free((IFF_Chunk*)point2d);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &point2d->y, ILBM_ID_GRAB, "y"))
-        {
-            ILBM_free((IFF_Chunk*)point2d);
-            return NULL;
-        }
+        point2d->x = 0;
+        point2d->y = 0;
     }
 
     return (IFF_Chunk*)point2d;
 }
 
-IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readGrab(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_Point2D *point2d = (ILBM_Point2D*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readWordField(file, &point2d->x, chunk, "x", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &point2d->y, chunk, "y", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_Point2D *point2d = (const ILBM_Point2D*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeWord(file, point2d->x, ILBM_ID_GRAB, "x"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, point2d->x, chunk, "x", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, point2d->y, ILBM_ID_GRAB, "y"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, point2d->y, chunk, "y", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

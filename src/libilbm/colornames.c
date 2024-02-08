@@ -22,6 +22,7 @@
 #include "colornames.h"
 #include <stdlib.h>
 #include <string.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/error.h>
 #include <libiff/util.h>
@@ -29,14 +30,12 @@
 
 #define BUFFER_SIZE 1024
 
-ILBM_ColorNames *ILBM_createColorNames(void)
+IFF_Chunk *ILBM_createColorNames(const IFF_Long chunkSize)
 {
-    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_allocateChunk(ILBM_ID_CNAM, sizeof(ILBM_ColorNames));
+    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_allocateChunk(ILBM_ID_CNAM, chunkSize, sizeof(ILBM_ColorNames));
 
     if(colorNames != NULL)
     {
-        colorNames->chunkSize = 0;
-
         colorNames->startingColor = 0;
         colorNames->endingColor = 0;
 
@@ -44,10 +43,10 @@ ILBM_ColorNames *ILBM_createColorNames(void)
         colorNames->colorNames = NULL;
     }
 
-    return colorNames;
+    return (IFF_Chunk*)colorNames;
 }
 
-void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName)
+static size_t addColorName(ILBM_ColorNames *colorNames, char *colorName)
 {
     size_t colorNameSize = strlen(colorName) + 1;
 
@@ -56,95 +55,80 @@ void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName)
     strncpy(colorNames->colorNames[colorNames->colorNamesLength], colorName, colorNameSize);
     colorNames->colorNamesLength++;
 
+    return colorNameSize;
+}
+
+void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName)
+{
+    size_t colorNameSize = addColorName(colorNames, colorName);
     colorNames->chunkSize += colorNameSize;
 }
 
-IFF_Chunk *ILBM_readColorNames(FILE *file, const IFF_Long chunkSize)
+IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
-    ILBM_ColorNames *colorNames = ILBM_createColorNames();
+    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)chunk;
+    IFF_FieldStatus status;
+    unsigned int i, colorNamesLength;
 
-    if(colorNames != NULL)
+    if((status = IFF_readUWordField(file, &colorNames->startingColor, chunk, "startingColor", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &colorNames->endingColor, chunk, "endingColor", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    colorNamesLength = colorNames->endingColor - colorNames->startingColor + 1;
+
+    /* Read the color names. TODO: also quit when the end of chunk has been reached */
+    for(i = 0; i < colorNamesLength; i++)
     {
-        unsigned int i, colorNamesLength;
+        int c;
+        char colorName[BUFFER_SIZE];
+        /* Reset the buffer index to 0 */
+        unsigned int index = 0;
 
-        if(!IFF_readUWord(file, &colorNames->startingColor, ILBM_ID_CNAM, "startingColor"))
+        do
         {
-            ILBM_free((IFF_Chunk*)colorNames);
-            return NULL;
+            c = fgetc(file); /* Read character */
+
+            if(c == EOF) /* We should never reach the end of the file prematurely */
+                return FALSE;
+
+            colorName[index] = c; /* Add character to the buffer */
+            index++;
+            *bytesProcessed = *bytesProcessed + 1;
+
+            if(index >= BUFFER_SIZE) /* If we would exceed the buffer size, fail */
+               return FALSE;
         }
+        while(c != '\0'); /* Keep repeating until we read a 0-byte */
 
-        if(!IFF_readUWord(file, &colorNames->endingColor, ILBM_ID_CNAM, "endingColor"))
-        {
-            ILBM_free((IFF_Chunk*)colorNames);
-            return NULL;
-        }
-
-        colorNamesLength = colorNames->endingColor - colorNames->startingColor + 1;
-
-        /* Read the color names */
-        for(i = 0; i < colorNamesLength; i++)
-        {
-            int c;
-            char colorName[BUFFER_SIZE];
-            /* Reset the buffer index to 0 */
-            unsigned int index = 0;
-
-            do
-            {
-                c = fgetc(file); /* Read character */
-
-                if(c == EOF) /* We should never reach the end of the file prematurely */
-                {
-                    ILBM_free((IFF_Chunk*)colorNames);
-                    return NULL;
-                }
-
-                colorName[index] = c; /* Add character to the buffer */
-                index++;
-
-                if(index >= BUFFER_SIZE) /* If we would exceed the buffer size, fail */
-                {
-                   ILBM_free((IFF_Chunk*)colorNames);
-                   return NULL;
-                }
-            }
-            while(c != '\0'); /* Keep repeating until we read a 0-byte */
-
-            /* Add the color name that we just read */
-            ILBM_addColorName(colorNames, colorName);
-        }
+        /* Add the color name that we just read */
+        addColorName(colorNames, colorName);
     }
 
-    /* Read the padding byte, if needed */
-    if(!IFF_readPaddingByte(file, chunkSize, ILBM_ID_CNAM))
-    {
-        ILBM_free((IFF_Chunk*)colorNames);
-        return NULL;
-    }
-
-    return (IFF_Chunk*)colorNames;
+    return TRUE;
 }
 
-IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_ColorNames *colorNames = (const ILBM_ColorNames*)chunk;
+    IFF_FieldStatus status;
     unsigned int i;
 
-    if(!IFF_writeUWord(file, colorNames->startingColor, ILBM_ID_CNAM, "startingColor"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, colorNames->startingColor, chunk, "startingColor", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, colorNames->endingColor, ILBM_ID_CNAM, "endingColor"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, colorNames->endingColor, chunk, "endingColor", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
+    /* TODO: make sure we don't exceed chunkSize */
     for(i = 0; i < colorNames->colorNamesLength; i++)
     {
         char *colorName = colorNames->colorNames[i];
         fputs(colorName, file);
         fputc('\0', file);
+        *bytesProcessed += *bytesProcessed + strlen(colorName) + 1;
     }
-
-    if(!IFF_writePaddingByte(file, colorNames->chunkSize, ILBM_ID_CNAM))
-        return FALSE;
 
     return TRUE;
 }

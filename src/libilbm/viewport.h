@@ -30,6 +30,8 @@
 
 #define ILBM_ID_CAMG IFF_MAKEID('C', 'A', 'M', 'G')
 
+#define ILBM_CAMG_DEFAULT_SIZE (sizeof(IFF_Long))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,11 +47,11 @@ typedef struct
 }
 ILBM_Viewport;
 
-ILBM_Viewport *ILBM_createViewport(void);
+IFF_Chunk *ILBM_createViewport(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readViewport(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readViewport(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkViewport(const IFF_Chunk *chunk);
 

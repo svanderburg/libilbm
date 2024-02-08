@@ -30,6 +30,8 @@
 
 #define ILBM_ID_BMHD IFF_MAKEID('B', 'M', 'H', 'D')
 
+#define ILBM_BMHD_DEFAULT_SIZE (2 * sizeof(IFF_UWord) + 2 * sizeof(IFF_Word) + 4 * sizeof(IFF_UByte) + sizeof(IFF_UWord) + 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Word))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -60,8 +62,8 @@ typedef struct
     IFF_UWord w, h;
     IFF_Word x, y;
     IFF_UByte nPlanes;
-    ILBM_Masking masking;
-    ILBM_Compression compression;
+    IFF_UByte masking;
+    IFF_UByte compression;
     IFF_UByte pad1;
     IFF_UWord transparentColor;
     IFF_UByte xAspect, yAspect;
@@ -69,11 +71,11 @@ typedef struct
 }
 ILBM_BitMapHeader;
 
-ILBM_BitMapHeader *ILBM_createBitMapHeader(void);
+IFF_Chunk *ILBM_createBitMapHeader(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readBitMapHeader(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readBitMapHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkBitMapHeader(const IFF_Chunk *chunk);
 

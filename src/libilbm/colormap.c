@@ -21,98 +21,85 @@
 
 #include "colormap.h"
 #include <stdlib.h>
+#include <string.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include "ilbm.h"
 
-ILBM_ColorMap *ILBM_createColorMap(void)
+IFF_Chunk *ILBM_createColorMap(const IFF_Long chunkSize)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_allocateChunk(ILBM_ID_CMAP, sizeof(ILBM_ColorMap));
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_allocateChunk(ILBM_ID_CMAP, chunkSize, sizeof(ILBM_ColorMap));
 
     if(colorMap != NULL)
     {
-        colorMap->chunkSize = 0;
-
         colorMap->colorRegisterLength = 0;
         colorMap->colorRegister = NULL;
-    }
-
-    return colorMap;
-}
-
-ILBM_ColorRegister *ILBM_addColorRegisterInColorMap(ILBM_ColorMap *colorMap)
-{
-    ILBM_ColorRegister *colorRegister;
-
-    colorMap->colorRegister = (ILBM_ColorRegister*)realloc(colorMap->colorRegister, (colorMap->colorRegisterLength + 1) * sizeof(ILBM_ColorRegister));
-    colorRegister = &colorMap->colorRegister[colorMap->colorRegisterLength];
-    colorMap->colorRegisterLength++;
-
-    colorMap->chunkSize += sizeof(ILBM_ColorRegister);
-
-    return colorRegister;
-}
-
-IFF_Chunk *ILBM_readColorMap(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_ColorMap *colorMap = ILBM_createColorMap();
-
-    if(colorMap != NULL)
-    {
-        while(colorMap->chunkSize < chunkSize)
-        {
-            ILBM_ColorRegister *colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
-
-            if(!IFF_readUByte(file, &colorRegister->red, ILBM_ID_CMAP, "colorRegister.red"))
-            {
-                ILBM_free((IFF_Chunk*)colorMap);
-                return NULL;
-            }
-
-            if(!IFF_readUByte(file, &colorRegister->green, ILBM_ID_CMAP, "colorRegister.green"))
-            {
-                ILBM_free((IFF_Chunk*)colorMap);
-                return NULL;
-            }
-
-            if(!IFF_readUByte(file, &colorRegister->blue, ILBM_ID_CMAP, "colorRegister.blue"))
-            {
-                ILBM_free((IFF_Chunk*)colorMap);
-                return NULL;
-            }
-        }
-
-        if(!IFF_readPaddingByte(file, chunkSize, ILBM_ID_CMAP))
-        {
-            ILBM_free((IFF_Chunk*)colorMap);
-            return NULL;
-        }
     }
 
     return (IFF_Chunk*)colorMap;
 }
 
-IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk)
+static ILBM_ColorRegister *allocateColorRegisterInColorMap(ILBM_ColorMap *colorMap)
+{
+    ILBM_ColorRegister *colorRegister;
+
+    colorMap->colorRegister = (ILBM_ColorRegister*)realloc(colorMap->colorRegister, (colorMap->colorRegisterLength + 1) * sizeof(ILBM_ColorRegister));
+    colorRegister = &colorMap->colorRegister[colorMap->colorRegisterLength];
+    memset(colorRegister, '\0', sizeof(ILBM_ColorRegister));
+    colorMap->colorRegisterLength++;
+
+    return colorRegister;
+}
+
+ILBM_ColorRegister *ILBM_addColorRegisterInColorMap(ILBM_ColorMap *colorMap)
+{
+    ILBM_ColorRegister *colorRegister = allocateColorRegisterInColorMap(colorMap);
+    colorMap->chunkSize += sizeof(ILBM_ColorRegister);
+    return colorRegister;
+}
+
+IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)chunk;
+    IFF_FieldStatus status;
+
+    while(*bytesProcessed < colorMap->chunkSize)
+    {
+        ILBM_ColorRegister *colorRegister = allocateColorRegisterInColorMap(colorMap);
+
+        if((status = IFF_readUByteField(file, &colorRegister->red, chunk, "colorRegister.red", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+
+        if((status = IFF_readUByteField(file, &colorRegister->green, chunk, "colorRegister.green", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+
+        if((status = IFF_readUByteField(file, &colorRegister->blue, chunk, "colorRegister.blue", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
+    }
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_ColorMap *colorMap = (const ILBM_ColorMap*)chunk;
+    IFF_FieldStatus status;
     unsigned int i;
 
     for(i = 0; i < colorMap->colorRegisterLength; i++)
     {
         ILBM_ColorRegister *colorRegister = &colorMap->colorRegister[i];
 
-        if(!IFF_writeUByte(file, colorRegister->red, ILBM_ID_CMAP, "colorRegister.red"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, colorRegister->red, chunk, "colorRegister.red", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
 
-        if(!IFF_writeUByte(file, colorRegister->green, ILBM_ID_CMAP, "colorRegister.green"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, colorRegister->green, chunk, "colorRegister.green", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
 
-        if(!IFF_writeUByte(file, colorRegister->blue, ILBM_ID_CMAP, "colorRegister.blue"))
-            return FALSE;
+        if((status = IFF_writeUByteField(file, colorRegister->blue, chunk, "colorRegister.blue", bytesProcessed)) != IFF_FIELD_MORE)
+            return IFF_deriveSuccess(status);
     }
-
-    if(!IFF_writePaddingByte(file, colorMap->chunkSize, ILBM_ID_CMAP))
-        return FALSE;
 
     return TRUE;
 }

@@ -37,6 +37,8 @@ extern "C" {
 #define ILBM_COLORRANGE_60_STEPS_PER_SECOND 16384
 #define ILBM_COLORRANGE_SHIFT_RIGHT 0x2
 
+#define ILBM_CRNG_DEFAULT_SIZE (3 * sizeof(IFF_Word) + 2 * sizeof(IFF_UByte))
+
 typedef struct
 {
     IFF_Group *parent;
@@ -51,11 +53,11 @@ typedef struct
 }
 ILBM_ColorRange;
 
-ILBM_ColorRange *ILBM_createColorRange(void);
+IFF_Chunk *ILBM_createColorRange(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readColorRange(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readColorRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkColorRange(const IFF_Chunk *chunk);
 

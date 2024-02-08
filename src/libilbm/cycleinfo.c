@@ -21,91 +21,77 @@
 
 #include "cycleinfo.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include <libiff/error.h>
 #include "ilbm.h"
 
-ILBM_CycleInfo *ILBM_createCycleInfo(void)
+IFF_Chunk *ILBM_createCycleInfo(const IFF_Long chunkSize)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_allocateChunk(ILBM_ID_CCRT, sizeof(ILBM_CycleInfo));
+    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_allocateChunk(ILBM_ID_CCRT, chunkSize, sizeof(ILBM_CycleInfo));
 
     if(cycleInfo != NULL)
     {
-        cycleInfo->chunkSize = sizeof(IFF_Word) + 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Long) + sizeof(IFF_Word);
+        cycleInfo->direction = 0;
+        cycleInfo->start = '\0';
+        cycleInfo->end = '\0';
+        cycleInfo->seconds = 0;
+        cycleInfo->microSeconds = 0;
         cycleInfo->pad = 0;
-    }
-
-    return cycleInfo;
-}
-
-IFF_Chunk *ILBM_readCycleInfo(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_CycleInfo *cycleInfo = ILBM_createCycleInfo();
-
-    if(cycleInfo != NULL)
-    {
-        if(!IFF_readWord(file, &cycleInfo->direction, ILBM_ID_CCRT, "direction"))
-        {
-            ILBM_free((IFF_Chunk*)cycleInfo);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &cycleInfo->start, ILBM_ID_CCRT, "start"))
-        {
-            ILBM_free((IFF_Chunk*)cycleInfo);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &cycleInfo->end, ILBM_ID_CCRT, "end"))
-        {
-            ILBM_free((IFF_Chunk*)cycleInfo);
-            return NULL;
-        }
-
-        if(!IFF_readLong(file, &cycleInfo->seconds, ILBM_ID_CCRT, "seconds"))
-        {
-            ILBM_free((IFF_Chunk*)cycleInfo);
-            return NULL;
-        }
-
-        if(!IFF_readLong(file, &cycleInfo->microSeconds, ILBM_ID_CCRT, "microSeconds"))
-        {
-            ILBM_free((IFF_Chunk*)cycleInfo);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &cycleInfo->pad, ILBM_ID_CCRT, "pad"))
-        {
-            ILBM_free((IFF_Chunk*)cycleInfo);
-            return NULL;
-        }
     }
 
     return (IFF_Chunk*)cycleInfo;
 }
 
-IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readWordField(file, &cycleInfo->direction, chunk, "direction", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &cycleInfo->start, chunk, "start", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &cycleInfo->end, chunk, "end", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readLongField(file, &cycleInfo->seconds, chunk, "seconds", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readLongField(file, &cycleInfo->microSeconds, chunk, "microSeconds", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &cycleInfo->pad, chunk, "pad", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeWord(file, cycleInfo->direction, ILBM_ID_CCRT, "direction"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, cycleInfo->direction, chunk, "direction", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, cycleInfo->start, ILBM_ID_CCRT, "start"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, cycleInfo->start, chunk, "start", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, cycleInfo->end, ILBM_ID_CCRT, "end"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, cycleInfo->end, chunk, "end", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeLong(file, cycleInfo->seconds, ILBM_ID_CCRT, "seconds"))
-        return FALSE;
+    if((status = IFF_writeLongField(file, cycleInfo->seconds, chunk, "seconds", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeLong(file, cycleInfo->microSeconds, ILBM_ID_CCRT, "microSeconds"))
-        return FALSE;
+    if((status = IFF_writeLongField(file, cycleInfo->microSeconds, chunk, "microSeconds", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, cycleInfo->pad, ILBM_ID_CCRT, "pad"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, cycleInfo->pad, chunk, "pad", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

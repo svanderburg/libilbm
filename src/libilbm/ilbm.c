@@ -23,29 +23,37 @@
 #include <libiff/iff.h>
 #include "ilbmchunkheaders.h"
 
-/* An array of all application specific chunks belonging to ILBM. They must be alphabetically sorted. */
 static IFF_FormExtension ilbmFormExtension[] = {
 #include "ilbmformextensions.h"
 };
 
-/* An array of all form types this library should parse. They must be alphabetically sorted. */
 static IFF_Extension extension[] = {
 #include "ilbmextensions.h"
 };
-
-IFF_Chunk *ILBM_read(const char *filename)
-{
-    return IFF_read(filename, extension, ILBM_NUM_OF_FORM_TYPES);
-}
 
 IFF_Chunk *ILBM_readFd(FILE *file)
 {
     return IFF_readFd(file, extension, ILBM_NUM_OF_FORM_TYPES);
 }
 
+IFF_Chunk *ILBM_readFile(const char *filename)
+{
+    return IFF_readFile(filename, extension, ILBM_NUM_OF_FORM_TYPES);
+}
+
+IFF_Chunk *ILBM_read(const char *filename)
+{
+    return IFF_read(filename, extension, ILBM_NUM_OF_FORM_TYPES);
+}
+
 IFF_Bool ILBM_writeFd(FILE *file, const IFF_Chunk *chunk)
 {
     return IFF_writeFd(file, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
+}
+
+IFF_Bool ILBM_writeFile(const char *filename, const IFF_Chunk *chunk)
+{
+    return IFF_writeFile(filename, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
 }
 
 IFF_Bool ILBM_write(const char *filename, const IFF_Chunk *chunk)

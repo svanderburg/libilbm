@@ -117,7 +117,7 @@ ILBM_Image **ILBM_extractImages(IFF_Chunk *chunk, unsigned int *imagesLength)
 
 IFF_Form *ILBM_convertImageToForm(ILBM_Image *image)
 {
-    IFF_Form *form = IFF_createForm(image->formType);
+    IFF_Form *form = IFF_createEmptyForm(image->formType);
 
     if(form != NULL)
     {
@@ -265,7 +265,7 @@ unsigned int ILBM_calculateRowSize(const ILBM_Image *image)
 
 ILBM_ColorMap *ILBM_generateGrayscaleColorMap(const ILBM_Image *image)
 {
-    ILBM_ColorMap *colorMap = ILBM_createColorMap();
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
 
     if(colorMap != NULL)
     {

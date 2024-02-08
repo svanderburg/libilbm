@@ -24,12 +24,7 @@
 
 int ILBM_prettyPrint(const char *filename, const int options)
 {
-    IFF_Chunk *chunk;
-
-    if(filename == NULL)
-        chunk = ILBM_readFd(stdin);
-    else
-        chunk = ILBM_read(filename);
+    IFF_Chunk *chunk = ILBM_read(filename);
 
     if(chunk == NULL)
     {

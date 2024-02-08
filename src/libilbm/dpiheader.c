@@ -21,51 +21,48 @@
 
 #include "dpiheader.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include "ilbm.h"
 
-ILBM_DPIHeader *ILBM_createDPIHeader(void)
+IFF_Chunk *ILBM_createDPIHeader(const IFF_Long chunkSize)
 {
-    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_allocateChunk(ILBM_ID_DPI, sizeof(ILBM_DPIHeader));
-
-    if(dpiHeader != NULL)
-        dpiHeader->chunkSize = 2 * sizeof(IFF_UWord);
-
-    return dpiHeader;
-}
-
-IFF_Chunk *ILBM_readDPIHeader(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_DPIHeader *dpiHeader = ILBM_createDPIHeader();
+    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_allocateChunk(ILBM_ID_DPI, chunkSize, sizeof(ILBM_DPIHeader));
 
     if(dpiHeader != NULL)
     {
-        if(!IFF_readUWord(file, &dpiHeader->dpiX, ILBM_ID_DPI, "dpiX"))
-        {
-            ILBM_free((IFF_Chunk*)dpiHeader);
-            return NULL;
-        }
-
-        if(!IFF_readUWord(file, &dpiHeader->dpiY, ILBM_ID_DPI, "dpiY"))
-        {
-            ILBM_free((IFF_Chunk*)dpiHeader);
-            return NULL;
-        }
+        dpiHeader->dpiX = 0;
+        dpiHeader->dpiY = 0;
     }
 
     return (IFF_Chunk*)dpiHeader;
 }
 
-IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readUWordField(file, &dpiHeader->dpiX, chunk, "dpiX", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUWordField(file, &dpiHeader->dpiY, chunk, "dpiY", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_DPIHeader *dpiHeader = (const ILBM_DPIHeader*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeUWord(file, dpiHeader->dpiX, ILBM_ID_DPI, "dpiX"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, dpiHeader->dpiX, chunk, "dpiX", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUWord(file, dpiHeader->dpiY, ILBM_ID_DPI, "dpiY"))
-        return FALSE;
+    if((status = IFF_writeUWordField(file, dpiHeader->dpiY, chunk, "dpiY", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

@@ -36,6 +36,8 @@
 
 #define ILBM_ID_DRNG IFF_MAKEID('D', 'R', 'N', 'G')
 
+#define ILBM_DRNG_DEFAULT_SIZE (2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Word) + 2 * sizeof(IFF_UByte))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -84,7 +86,7 @@ typedef struct
 }
 ILBM_DRange;
 
-ILBM_DRange *ILBM_createDRange(IFF_Word flags);
+IFF_Chunk *ILBM_createDRange(const IFF_Long chunkSize);
 
 ILBM_DColor *ILBM_addDColorToDRange(ILBM_DRange *drange);
 
@@ -92,9 +94,9 @@ ILBM_DIndex *ILBM_addDIndexToDRange(ILBM_DRange *drange);
 
 ILBM_DFade *ILBM_addDFadeToDRange(ILBM_DRange *drange);
 
-IFF_Chunk *ILBM_readDRange(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readDRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkDRange(const IFF_Chunk *chunk);
 

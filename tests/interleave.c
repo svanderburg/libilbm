@@ -26,6 +26,52 @@
 #include "ilbmimage.h"
 #include "interleave.h"
 
+static IFF_Bool processAndCompareImage(ILBM_Image *image)
+{
+    IFF_Long chunkSize = image->body->chunkSize;
+    IFF_UByte *interleavedBitplanes = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
+    IFF_Bool status = TRUE;
+
+    /* Make a copy of the original interleaved bitmap */
+    memcpy(interleavedBitplanes, image->body->chunkData, chunkSize);
+
+    /* Deinterleave image */
+    if(!ILBM_convertILBMToACBM(image))
+    {
+        fprintf(stderr, "Error while converting image to ACBM!\n");
+        status = FALSE;
+    }
+
+    /* Interleave image */
+    if(!ILBM_convertACBMToILBM(image))
+    {
+        fprintf(stderr, "Error while converting image to ILBM!\n");
+        status = FALSE;
+    }
+
+    /* Check whether original interleaved bitmap and the new one are identical */
+
+    if(chunkSize == image->body->chunkSize)
+    {
+        if(memcmp(interleavedBitplanes, image->body->chunkData, chunkSize) != 0)
+        {
+            fprintf(stderr, "Result is not the same!\n");
+            status = FALSE;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "The chunk size does not match the original!\n");
+        status = FALSE;
+    }
+
+    /* Cleanup */
+    free(interleavedBitplanes);
+
+    /* Return result */
+    return status;
+}
+
 int main(int argc, char *argv[])
 {
     if(argc == 1)
@@ -52,50 +98,8 @@ int main(int argc, char *argv[])
 
         if(imagesLength == 1)
         {
-            unsigned int i;
             ILBM_Image *image = images[0];
-            unsigned int chunkSize = image->body->chunkSize;
-            IFF_UByte *interleavedBitplanes = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
-
-            /* Make a copy of the original interleaved bitmap */
-            memcpy(interleavedBitplanes, image->body->chunkData, chunkSize);
-
-            /* Deinterleave image */
-            if(!ILBM_convertILBMToACBM(image))
-            {
-                fprintf(stderr, "Error while converting image to ACBM!\n");
-                status = 1;
-            }
-
-            /* Interleave image */
-            if(!ILBM_convertACBMToILBM(image))
-            {
-                fprintf(stderr, "Error while converting image to ILBM!\n");
-                status = 1;
-            }
-
-            /* Check whether original interleaved bitmap and the new one are identical */
-
-            if(chunkSize == image->body->chunkSize)
-            {
-                for(i = 0; i < chunkSize; i++)
-                {
-                    if(interleavedBitplanes[i] != image->body->chunkData[i])
-                    {
-                        fprintf(stderr, "Result is not the same!\n");
-                        status = 1;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                fprintf(stderr, "The chunk size does not match the original!\n");
-                status = 1;
-            }
-
-            /* Cleanup */
-            free(interleavedBitplanes);
+            status = !processAndCompareImage(image);
         }
         else
         {

@@ -30,6 +30,8 @@
 
 #define ILBM_ID_GRAB IFF_MAKEID('G', 'R', 'A', 'B')
 
+#define ILBM_GRAB_DEFAULT_SIZE (2 * sizeof(IFF_Word))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,11 +47,11 @@ typedef struct
 }
 ILBM_Point2D;
 
-ILBM_Point2D *ILBM_createGrab(void);
+IFF_Chunk *ILBM_createGrab(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readGrab(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readGrab(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkGrab(const IFF_Chunk *chunk);
 

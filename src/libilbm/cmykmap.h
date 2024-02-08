@@ -30,6 +30,8 @@
 
 #define ILBM_ID_CMYK IFF_MAKEID('C', 'M', 'Y', 'K')
 
+#define ILBM_CMYK_DEFAULT_SIZE 0
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,13 +54,13 @@ typedef struct
 }
 ILBM_CMYKMap;
 
-ILBM_CMYKMap *ILBM_createCMYKMap(void);
+IFF_Chunk *ILBM_createCMYKMap(const IFF_Long chunkSize);
 
 ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap);
 
-IFF_Chunk *ILBM_readCMYKMap(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk);
 

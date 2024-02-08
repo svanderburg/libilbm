@@ -26,12 +26,7 @@
 
 int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
 {
-    IFF_Chunk *chunk;
-
-    if(inputFilename == NULL)
-        chunk = ILBM_readFd(stdin);
-    else
-        chunk = ILBM_read(inputFilename);
+    IFF_Chunk *chunk = ILBM_read(inputFilename);
 
     if(chunk == NULL)
     {
@@ -74,21 +69,10 @@ int ILBM_ACBMtoILBM(const char *inputFilename, const char *outputFilename)
                     fprintf(stderr, "WARNING: image: %d is compressed! Skipping...", i);
             }
 
-            if(outputFilename == NULL)
+            if(!ILBM_write(outputFilename, chunk))
             {
-                if(!ILBM_writeFd(stdout, chunk))
-                {
-                    fprintf(stderr, "Error writing ILBM file!\n");
-                    status = 1;
-                }
-            }
-            else
-            {
-                if(!ILBM_write(outputFilename, chunk))
-                {
-                    fprintf(stderr, "Error writing ILBM file!\n");
-                    status = 1;
-                }
+                fprintf(stderr, "Error writing ILBM file!\n");
+                status = 1;
             }
 
             ILBM_freeImages(images, imagesLength);

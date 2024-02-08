@@ -36,7 +36,7 @@ void ILBM_unpackByteRun(ILBM_Image *image)
     {
         /* Counters */
         unsigned int count = 0;
-        unsigned int readBytes = 0;
+        IFF_Long readBytes = 0;
 
         /* Allocate decompressed chunk attributes */
 
@@ -235,7 +235,7 @@ void ILBM_packByteRun(ILBM_Image *image)
     /* Only perform decompression if the body is decompressed and present */
     if(image->bitMapHeader->compression == ILBM_CMP_NONE && body != NULL)
     {
-        unsigned int readBytes = 0;
+        IFF_Long readBytes = 0;
         unsigned int rowSize = ILBM_calculateRowSize(image);
         IFF_UByte *compressedChunkData = (IFF_UByte*)malloc(body->chunkSize * sizeof(IFF_UByte)); /* Scanline + 1 * height */
         unsigned int count = 0;

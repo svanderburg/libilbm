@@ -27,7 +27,7 @@
 
 static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)ILBM_createBitMapHeader(ILBM_BMHD_DEFAULT_SIZE);
 
     bitMapHeader->w = 320;
     bitMapHeader->h = 240;
@@ -47,7 +47,7 @@ static ILBM_BitMapHeader *createTestBitMapHeader(void)
 
 static ILBM_ColorMap *createTestColorMap(void)
 {
-    ILBM_ColorMap *colorMap = ILBM_createColorMap();
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
     unsigned int i;
 
     for(i = 0; i < 64; i++)
@@ -93,8 +93,8 @@ static IFF_RawChunk *createTestBody(const ILBM_Image *image)
 {
     unsigned int rowSize = ILBM_calculateRowSize(image) * image->bitMapHeader->nPlanes;
     IFF_Long bodyChunkSize = rowSize * image->bitMapHeader->h; 
-    IFF_UByte *bodyChunkData = (IFF_UByte*)malloc(bodyChunkSize * sizeof(IFF_UByte));
-    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY);
+    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY, bodyChunkSize);
+    IFF_UByte *bodyChunkData = body->chunkData;
     unsigned int i;
     unsigned int count = 0;
 

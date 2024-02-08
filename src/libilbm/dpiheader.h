@@ -30,6 +30,8 @@
 
 #define ILBM_ID_DPI IFF_MAKEID('D', 'P', 'I', ' ')
 
+#define ILBM_DPI_DEFAULT_SIZE (2 * sizeof(IFF_UWord))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,11 +47,11 @@ typedef struct
 }
 ILBM_DPIHeader;
 
-ILBM_DPIHeader *ILBM_createDPIHeader(void);
+IFF_Chunk *ILBM_createDPIHeader(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readDPIHeader(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk);
 

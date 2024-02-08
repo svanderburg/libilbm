@@ -28,12 +28,7 @@
 
 int pack(const char *inputFilename, const char *outputFilename, const int compress)
 {
-    IFF_Chunk *chunk;
-
-    if(inputFilename == NULL)
-        chunk = ILBM_readFd(stdin);
-    else
-        chunk = ILBM_read(inputFilename);
+    IFF_Chunk *chunk = ILBM_read(inputFilename);
 
     if(chunk == NULL)
     {
@@ -70,21 +65,10 @@ int pack(const char *inputFilename, const char *outputFilename, const int compre
                     ILBM_unpackByteRun(image);
             }
 
-            if(outputFilename == NULL)
+            if(!ILBM_write(outputFilename, chunk))
             {
-                if(!ILBM_writeFd(stdout, chunk))
-                {
-                    fprintf(stderr, "Error writing ILBM file!\n");
-                    status = 1;
-                }
-            }
-            else
-            {
-                if(!ILBM_write(outputFilename, chunk))
-                {
-                    fprintf(stderr, "Error writing ILBM file!\n");
-                    status = 1;
-                }
+                fprintf(stderr, "Error writing ILBM file!\n");
+                status = 1;
             }
 
             ILBM_freeImages(images, imagesLength);

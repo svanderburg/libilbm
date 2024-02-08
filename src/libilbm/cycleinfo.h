@@ -33,6 +33,8 @@
 
 #define ILBM_ID_CCRT IFF_MAKEID('C', 'C', 'R', 'T')
 
+#define ILBM_CCRT_DEFAULT_SIZE (sizeof(IFF_Word) + 2 * sizeof(IFF_UByte) + 2 * sizeof(IFF_Long) + sizeof(IFF_Word))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,11 +54,11 @@ typedef struct
 }
 ILBM_CycleInfo;
 
-ILBM_CycleInfo *ILBM_createCycleInfo(void);
+IFF_Chunk *ILBM_createCycleInfo(const IFF_Long chunkSize);
 
-IFF_Chunk *ILBM_readCycleInfo(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk);
 

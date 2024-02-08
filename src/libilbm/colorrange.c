@@ -21,82 +21,70 @@
 
 #include "colorrange.h"
 #include <stdlib.h>
+#include <libiff/field.h>
 #include <libiff/io.h>
 #include <libiff/util.h>
 #include <libiff/error.h>
 #include "ilbm.h"
 
-ILBM_ColorRange *ILBM_createColorRange(void)
+IFF_Chunk *ILBM_createColorRange(const IFF_Long chunkSize)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_allocateChunk(ILBM_ID_CRNG, sizeof(ILBM_ColorRange));
+    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_allocateChunk(ILBM_ID_CRNG, chunkSize, sizeof(ILBM_ColorRange));
 
     if(colorRange != NULL)
     {
-        colorRange->chunkSize = 3 * sizeof(IFF_Word) + 2 * sizeof(IFF_UByte);
         colorRange->pad1 = 0;
-    }
-
-    return colorRange;
-}
-
-IFF_Chunk *ILBM_readColorRange(FILE *file, const IFF_Long chunkSize)
-{
-    ILBM_ColorRange *colorRange = ILBM_createColorRange();
-
-    if(colorRange != NULL)
-    {
-        if(!IFF_readWord(file, &colorRange->pad1, ILBM_ID_CRNG, "pad1"))
-        {
-            ILBM_free((IFF_Chunk*)colorRange);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &colorRange->rate, ILBM_ID_CRNG, "rate"))
-        {
-            ILBM_free((IFF_Chunk*)colorRange);
-            return NULL;
-        }
-
-        if(!IFF_readWord(file, &colorRange->active, ILBM_ID_CRNG, "active"))
-        {
-            ILBM_free((IFF_Chunk*)colorRange);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &colorRange->low, ILBM_ID_CRNG, "low"))
-        {
-            ILBM_free((IFF_Chunk*)colorRange);
-            return NULL;
-        }
-
-        if(!IFF_readUByte(file, &colorRange->high, ILBM_ID_CRNG, "high"))
-        {
-            ILBM_free((IFF_Chunk*)colorRange);
-            return NULL;
-        }
+        colorRange->rate = 0;
+        colorRange->active = 0;
+        colorRange->low = '\0';
+        colorRange->high = '\0';
     }
 
     return (IFF_Chunk*)colorRange;
 }
 
-IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk)
+IFF_Bool ILBM_readColorRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+{
+    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)chunk;
+    IFF_FieldStatus status;
+
+    if((status = IFF_readWordField(file, &colorRange->pad1, chunk, "pad1", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &colorRange->rate, chunk, "rate", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readWordField(file, &colorRange->active, chunk, "active", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &colorRange->low, chunk, "low", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    if((status = IFF_readUByteField(file, &colorRange->high, chunk, "high", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
+
+    return TRUE;
+}
+
+IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
 {
     const ILBM_ColorRange *colorRange = (const ILBM_ColorRange*)chunk;
+    IFF_FieldStatus status;
 
-    if(!IFF_writeWord(file, colorRange->pad1, ILBM_ID_CRNG, "pad1"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, colorRange->pad1, chunk, "pad1", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, colorRange->rate, ILBM_ID_CRNG, "rate"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, colorRange->rate, chunk, "rate", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeWord(file, colorRange->active, ILBM_ID_CRNG, "active"))
-        return FALSE;
+    if((status = IFF_writeWordField(file, colorRange->active, chunk, "active", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, colorRange->low, ILBM_ID_CRNG, "low"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, colorRange->low, chunk, "low", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
-    if(!IFF_writeUByte(file, colorRange->high, ILBM_ID_CRNG, "high"))
-        return FALSE;
+    if((status = IFF_writeUByteField(file, colorRange->high, chunk, "high", bytesProcessed)) != IFF_FIELD_MORE)
+        return IFF_deriveSuccess(status);
 
     return TRUE;
 }

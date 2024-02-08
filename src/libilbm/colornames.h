@@ -30,6 +30,8 @@
 
 #define ILBM_ID_CNAM IFF_MAKEID('C', 'N', 'A', 'M')
 
+#define ILBM_CNAM_DEFAULT_SIZE 0
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,13 +51,13 @@ typedef struct
 }
 ILBM_ColorNames;
 
-ILBM_ColorNames *ILBM_createColorNames(void);
+IFF_Chunk *ILBM_createColorNames(const IFF_Long chunkSize);
 
 void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName);
 
-IFF_Chunk *ILBM_readColorNames(FILE *file, const IFF_Long chunkSize);
+IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
 
 IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk);
 
