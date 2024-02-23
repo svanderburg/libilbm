@@ -32,7 +32,7 @@
 
 IFF_Chunk *ILBM_createColorNames(const IFF_Long chunkSize)
 {
-    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_allocateChunk(ILBM_ID_CNAM, chunkSize, sizeof(ILBM_ColorNames));
+    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_createChunk(ILBM_ID_CNAM, chunkSize, sizeof(ILBM_ColorNames));
 
     if(colorNames != NULL)
     {

@@ -28,7 +28,7 @@
 
 IFF_Chunk *ILBM_createViewport(const IFF_Long chunkSize)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)IFF_allocateChunk(ILBM_ID_CAMG, chunkSize, sizeof(ILBM_Viewport));
+    ILBM_Viewport *viewport = (ILBM_Viewport*)IFF_createChunk(ILBM_ID_CAMG, chunkSize, sizeof(ILBM_Viewport));
 
     if(viewport != NULL)
         viewport->viewportMode = 0;

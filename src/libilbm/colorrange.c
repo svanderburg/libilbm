@@ -29,7 +29,7 @@
 
 IFF_Chunk *ILBM_createColorRange(const IFF_Long chunkSize)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_allocateChunk(ILBM_ID_CRNG, chunkSize, sizeof(ILBM_ColorRange));
+    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_createChunk(ILBM_ID_CRNG, chunkSize, sizeof(ILBM_ColorRange));
 
     if(colorRange != NULL)
     {

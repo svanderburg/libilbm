@@ -28,7 +28,7 @@
 
 IFF_Chunk *ILBM_createCMYKMap(const IFF_Long chunkSize)
 {
-    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_allocateChunk(ILBM_ID_CMYK, chunkSize, sizeof(ILBM_CMYKMap));
+    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_createChunk(ILBM_ID_CMYK, chunkSize, sizeof(ILBM_CMYKMap));
 
     if(cmykMap != NULL)
     {

@@ -29,7 +29,7 @@
 
 IFF_Chunk *ILBM_createDestMerge(const IFF_Long chunkSize)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_allocateChunk(ILBM_ID_DEST, chunkSize, sizeof(ILBM_DestMerge));
+    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_createChunk(ILBM_ID_DEST, chunkSize, sizeof(ILBM_DestMerge));
 
     if(destMerge != NULL)
     {

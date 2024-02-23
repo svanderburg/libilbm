@@ -29,7 +29,7 @@
 
 IFF_Chunk *ILBM_createBitMapHeader(const IFF_Long chunkSize)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_allocateChunk(ILBM_ID_BMHD, chunkSize, sizeof(ILBM_BitMapHeader));
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_createChunk(ILBM_ID_BMHD, chunkSize, sizeof(ILBM_BitMapHeader));
 
     if(bitMapHeader != NULL)
     {
@@ -155,13 +155,13 @@ IFF_Bool ILBM_checkBitMapHeader(const IFF_Chunk *chunk)
         return FALSE;
     }
 
-    if(bitMapHeader->masking < 0 || bitMapHeader->masking > ILBM_MSK_LASSO)
+    if(bitMapHeader->masking > ILBM_MSK_LASSO)
     {
         IFF_error("Invalid 'BMHD'.masking value!\n");
         return FALSE;
     }
 
-    if(bitMapHeader->compression < 0 || bitMapHeader->compression > ILBM_CMP_BYTE_RUN)
+    if(bitMapHeader->compression > ILBM_CMP_BYTE_RUN)
     {
         IFF_error("Invalid 'BMHD'.compression value!\n");
         return FALSE;

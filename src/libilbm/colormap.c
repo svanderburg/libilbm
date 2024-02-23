@@ -29,7 +29,7 @@
 
 IFF_Chunk *ILBM_createColorMap(const IFF_Long chunkSize)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_allocateChunk(ILBM_ID_CMAP, chunkSize, sizeof(ILBM_ColorMap));
+    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_createChunk(ILBM_ID_CMAP, chunkSize, sizeof(ILBM_ColorMap));
 
     if(colorMap != NULL)
     {

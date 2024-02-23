@@ -28,7 +28,7 @@
 
 IFF_Chunk *ILBM_createGrab(const IFF_Long chunkSize)
 {
-    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_allocateChunk(ILBM_ID_GRAB, chunkSize, sizeof(ILBM_Point2D));
+    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_createChunk(ILBM_ID_GRAB, chunkSize, sizeof(ILBM_Point2D));
 
     if(point2d != NULL)
     {

@@ -28,7 +28,7 @@
 
 IFF_Chunk *ILBM_createSprite(const IFF_Long chunkSize)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_allocateChunk(ILBM_ID_SPRT, chunkSize, sizeof(ILBM_Sprite));
+    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_createChunk(ILBM_ID_SPRT, chunkSize, sizeof(ILBM_Sprite));
 
     if(sprite != NULL)
         sprite->spritePrecedence = 0;

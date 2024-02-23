@@ -28,7 +28,7 @@
 
 IFF_Chunk *ILBM_createDRange(const IFF_Long chunkSize)
 {
-    ILBM_DRange *drange = (ILBM_DRange*)IFF_allocateChunk(ILBM_ID_DRNG, chunkSize, sizeof(ILBM_DRange));
+    ILBM_DRange *drange = (ILBM_DRange*)IFF_createChunk(ILBM_ID_DRNG, chunkSize, sizeof(ILBM_DRange));
 
     if(drange != NULL)
     {

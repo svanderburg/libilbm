@@ -29,7 +29,7 @@
 
 IFF_Chunk *ILBM_createCycleInfo(const IFF_Long chunkSize)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_allocateChunk(ILBM_ID_CCRT, chunkSize, sizeof(ILBM_CycleInfo));
+    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_createChunk(ILBM_ID_CCRT, chunkSize, sizeof(ILBM_CycleInfo));
 
     if(cycleInfo != NULL)
     {

@@ -28,7 +28,7 @@
 
 IFF_Chunk *ILBM_createDPIHeader(const IFF_Long chunkSize)
 {
-    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_allocateChunk(ILBM_ID_DPI, chunkSize, sizeof(ILBM_DPIHeader));
+    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_createChunk(ILBM_ID_DPI, chunkSize, sizeof(ILBM_DPIHeader));
 
     if(dpiHeader != NULL)
     {
