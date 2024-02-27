@@ -23,60 +23,64 @@
 #include <libiff/iff.h>
 #include "ilbmchunkheaders.h"
 
-static IFF_FormExtension ilbmFormExtension[] = {
-#include "ilbmformextensions.h"
+static IFF_ChunkType chunkTypes[] = {
+#include "ilbmchunktypes.h"
 };
 
-static IFF_Extension extension[] = {
-#include "ilbmextensions.h"
+static IFF_FormChunkTypes formChunkTypes[] = {
+#include "ilbmformchunktypes.h"
+};
+
+static IFF_ChunkRegistry chunkRegistry = {
+    ILBM_NUM_OF_FORM_CHUNK_TYPES, formChunkTypes
 };
 
 IFF_Chunk *ILBM_readFd(FILE *file)
 {
-    return IFF_readFd(file, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_readFd(file, &chunkRegistry);
 }
 
 IFF_Chunk *ILBM_readFile(const char *filename)
 {
-    return IFF_readFile(filename, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_readFile(filename, &chunkRegistry);
 }
 
 IFF_Chunk *ILBM_read(const char *filename)
 {
-    return IFF_read(filename, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_read(filename, &chunkRegistry);
 }
 
 IFF_Bool ILBM_writeFd(FILE *file, const IFF_Chunk *chunk)
 {
-    return IFF_writeFd(file, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_writeFd(file, chunk, &chunkRegistry);
 }
 
 IFF_Bool ILBM_writeFile(const char *filename, const IFF_Chunk *chunk)
 {
-    return IFF_writeFile(filename, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_writeFile(filename, chunk, &chunkRegistry);
 }
 
 IFF_Bool ILBM_write(const char *filename, const IFF_Chunk *chunk)
 {
-    return IFF_write(filename, chunk, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_write(filename, chunk, &chunkRegistry);
 }
 
 IFF_Bool ILBM_check(const IFF_Chunk *chunk)
 {
-    return IFF_check(chunk, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_check(chunk, &chunkRegistry);
 }
 
 void ILBM_free(IFF_Chunk *chunk)
 {
-    IFF_free(chunk, extension, ILBM_NUM_OF_FORM_TYPES);
+    IFF_free(chunk, &chunkRegistry);
 }
 
 void ILBM_print(const IFF_Chunk *chunk, const unsigned int indentLevel)
 {
-    IFF_print(chunk, 0, extension, ILBM_NUM_OF_FORM_TYPES);
+    IFF_print(chunk, indentLevel, &chunkRegistry);
 }
 
 IFF_Bool ILBM_compare(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
 {
-    return IFF_compare(chunk1, chunk2, extension, ILBM_NUM_OF_FORM_TYPES);
+    return IFF_compare(chunk1, chunk2, &chunkRegistry);
 }

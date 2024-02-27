@@ -1,6 +1,6 @@
 /* An array of all extension chunks belonging to the ILBM format. They must be alphabetically sorted. */
 
-#define ILBM_NUM_OF_EXTENSION_CHUNKS 12
+#define ILBM_NUM_OF_CHUNK_TYPES 12
 
 {ILBM_ID_BMHD, &ILBM_createBitMapHeader, &ILBM_readBitMapHeader, &ILBM_writeBitMapHeader, &ILBM_checkBitMapHeader, &ILBM_freeBitMapHeader, &ILBM_printBitMapHeader, &ILBM_compareBitMapHeader},
 {ILBM_ID_CAMG, &ILBM_createViewport, &ILBM_readViewport, &ILBM_writeViewport, &ILBM_checkViewport, &ILBM_freeViewport, &ILBM_printViewport, &ILBM_compareViewport},
