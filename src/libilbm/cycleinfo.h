@@ -54,19 +54,21 @@ typedef struct
 }
 ILBM_CycleInfo;
 
-IFF_Chunk *ILBM_createCycleInfo(const IFF_Long chunkSize);
+IFF_Chunk *ILBM_createCycleInfoChunk(const IFF_ID chunkId, const IFF_Long chunkSize);
 
-IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+ILBM_CycleInfo *ILBM_createCycleInfo(void);
 
-IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-void ILBM_freeCycleInfo(IFF_Chunk *chunk);
+IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel);
+void ILBM_freeCycleInfo(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-IFF_Bool ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry);
+
+IFF_Bool ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry);
 
 #ifdef __cplusplus
 }

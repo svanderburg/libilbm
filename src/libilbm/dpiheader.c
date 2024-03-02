@@ -26,9 +26,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createDPIHeader(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createDPIHeaderChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_createChunk(ILBM_ID_DPI, chunkSize, sizeof(ILBM_DPIHeader));
+    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_DPIHeader));
 
     if(dpiHeader != NULL)
     {
@@ -39,7 +39,12 @@ IFF_Chunk *ILBM_createDPIHeader(const IFF_Long chunkSize)
     return (IFF_Chunk*)dpiHeader;
 }
 
-IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_DPIHeader *ILBM_createDPIHeader(void)
+{
+    return (ILBM_DPIHeader*)ILBM_createDPIHeaderChunk(ILBM_ID_DPI, ILBM_DPI_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)chunk;
     IFF_FieldStatus status;
@@ -53,7 +58,7 @@ IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcess
     return TRUE;
 }
 
-IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_DPIHeader *dpiHeader = (const ILBM_DPIHeader*)chunk;
     IFF_FieldStatus status;
@@ -67,16 +72,16 @@ IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytes
     return TRUE;
 }
 
-IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     return TRUE;
 }
 
-void ILBM_freeDPIHeader(IFF_Chunk *chunk)
+void ILBM_freeDPIHeader(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_DPIHeader *dpiHeader = (const ILBM_DPIHeader*)chunk;
 
@@ -84,7 +89,7 @@ void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel)
     IFF_printIndent(stdout, indentLevel, "dpiY = %u;\n", dpiHeader->dpiY);
 }
 
-IFF_Bool ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_DPIHeader *dpiHeader1 = (const ILBM_DPIHeader*)chunk1;
     const ILBM_DPIHeader *dpiHeader2 = (const ILBM_DPIHeader*)chunk2;

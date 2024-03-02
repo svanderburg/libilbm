@@ -27,9 +27,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createDestMerge(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createDestMergeChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_createChunk(ILBM_ID_DEST, chunkSize, sizeof(ILBM_DestMerge));
+    ILBM_DestMerge *destMerge = (ILBM_DestMerge*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_DestMerge));
 
     if(destMerge != NULL)
     {
@@ -43,7 +43,12 @@ IFF_Chunk *ILBM_createDestMerge(const IFF_Long chunkSize)
     return (IFF_Chunk*)destMerge;
 }
 
-IFF_Bool ILBM_readDestMerge(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_DestMerge *ILBM_createDestMerge(void)
+{
+    return (ILBM_DestMerge*)ILBM_createDestMergeChunk(ILBM_ID_DEST, ILBM_DEST_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readDestMerge(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_DestMerge *destMerge = (ILBM_DestMerge*)chunk;
     IFF_FieldStatus status;
@@ -66,7 +71,7 @@ IFF_Bool ILBM_readDestMerge(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcess
     return TRUE;
 }
 
-IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
     IFF_FieldStatus status;
@@ -89,7 +94,7 @@ IFF_Bool ILBM_writeDestMerge(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytes
     return TRUE;
 }
 
-IFF_Bool ILBM_checkDestMerge(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkDestMerge(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
 
@@ -99,11 +104,11 @@ IFF_Bool ILBM_checkDestMerge(const IFF_Chunk *chunk)
     return TRUE;
 }
 
-void ILBM_freeDestMerge(IFF_Chunk *chunk)
+void ILBM_freeDestMerge(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printDestMerge(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printDestMerge(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_DestMerge *destMerge = (const ILBM_DestMerge*)chunk;
 
@@ -114,7 +119,7 @@ void ILBM_printDestMerge(const IFF_Chunk *chunk, const unsigned int indentLevel)
     IFF_printIndent(stdout, indentLevel, "planeMask = %u;\n", destMerge->planeMask);
 }
 
-IFF_Bool ILBM_compareDestMerge(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareDestMerge(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_DestMerge *destMerge1 = (const ILBM_DestMerge*)chunk1;
     const ILBM_DestMerge *destMerge2 = (const ILBM_DestMerge*)chunk2;

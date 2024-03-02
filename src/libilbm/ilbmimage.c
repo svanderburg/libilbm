@@ -265,7 +265,7 @@ unsigned int ILBM_calculateRowSize(const ILBM_Image *image)
 
 ILBM_ColorMap *ILBM_generateGrayscaleColorMap(const ILBM_Image *image)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
 
     if(colorMap != NULL)
     {

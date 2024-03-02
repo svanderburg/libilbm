@@ -21,19 +21,22 @@
 
 #include "ilbm.h"
 #include <libiff/iff.h>
+#include <libiff/defaultregistry.h>
 #include "ilbmchunkheaders.h"
 
-static IFF_ChunkType chunkTypes[] = {
+static IFF_ChunkType applicationChunkTypes[] = {
 #include "ilbmchunktypes.h"
+};
+
+static IFF_ChunkTypesNode applicationChunkTypesNode = {
+    ILBM_NUM_OF_CHUNK_TYPES, applicationChunkTypes, NULL
 };
 
 static IFF_FormChunkTypes formChunkTypes[] = {
 #include "ilbmformchunktypes.h"
 };
 
-static IFF_ChunkRegistry chunkRegistry = {
-    ILBM_NUM_OF_FORM_CHUNK_TYPES, formChunkTypes
-};
+static IFF_ChunkRegistry chunkRegistry = IFF_EXTEND_DEFAULT_REGISTRY_WITH_FORM_CHUNK_TYPES(ILBM_NUM_OF_FORM_CHUNK_TYPES, formChunkTypes);
 
 IFF_Chunk *ILBM_readFd(FILE *file)
 {

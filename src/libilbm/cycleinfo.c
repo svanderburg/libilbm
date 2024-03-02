@@ -27,9 +27,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createCycleInfo(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createCycleInfoChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_createChunk(ILBM_ID_CCRT, chunkSize, sizeof(ILBM_CycleInfo));
+    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_CycleInfo));
 
     if(cycleInfo != NULL)
     {
@@ -44,7 +44,12 @@ IFF_Chunk *ILBM_createCycleInfo(const IFF_Long chunkSize)
     return (IFF_Chunk*)cycleInfo;
 }
 
-IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_CycleInfo *ILBM_createCycleInfo(void)
+{
+    return (ILBM_CycleInfo*)ILBM_createCycleInfoChunk(ILBM_ID_CCRT, ILBM_CCRT_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)chunk;
     IFF_FieldStatus status;
@@ -70,7 +75,7 @@ IFF_Bool ILBM_readCycleInfo(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcess
     return TRUE;
 }
 
-IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
     IFF_FieldStatus status;
@@ -96,7 +101,7 @@ IFF_Bool ILBM_writeCycleInfo(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytes
     return TRUE;
 }
 
-IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
 
@@ -112,11 +117,11 @@ IFF_Bool ILBM_checkCycleInfo(const IFF_Chunk *chunk)
     return TRUE;
 }
 
-void ILBM_freeCycleInfo(IFF_Chunk *chunk)
+void ILBM_freeCycleInfo(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_CycleInfo *cycleInfo = (const ILBM_CycleInfo*)chunk;
 
@@ -128,7 +133,7 @@ void ILBM_printCycleInfo(const IFF_Chunk *chunk, const unsigned int indentLevel)
     IFF_printIndent(stdout, indentLevel, "pad = %d;\n", cycleInfo->pad);
 }
 
-IFF_Bool ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareCycleInfo(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_CycleInfo *cycleInfo1 = (const ILBM_CycleInfo*)chunk1;
     const ILBM_CycleInfo *cycleInfo2 = (const ILBM_CycleInfo*)chunk2;

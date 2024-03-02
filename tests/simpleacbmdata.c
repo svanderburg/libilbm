@@ -27,7 +27,7 @@
 
 static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)ILBM_createBitMapHeader(ILBM_BMHD_DEFAULT_SIZE);
+    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
 
     bitMapHeader->w = 320;
     bitMapHeader->h = 200;
@@ -48,7 +48,7 @@ static ILBM_BitMapHeader *createTestBitMapHeader(void)
 static ILBM_ColorMap *createTestColorMap(void)
 {
     ILBM_ColorRegister *colorRegister;
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
 
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0xf0;
@@ -75,7 +75,7 @@ static ILBM_ColorMap *createTestColorMap(void)
 
 static ILBM_Viewport *createTestViewport(void)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)ILBM_createViewport(ILBM_CAMG_DEFAULT_SIZE);
+    ILBM_Viewport *viewport = ILBM_createViewport();
     viewport->viewportMode = 0x4;
     return viewport;
 }
@@ -84,7 +84,7 @@ static IFF_RawChunk *createTestBitplanes(const ILBM_Image *image)
 {
     unsigned int bitplaneSize = ILBM_calculateRowSize(image) * image->bitMapHeader->h;
     IFF_Long bitplanesChunkSize = bitplaneSize * image->bitMapHeader->nPlanes;
-    IFF_RawChunk *bitplanes = IFF_createRawChunk(ILBM_ID_ABIT, bitplanesChunkSize);
+    IFF_RawChunk *bitplanes = (IFF_RawChunk*)IFF_createRawChunk(ILBM_ID_ABIT, bitplanesChunkSize);
     IFF_UByte *bitplanesChunkData = bitplanes->chunkData;
     unsigned int offset;
 

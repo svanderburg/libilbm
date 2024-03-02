@@ -54,21 +54,23 @@ typedef struct
 }
 ILBM_ColorMap;
 
-IFF_Chunk *ILBM_createColorMap(const IFF_Long chunkSize);
+IFF_Chunk *ILBM_createColorMapChunk(const IFF_ID chunkId, const IFF_Long chunkSize);
+
+ILBM_ColorMap *ILBM_createColorMap(void);
 
 ILBM_ColorRegister *ILBM_addColorRegisterInColorMap(ILBM_ColorMap *colorMap);
 
-IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_checkColorMap(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkColorMap(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_freeColorMap(IFF_Chunk *chunk);
+void ILBM_freeColorMap(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel);
+void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry);
 
-IFF_Bool ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry);
 
 #ifdef __cplusplus
 }

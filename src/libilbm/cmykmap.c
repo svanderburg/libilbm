@@ -26,9 +26,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createCMYKMap(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createCMYKMapChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_createChunk(ILBM_ID_CMYK, chunkSize, sizeof(ILBM_CMYKMap));
+    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_CMYKMap));
 
     if(cmykMap != NULL)
     {
@@ -37,6 +37,11 @@ IFF_Chunk *ILBM_createCMYKMap(const IFF_Long chunkSize)
     }
 
     return (IFF_Chunk*)cmykMap;
+}
+
+ILBM_CMYKMap *ILBM_createCMYKMap(void)
+{
+    return (ILBM_CMYKMap*)ILBM_createCMYKMapChunk(ILBM_ID_CMYK, ILBM_CMYK_DEFAULT_SIZE);
 }
 
 static ILBM_CMYKRegister *allocateCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
@@ -57,7 +62,7 @@ ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap)
     return cmykRegister;
 }
 
-IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)chunk;
     IFF_FieldStatus status;
@@ -82,7 +87,7 @@ IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed
     return TRUE;
 }
 
-IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_CMYKMap *cmykMap = (const ILBM_CMYKMap*)chunk;
     IFF_FieldStatus status;
@@ -108,18 +113,18 @@ IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesPr
     return TRUE;
 }
 
-IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     return TRUE;
 }
 
-void ILBM_freeCMYKMap(IFF_Chunk *chunk)
+void ILBM_freeCMYKMap(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)chunk;
     free(cmykMap->cmykRegister);
 }
 
-void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_CMYKMap *cmykMap = (const ILBM_CMYKMap*)chunk;
     unsigned int i;
@@ -131,7 +136,7 @@ void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
     }
 }
 
-IFF_Bool ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_CMYKMap *cmykMap1 = (const ILBM_CMYKMap*)chunk1;
     const ILBM_CMYKMap *cmykMap2 = (const ILBM_CMYKMap*)chunk2;

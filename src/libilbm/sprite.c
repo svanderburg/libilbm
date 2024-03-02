@@ -26,9 +26,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createSprite(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createSpriteChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_createChunk(ILBM_ID_SPRT, chunkSize, sizeof(ILBM_Sprite));
+    ILBM_Sprite *sprite = (ILBM_Sprite*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_Sprite));
 
     if(sprite != NULL)
         sprite->spritePrecedence = 0;
@@ -36,7 +36,12 @@ IFF_Chunk *ILBM_createSprite(const IFF_Long chunkSize)
     return (IFF_Chunk*)sprite;
 }
 
-IFF_Bool ILBM_readSprite(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_Sprite *ILBM_createSprite(void)
+{
+    return (ILBM_Sprite*)ILBM_createSpriteChunk(ILBM_ID_SPRT, ILBM_SPRT_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readSprite(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_Sprite *sprite = (ILBM_Sprite*)chunk;
     IFF_FieldStatus status;
@@ -47,7 +52,7 @@ IFF_Bool ILBM_readSprite(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
     return TRUE;
 }
 
-IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_Sprite *sprite = (const ILBM_Sprite*)chunk;
     IFF_FieldStatus status;
@@ -58,23 +63,23 @@ IFF_Bool ILBM_writeSprite(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesPro
     return TRUE;
 }
 
-IFF_Bool ILBM_checkSprite(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkSprite(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     return TRUE;
 }
 
-void ILBM_freeSprite(IFF_Chunk *chunk)
+void ILBM_freeSprite(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printSprite(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printSprite(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_Sprite *sprite = (const ILBM_Sprite*)chunk;
 
     IFF_printIndent(stdout, indentLevel, "spritePrecedence = %u;\n", sprite->spritePrecedence);
 }
 
-IFF_Bool ILBM_compareSprite(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareSprite(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_Sprite *sprite1 = (const ILBM_Sprite*)chunk1;
     const ILBM_Sprite *sprite2 = (const ILBM_Sprite*)chunk2;

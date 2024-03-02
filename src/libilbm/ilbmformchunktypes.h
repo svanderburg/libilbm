@@ -2,6 +2,6 @@
 
 #define ILBM_NUM_OF_FORM_CHUNK_TYPES 3
 
-{ILBM_ID_ACBM, ILBM_NUM_OF_CHUNK_TYPES, chunkTypes},
-{ILBM_ID_ILBM, ILBM_NUM_OF_CHUNK_TYPES, chunkTypes},
-{ILBM_ID_PBM, ILBM_NUM_OF_CHUNK_TYPES, chunkTypes}
+{ILBM_ID_ACBM, &applicationChunkTypesNode},
+{ILBM_ID_ILBM, &applicationChunkTypesNode},
+{ILBM_ID_PBM, &applicationChunkTypesNode}

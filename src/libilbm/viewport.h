@@ -47,19 +47,21 @@ typedef struct
 }
 ILBM_Viewport;
 
-IFF_Chunk *ILBM_createViewport(const IFF_Long chunkSize);
+IFF_Chunk *ILBM_createViewportChunk(const IFF_ID chunkId, const IFF_Long chunkSize);
 
-IFF_Bool ILBM_readViewport(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+ILBM_Viewport *ILBM_createViewport(void);
 
-IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_readViewport(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_checkViewport(const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeViewport(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-void ILBM_freeViewport(IFF_Chunk *chunk);
+IFF_Bool ILBM_checkViewport(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_printViewport(const IFF_Chunk *chunk, const unsigned int indentLevel);
+void ILBM_freeViewport(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-IFF_Bool ILBM_compareViewport(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+void ILBM_printViewport(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry);
+
+IFF_Bool ILBM_compareViewport(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry);
 
 #ifdef __cplusplus
 }

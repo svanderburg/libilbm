@@ -26,9 +26,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createDRange(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createDRangeChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_DRange *drange = (ILBM_DRange*)IFF_createChunk(ILBM_ID_DRNG, chunkSize, sizeof(ILBM_DRange));
+    ILBM_DRange *drange = (ILBM_DRange*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_DRange));
 
     if(drange != NULL)
     {
@@ -46,6 +46,11 @@ IFF_Chunk *ILBM_createDRange(const IFF_Long chunkSize)
     }
 
     return (IFF_Chunk*)drange;
+}
+
+ILBM_DRange *ILBM_createDRange(void)
+{
+    return (ILBM_DRange*)ILBM_createDRangeChunk(ILBM_ID_DRNG, ILBM_DRNG_DEFAULT_SIZE);
 }
 
 static ILBM_DColor *allocateDColorInDRange(ILBM_DRange *drange)
@@ -102,7 +107,7 @@ ILBM_DFade *ILBM_addDFadeToDRange(ILBM_DRange *drange)
     return dfade;
 }
 
-IFF_Bool ILBM_readDRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_readDRange(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_DRange *drange = (ILBM_DRange*)chunk;
     IFF_FieldStatus status;
@@ -175,7 +180,7 @@ IFF_Bool ILBM_readDRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
     return TRUE;
 }
 
-IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_DRange *drange = (const ILBM_DRange*)chunk;
     IFF_FieldStatus status;
@@ -247,12 +252,12 @@ IFF_Bool ILBM_writeDRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesPro
     return TRUE;
 }
 
-IFF_Bool ILBM_checkDRange(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkDRange(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     return TRUE;
 }
 
-void ILBM_freeDRange(IFF_Chunk *chunk)
+void ILBM_freeDRange(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     ILBM_DRange *drange = (ILBM_DRange*)chunk;
 
@@ -261,7 +266,7 @@ void ILBM_freeDRange(IFF_Chunk *chunk)
     free(drange->dfade);
 }
 
-void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     ILBM_DRange *drange = (ILBM_DRange*)chunk;
     unsigned int i;
@@ -286,7 +291,7 @@ void ILBM_printDRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
         IFF_printIndent(stdout, indentLevel, "{ cell = %u, fade = %u }\n", drange->dfade[i].cell, drange->dfade[i].fade);
 }
 
-IFF_Bool ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareDRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_DRange *drange1 = (const ILBM_DRange*)chunk1;
     const ILBM_DRange *drange2 = (const ILBM_DRange*)chunk2;

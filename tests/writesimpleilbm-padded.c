@@ -49,7 +49,7 @@ IFF_UByte blueScanLine[] = {
 
 static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)ILBM_createBitMapHeader(ILBM_BMHD_DEFAULT_SIZE);
+    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
 
     bitMapHeader->w = 161;
     bitMapHeader->h = 120;
@@ -68,7 +68,7 @@ static ILBM_BitMapHeader *createTestBitMapHeader(void)
 
 static ILBM_ColorMap *createTestColorMap(void)
 {
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
     ILBM_ColorRegister *colorRegister;
 
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
@@ -96,14 +96,14 @@ static ILBM_ColorMap *createTestColorMap(void)
 
 static ILBM_Viewport *createTestViewport(void)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)ILBM_createViewport(ILBM_CAMG_DEFAULT_SIZE);
+    ILBM_Viewport *viewport = ILBM_createViewport();
     viewport->viewportMode = 0x4;
     return viewport;
 }
 
 static ILBM_Point2D *createTestGrab(void)
 {
-    ILBM_Point2D *point2d = (ILBM_Point2D*)ILBM_createGrab(ILBM_GRAB_DEFAULT_SIZE);
+    ILBM_Point2D *point2d = ILBM_createGrab();
 
     point2d->x = 10;
     point2d->y = 20;
@@ -113,14 +113,14 @@ static ILBM_Point2D *createTestGrab(void)
 
 static ILBM_Sprite *createTestSprite(void)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)ILBM_createSprite(ILBM_SPRT_DEFAULT_SIZE);
+    ILBM_Sprite *sprite = ILBM_createSprite();
     sprite->spritePrecedence = 1;
     return sprite;
 }
 
 static ILBM_ColorRange *createTestColorRange(void)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)ILBM_createColorRange(ILBM_CRNG_DEFAULT_SIZE);
+    ILBM_ColorRange *colorRange = ILBM_createColorRange();
 
     colorRange->rate = 8192;
     colorRange->active = 1;
@@ -132,7 +132,7 @@ static ILBM_ColorRange *createTestColorRange(void)
 
 static ILBM_DRange *createTestDRange(void)
 {
-    ILBM_DRange *drange = (ILBM_DRange*)ILBM_createDRange(ILBM_DRNG_DEFAULT_SIZE);
+    ILBM_DRange *drange = ILBM_createDRange();
     ILBM_DIndex *dindex;
 
     drange->min = 0;
@@ -161,7 +161,7 @@ static ILBM_DRange *createTestDRange(void)
 
 static ILBM_CycleInfo *createTestCycleInfo(void)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)ILBM_createCycleInfo(ILBM_CCRT_DEFAULT_SIZE);
+    ILBM_CycleInfo *cycleInfo = ILBM_createCycleInfo();
 
     cycleInfo->direction = 1;
     cycleInfo->start = 0;
@@ -176,7 +176,7 @@ static IFF_RawChunk *createTestBody(const ILBM_Image *image)
 {
     unsigned int rowSize = ILBM_calculateRowSize(image) * image->bitMapHeader->nPlanes;
     IFF_Long bodyChunkSize = rowSize * image->bitMapHeader->h;
-    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY, bodyChunkSize);
+    IFF_RawChunk *body = (IFF_RawChunk*)IFF_createRawChunk(ILBM_ID_BODY, bodyChunkSize);
     IFF_UByte *bodyChunkData = body->chunkData;
     unsigned int i;
     unsigned int count = 0;

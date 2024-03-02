@@ -27,7 +27,7 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createColorMap(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createColorMapChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
     ILBM_ColorMap *colorMap = (ILBM_ColorMap*)IFF_createChunk(ILBM_ID_CMAP, chunkSize, sizeof(ILBM_ColorMap));
 
@@ -38,6 +38,11 @@ IFF_Chunk *ILBM_createColorMap(const IFF_Long chunkSize)
     }
 
     return (IFF_Chunk*)colorMap;
+}
+
+ILBM_ColorMap *ILBM_createColorMap(void)
+{
+    return (ILBM_ColorMap*)ILBM_createColorMapChunk(ILBM_ID_CMAP, ILBM_CMAP_DEFAULT_SIZE);
 }
 
 static ILBM_ColorRegister *allocateColorRegisterInColorMap(ILBM_ColorMap *colorMap)
@@ -59,7 +64,7 @@ ILBM_ColorRegister *ILBM_addColorRegisterInColorMap(ILBM_ColorMap *colorMap)
     return colorRegister;
 }
 
-IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_ColorMap *colorMap = (ILBM_ColorMap*)chunk;
     IFF_FieldStatus status;
@@ -81,7 +86,7 @@ IFF_Bool ILBM_readColorMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcesse
     return TRUE;
 }
 
-IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_ColorMap *colorMap = (const ILBM_ColorMap*)chunk;
     IFF_FieldStatus status;
@@ -104,18 +109,18 @@ IFF_Bool ILBM_writeColorMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesP
     return TRUE;
 }
 
-IFF_Bool ILBM_checkColorMap(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkColorMap(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     return TRUE;
 }
 
-void ILBM_freeColorMap(IFF_Chunk *chunk)
+void ILBM_freeColorMap(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     ILBM_ColorMap *colorMap = (ILBM_ColorMap*)chunk;
     free(colorMap->colorRegister);
 }
 
-void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorMap *colorMap = (const ILBM_ColorMap*)chunk;
     unsigned int i;
@@ -127,7 +132,7 @@ void ILBM_printColorMap(const IFF_Chunk *chunk, const unsigned int indentLevel)
     }
 }
 
-IFF_Bool ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareColorMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorMap *colorMap1 = (const ILBM_ColorMap*)chunk1;
     const ILBM_ColorMap *colorMap2 = (const ILBM_ColorMap*)chunk2;

@@ -30,7 +30,7 @@
 
 #define BUFFER_SIZE 1024
 
-IFF_Chunk *ILBM_createColorNames(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createColorNamesChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
     ILBM_ColorNames *colorNames = (ILBM_ColorNames*)IFF_createChunk(ILBM_ID_CNAM, chunkSize, sizeof(ILBM_ColorNames));
 
@@ -44,6 +44,11 @@ IFF_Chunk *ILBM_createColorNames(const IFF_Long chunkSize)
     }
 
     return (IFF_Chunk*)colorNames;
+}
+
+ILBM_ColorNames *ILBM_createColorNames(void)
+{
+    return (ILBM_ColorNames*)ILBM_createColorNamesChunk(ILBM_ID_CNAM, ILBM_CNAM_DEFAULT_SIZE);
 }
 
 static size_t addColorName(ILBM_ColorNames *colorNames, char *colorName)
@@ -64,7 +69,7 @@ void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName)
     colorNames->chunkSize += colorNameSize;
 }
 
-IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_ColorNames *colorNames = (ILBM_ColorNames*)chunk;
     IFF_FieldStatus status;
@@ -109,7 +114,7 @@ IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProces
     return TRUE;
 }
 
-IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_ColorNames *colorNames = (const ILBM_ColorNames*)chunk;
     IFF_FieldStatus status;
@@ -133,7 +138,7 @@ IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, IFF_Long *byte
     return TRUE;
 }
 
-IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorNames *colorNames = (ILBM_ColorNames*)chunk;
 
@@ -152,7 +157,7 @@ IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk)
     return TRUE;
 }
 
-void ILBM_freeColorNames(IFF_Chunk *chunk)
+void ILBM_freeColorNames(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     ILBM_ColorNames *colorNames = (ILBM_ColorNames*)chunk;
     unsigned int i;
@@ -166,7 +171,7 @@ void ILBM_freeColorNames(IFF_Chunk *chunk)
     free(colorNames->colorNames);
 }
 
-void ILBM_printColorNames(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printColorNames(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorNames *colorNames = (const ILBM_ColorNames*)chunk;
     unsigned int i;
@@ -181,7 +186,7 @@ void ILBM_printColorNames(const IFF_Chunk *chunk, const unsigned int indentLevel
     }
 }
 
-IFF_Bool ILBM_compareColorNames(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareColorNames(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorNames *colorNames1 = (const ILBM_ColorNames*)chunk1;
     const ILBM_ColorNames *colorNames2 = (const ILBM_ColorNames*)chunk2;

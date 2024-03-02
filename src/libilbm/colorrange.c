@@ -27,9 +27,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createColorRange(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createColorRangeChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_createChunk(ILBM_ID_CRNG, chunkSize, sizeof(ILBM_ColorRange));
+    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_ColorRange));
 
     if(colorRange != NULL)
     {
@@ -43,7 +43,12 @@ IFF_Chunk *ILBM_createColorRange(const IFF_Long chunkSize)
     return (IFF_Chunk*)colorRange;
 }
 
-IFF_Bool ILBM_readColorRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_ColorRange *ILBM_createColorRange(void)
+{
+    return (ILBM_ColorRange*)ILBM_createColorRangeChunk(ILBM_ID_CRNG, ILBM_CRNG_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readColorRange(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_ColorRange *colorRange = (ILBM_ColorRange*)chunk;
     IFF_FieldStatus status;
@@ -66,7 +71,7 @@ IFF_Bool ILBM_readColorRange(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProces
     return TRUE;
 }
 
-IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_ColorRange *colorRange = (const ILBM_ColorRange*)chunk;
     IFF_FieldStatus status;
@@ -89,7 +94,7 @@ IFF_Bool ILBM_writeColorRange(FILE *file, const IFF_Chunk *chunk, IFF_Long *byte
     return TRUE;
 }
 
-IFF_Bool ILBM_checkColorRange(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkColorRange(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorRange *colorRange = (const ILBM_ColorRange*)chunk;
 
@@ -99,11 +104,11 @@ IFF_Bool ILBM_checkColorRange(const IFF_Chunk *chunk)
     return TRUE;
 }
 
-void ILBM_freeColorRange(IFF_Chunk *chunk)
+void ILBM_freeColorRange(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     ILBM_ColorRange *colorRange = (ILBM_ColorRange*)chunk;
 
@@ -114,7 +119,7 @@ void ILBM_printColorRange(const IFF_Chunk *chunk, const unsigned int indentLevel
     IFF_printIndent(stdout, indentLevel, "high = %u;\n", colorRange->high);
 }
 
-IFF_Bool ILBM_compareColorRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareColorRange(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_ColorRange *colorRange1 = (const ILBM_ColorRange*)chunk1;
     const ILBM_ColorRange *colorRange2 = (const ILBM_ColorRange*)chunk2;

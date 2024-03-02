@@ -47,19 +47,21 @@ typedef struct
 }
 ILBM_DPIHeader;
 
-IFF_Chunk *ILBM_createDPIHeader(const IFF_Long chunkSize);
+IFF_Chunk *ILBM_createDPIHeaderChunk(const IFF_ID chunkId, const IFF_Long chunkSize);
 
-IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+ILBM_DPIHeader *ILBM_createDPIHeader(void);
 
-IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_readDPIHeader(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk);
+IFF_Bool ILBM_writeDPIHeader(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-void ILBM_freeDPIHeader(IFF_Chunk *chunk);
+IFF_Bool ILBM_checkDPIHeader(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel);
+void ILBM_freeDPIHeader(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-IFF_Bool ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+void ILBM_printDPIHeader(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry);
+
+IFF_Bool ILBM_compareDPIHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry);
 
 #ifdef __cplusplus
 }

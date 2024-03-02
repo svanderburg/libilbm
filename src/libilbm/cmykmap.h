@@ -54,21 +54,23 @@ typedef struct
 }
 ILBM_CMYKMap;
 
-IFF_Chunk *ILBM_createCMYKMap(const IFF_Long chunkSize);
+IFF_Chunk *ILBM_createCMYKMapChunk(const IFF_ID chunkId, const IFF_Long chunkSize);
+
+ILBM_CMYKMap *ILBM_createCMYKMap(void);
 
 ILBM_CMYKRegister *ILBM_addCMYKRegisterInCMYKMap(ILBM_CMYKMap *cmykMap);
 
-IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_readCMYKMap(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_writeCMYKMap(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkCMYKMap(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_freeCMYKMap(IFF_Chunk *chunk);
+void ILBM_freeCMYKMap(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel);
+void ILBM_printCMYKMap(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry);
 
-IFF_Bool ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareCMYKMap(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry);
 
 #ifdef __cplusplus
 }

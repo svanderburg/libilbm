@@ -26,9 +26,9 @@
 #include <libiff/util.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createGrab(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createGrabChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_createChunk(ILBM_ID_GRAB, chunkSize, sizeof(ILBM_Point2D));
+    ILBM_Point2D *point2d = (ILBM_Point2D*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_Point2D));
 
     if(point2d != NULL)
     {
@@ -39,7 +39,12 @@ IFF_Chunk *ILBM_createGrab(const IFF_Long chunkSize)
     return (IFF_Chunk*)point2d;
 }
 
-IFF_Bool ILBM_readGrab(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_Point2D *ILBM_createGrab(void)
+{
+    return (ILBM_Point2D*)ILBM_createGrabChunk(ILBM_ID_GRAB, ILBM_GRAB_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readGrab(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_Point2D *point2d = (ILBM_Point2D*)chunk;
     IFF_FieldStatus status;
@@ -53,7 +58,7 @@ IFF_Bool ILBM_readGrab(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
     return TRUE;
 }
 
-IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_Point2D *point2d = (const ILBM_Point2D*)chunk;
     IFF_FieldStatus status;
@@ -67,16 +72,16 @@ IFF_Bool ILBM_writeGrab(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProce
     return TRUE;
 }
 
-IFF_Bool ILBM_checkGrab(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkGrab(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     return TRUE;
 }
 
-void ILBM_freeGrab(IFF_Chunk *chunk)
+void ILBM_freeGrab(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printGrab(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printGrab(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_Point2D *point2d = (const ILBM_Point2D*)chunk;
 
@@ -84,7 +89,7 @@ void ILBM_printGrab(const IFF_Chunk *chunk, const unsigned int indentLevel)
     IFF_printIndent(stdout, indentLevel, "y = %d;\n", point2d->y);
 }
 
-IFF_Bool ILBM_compareGrab(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareGrab(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_Point2D *point2d1 = (const ILBM_Point2D*)chunk1;
     const ILBM_Point2D *point2d2 = (const ILBM_Point2D*)chunk2;

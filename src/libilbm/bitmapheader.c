@@ -27,9 +27,9 @@
 #include <libiff/error.h>
 #include "ilbm.h"
 
-IFF_Chunk *ILBM_createBitMapHeader(const IFF_Long chunkSize)
+IFF_Chunk *ILBM_createBitMapHeaderChunk(const IFF_ID chunkId, const IFF_Long chunkSize)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_createChunk(ILBM_ID_BMHD, chunkSize, sizeof(ILBM_BitMapHeader));
+    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)IFF_createChunk(chunkId, chunkSize, sizeof(ILBM_BitMapHeader));
 
     if(bitMapHeader != NULL)
     {
@@ -51,7 +51,12 @@ IFF_Chunk *ILBM_createBitMapHeader(const IFF_Long chunkSize)
     return (IFF_Chunk*)bitMapHeader;
 }
 
-IFF_Bool ILBM_readBitMapHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+ILBM_BitMapHeader *ILBM_createBitMapHeader(void)
+{
+    return (ILBM_BitMapHeader*)ILBM_createBitMapHeaderChunk(ILBM_ID_BMHD, ILBM_BMHD_DEFAULT_SIZE);
+}
+
+IFF_Bool ILBM_readBitMapHeader(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)chunk;
     IFF_FieldStatus status;
@@ -98,7 +103,7 @@ IFF_Bool ILBM_readBitMapHeader(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProc
     return TRUE;
 }
 
-IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed)
+IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed)
 {
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
     IFF_FieldStatus status;
@@ -145,7 +150,7 @@ IFF_Bool ILBM_writeBitMapHeader(FILE *file, const IFF_Chunk *chunk, IFF_Long *by
     return TRUE;
 }
 
-IFF_Bool ILBM_checkBitMapHeader(const IFF_Chunk *chunk)
+IFF_Bool ILBM_checkBitMapHeader(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
 
@@ -173,11 +178,11 @@ IFF_Bool ILBM_checkBitMapHeader(const IFF_Chunk *chunk)
     return TRUE;
 }
 
-void ILBM_freeBitMapHeader(IFF_Chunk *chunk)
+void ILBM_freeBitMapHeader(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry)
 {
 }
 
-void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLevel)
+void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_BitMapHeader *bitMapHeader = (const ILBM_BitMapHeader*)chunk;
 
@@ -194,7 +199,7 @@ void ILBM_printBitMapHeader(const IFF_Chunk *chunk, const unsigned int indentLev
     IFF_printIndent(stdout, indentLevel, "pageHeight = %d;\n", bitMapHeader->pageHeight);
 }
 
-IFF_Bool ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2)
+IFF_Bool ILBM_compareBitMapHeader(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry)
 {
     const ILBM_BitMapHeader *bitMapHeader1 = (const ILBM_BitMapHeader*)chunk1;
     const ILBM_BitMapHeader *bitMapHeader2 = (const ILBM_BitMapHeader*)chunk2;

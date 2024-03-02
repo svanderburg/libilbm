@@ -47,7 +47,7 @@ static IFF_UByte blueScanLine[] = {
 
 static ILBM_BitMapHeader *createTestBitMapHeader(void)
 {
-    ILBM_BitMapHeader *bitMapHeader = (ILBM_BitMapHeader*)ILBM_createBitMapHeader(ILBM_BMHD_DEFAULT_SIZE);
+    ILBM_BitMapHeader *bitMapHeader = ILBM_createBitMapHeader();
 
     bitMapHeader->w = 160;
     bitMapHeader->h = 120;
@@ -68,7 +68,7 @@ static ILBM_BitMapHeader *createTestBitMapHeader(void)
 static ILBM_ColorMap *createTestColorMap(void)
 {
     ILBM_ColorRegister *colorRegister;
-    ILBM_ColorMap *colorMap = (ILBM_ColorMap*)ILBM_createColorMap(ILBM_CMAP_DEFAULT_SIZE);
+    ILBM_ColorMap *colorMap = ILBM_createColorMap();
 
     colorRegister = ILBM_addColorRegisterInColorMap(colorMap);
     colorRegister->red = 0;
@@ -96,7 +96,7 @@ static ILBM_ColorMap *createTestColorMap(void)
 static ILBM_CMYKMap *createTestCMYKMap(void)
 {
     ILBM_CMYKRegister *cmykRegister;
-    ILBM_CMYKMap *cmykMap = (ILBM_CMYKMap*)ILBM_createCMYKMap(ILBM_CMYK_DEFAULT_SIZE);
+    ILBM_CMYKMap *cmykMap = ILBM_createCMYKMap();
 
     cmykRegister = ILBM_addCMYKRegisterInCMYKMap(cmykMap);
     cmykRegister->cyan = 0xff;
@@ -127,7 +127,7 @@ static ILBM_CMYKMap *createTestCMYKMap(void)
 
 static ILBM_ColorNames *createTestColorNames(void)
 {
-    ILBM_ColorNames *colorNames = (ILBM_ColorNames*)ILBM_createColorNames(ILBM_CNAM_DEFAULT_SIZE);
+    ILBM_ColorNames *colorNames = ILBM_createColorNames();
 
     colorNames->startingColor = 0;
     colorNames->endingColor = 3;
@@ -142,14 +142,14 @@ static ILBM_ColorNames *createTestColorNames(void)
 
 static ILBM_Viewport *createTestViewport(void)
 {
-    ILBM_Viewport *viewport = (ILBM_Viewport*)ILBM_createViewport(ILBM_CAMG_DEFAULT_SIZE);
+    ILBM_Viewport *viewport = ILBM_createViewport();
     viewport->viewportMode = 0x4;
     return viewport;
 }
 
 static ILBM_DPIHeader *createTestDPIHeader(void)
 {
-    ILBM_DPIHeader *dpiHeader = (ILBM_DPIHeader*)ILBM_createDPIHeader(ILBM_DPI_DEFAULT_SIZE);
+    ILBM_DPIHeader *dpiHeader = ILBM_createDPIHeader();
 
     dpiHeader->dpiX = 100;
     dpiHeader->dpiY = 100;
@@ -159,7 +159,7 @@ static ILBM_DPIHeader *createTestDPIHeader(void)
 
 static ILBM_Point2D *createTestGrab(void)
 {
-    ILBM_Point2D *point2d = (ILBM_Point2D*)ILBM_createGrab(ILBM_GRAB_DEFAULT_SIZE);
+    ILBM_Point2D *point2d = ILBM_createGrab();
 
     point2d->x = 10;
     point2d->y = 20;
@@ -169,14 +169,14 @@ static ILBM_Point2D *createTestGrab(void)
 
 static ILBM_Sprite *createTestSprite(void)
 {
-    ILBM_Sprite *sprite = (ILBM_Sprite*)ILBM_createSprite(ILBM_SPRT_DEFAULT_SIZE);
+    ILBM_Sprite *sprite = ILBM_createSprite();
     sprite->spritePrecedence = 1;
     return sprite;
 }
 
 static ILBM_ColorRange *createTestColorRange(void)
 {
-    ILBM_ColorRange *colorRange = (ILBM_ColorRange*)ILBM_createColorRange(ILBM_CRNG_DEFAULT_SIZE);
+    ILBM_ColorRange *colorRange = ILBM_createColorRange();
 
     colorRange->rate = 8192;
     colorRange->active = 1;
@@ -189,7 +189,7 @@ static ILBM_ColorRange *createTestColorRange(void)
 static ILBM_DRange *createTestDRange(void)
 {
     ILBM_DIndex *dindex;
-    ILBM_DRange *drange = (ILBM_DRange*)ILBM_createDRange(ILBM_DRNG_DEFAULT_SIZE);
+    ILBM_DRange *drange = ILBM_createDRange();
 
     drange->min = 0;
     drange->max = 3;
@@ -217,7 +217,7 @@ static ILBM_DRange *createTestDRange(void)
 
 static ILBM_CycleInfo *createTestCycleInfo(void)
 {
-    ILBM_CycleInfo *cycleInfo = (ILBM_CycleInfo*)ILBM_createCycleInfo(ILBM_CCRT_DEFAULT_SIZE);
+    ILBM_CycleInfo *cycleInfo = ILBM_createCycleInfo();
 
     cycleInfo->direction = 1;
     cycleInfo->start = 0;
@@ -232,7 +232,7 @@ static IFF_RawChunk *createTestBody(const ILBM_Image *image)
 {
     unsigned int rowSize = ILBM_calculateRowSize(image) * image->bitMapHeader->nPlanes;
     IFF_Long bodyChunkSize = rowSize * image->bitMapHeader->h;
-    IFF_RawChunk *body = IFF_createRawChunk(ILBM_ID_BODY, bodyChunkSize);
+    IFF_RawChunk *body = (IFF_RawChunk*)IFF_createRawChunk(ILBM_ID_BODY, bodyChunkSize);
     IFF_UByte *bodyChunkData = body->chunkData;
     unsigned int count = 0;
     unsigned int i;

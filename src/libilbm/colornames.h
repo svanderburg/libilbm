@@ -51,21 +51,23 @@ typedef struct
 }
 ILBM_ColorNames;
 
-IFF_Chunk *ILBM_createColorNames(const IFF_Long chunkSize);
+IFF_Chunk *ILBM_createColorNamesChunk(const IFF_ID chunkId, const IFF_Long chunkSize);
+
+ILBM_ColorNames *ILBM_createColorNames(void);
 
 void ILBM_addColorName(ILBM_ColorNames *colorNames, char *colorName);
 
-IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_readColorNames(FILE *file, IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, IFF_Long *bytesProcessed);
+IFF_Bool ILBM_writeColorNames(FILE *file, const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry, IFF_Long *bytesProcessed);
 
-IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk);
+IFF_Bool ILBM_checkColorNames(const IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_freeColorNames(IFF_Chunk *chunk);
+void ILBM_freeColorNames(IFF_Chunk *chunk, const IFF_ChunkRegistry *chunkRegistry);
 
-void ILBM_printColorNames(const IFF_Chunk *chunk, const unsigned int indentLevel);
+void ILBM_printColorNames(const IFF_Chunk *chunk, const unsigned int indentLevel, const IFF_ChunkRegistry *chunkRegistry);
 
-IFF_Bool ILBM_compareColorNames(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2);
+IFF_Bool ILBM_compareColorNames(const IFF_Chunk *chunk1, const IFF_Chunk *chunk2, const IFF_ChunkRegistry *chunkRegistry);
 
 #ifdef __cplusplus
 }
